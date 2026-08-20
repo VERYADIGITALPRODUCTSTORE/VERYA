@@ -109,7 +109,7 @@
         <section id="tab-contributor" class="hidden space-y-8 max-w-4xl mx-auto">
             <div id="contributorGuestView" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl">
                 <h2 class="text-2xl font-bold gold-text">Contributor Portal Access</h2>
-                <p class="text-slate-400 text-sm">Please log in or register a Contributor account to upload products and request payouts.</p>
+                <p class="text-slate-400 text-sm">Please log in or register an account to upload products and request payouts.</p>
                 <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register Account</button>
             </div>
 
@@ -202,7 +202,7 @@
                 <!-- Admin Analytics Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Total Contributors</span>
+                        <span class="text-xs text-slate-400 block">Total Users / Accounts</span>
                         <strong id="adminStatContributors" class="text-amber-400 text-xl">0</strong>
                     </div>
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
@@ -236,9 +236,9 @@
                     </div>
                 </div>
 
-                <!-- 1. Contributor Approvals -->
+                <!-- 1. Account / Contributor Approvals (အဟောင်းရော အသစ်ပါ အားလုံးပြသရန်) -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications (All Old & New Accounts)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -251,7 +251,7 @@
                                 </tr>
                             </thead>
                             <tbody id="adminContributorTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>
+                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No account requests.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -361,10 +361,10 @@
                     <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number (For Payouts)</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number</label>
                     <input type="text" id="regPhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="09xxxxxxxxx">
                 </div>
-                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Register as Contributor</button>
+                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Register & Request Approval</button>
             </form>
         </div>
     </div>
@@ -428,7 +428,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Application Logic with LocalStorage Integration -->
+    <!-- JavaScript Application Logic -->
     <script>
         let currentUser = JSON.parse(localStorage.getItem('verya_currentUser')) || null;
         let currentCategory = 'All';
@@ -441,12 +441,12 @@
         
         let pendingProducts = JSON.parse(localStorage.getItem('verya_pendingProducts')) || [];
         
+        // အကောင့်အဟောင်းများနှင့် အသစ်များအားလုံးကို သိမ်းဆည်းရန် (အစပိုင်းတွင် အကောင့်အဟောင်းများ ရှိပြီးသားဖြစ်စေရန် sample users များကို ထည့်သွင်းပေးထားပါသည်)
         let allUsers = JSON.parse(localStorage.getItem('verya_allUsers')) || [
-            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin' }
+            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin', status: 'Approved' }
         ];
 
-        let contributors = JSON.parse(localStorage.getItem('verya_contributors')) || [];
-        let pendingContributors = JSON.parse(localStorage.getItem('verya_pendingContributors')) || [];
+        // အရင်အကောင့်ဟောင်းများနှင့် အသစ်များအားလုံးထဲမှ status 'Pending' ဖြစ်နေသမျှကို Contributor Account Applications တွင် အလိုအလျောက် ပေါ်လာစေရန် စုစည်းခြင်း
         let topupRequests = JSON.parse(localStorage.getItem('verya_topupRequests')) || [];
         let withdrawalRequests = JSON.parse(localStorage.getItem('verya_withdrawalRequests')) || [];
         let userDownloads = JSON.parse(localStorage.getItem('verya_userDownloads')) || [];
@@ -455,8 +455,6 @@
             localStorage.setItem('verya_products', JSON.stringify(products));
             localStorage.setItem('verya_pendingProducts', JSON.stringify(pendingProducts));
             localStorage.setItem('verya_allUsers', JSON.stringify(allUsers));
-            localStorage.setItem('verya_contributors', JSON.stringify(contributors));
-            localStorage.setItem('verya_pendingContributors', JSON.stringify(pendingContributors));
             localStorage.setItem('verya_topupRequests', JSON.stringify(topupRequests));
             localStorage.setItem('verya_withdrawalRequests', JSON.stringify(withdrawalRequests));
             localStorage.setItem('verya_userDownloads', JSON.stringify(userDownloads));
@@ -510,15 +508,29 @@
             const email = document.getElementById('loginEmail').value.trim();
             
             if(email === 'veryacomputerclass@gmail.com') {
-                currentUser = { name: 'Hein Yazar Soe (Admin)', email: email, role: 'admin', coins: 99999, phone: '09941117896' };
+                currentUser = { name: 'Hein Yazar Soe (Admin)', email: email, role: 'Admin', coins: 99999, phone: '09941117896', status: 'Approved' };
                 document.getElementById('navAdminLink').classList.remove('hidden');
                 alert('Admin Login Successful!');
-            } else {
-                let foundUser = allUsers.find(u => u.email === email);
-                currentUser = { name: foundUser ? foundUser.name : 'Valued User', email: email, role: 'contributor', coins: 150, phone: foundUser ? foundUser.phone : '09941117896' };
-                document.getElementById('navAdminLink').classList.add('hidden');
-                alert('Successfully Logged In!');
+                saveToLocalStorage();
+                updateUserUI();
+                closeAuthModal();
+                return;
             }
+
+            let foundUser = allUsers.find(u => u.email === email);
+            if(!foundUser) {
+                alert('This email is not registered! Please register an account first.');
+                return;
+            }
+
+            if(foundUser.status !== 'Approved') {
+                alert('Your account is pending Admin approval! Please wait for approval by veryacomputerclass@gmail.com.');
+                return;
+            }
+
+            currentUser = { name: foundUser.name, email: foundUser.email, role: foundUser.role, coins: 150, phone: foundUser.phone, status: foundUser.status };
+            document.getElementById('navAdminLink').classList.add('hidden');
+            alert('Successfully Logged In!');
             
             saveToLocalStorage();
             updateUserUI();
@@ -536,21 +548,19 @@
                 return;
             }
 
-            // Check if user already exists
             if(allUsers.some(u => u.email === email)) {
-                alert('This email is already registered!');
+                alert('This email is already registered in the system!');
                 return;
             }
 
-            // Add to all users list immediately
-            allUsers.push({ name, email, phone, role: 'Contributor (Pending)' });
-            
-            // Add to pending contributor approvals
-            pendingContributors.push({ name, email, phone, status: 'Pending' });
+            // အကောင့်အသစ် (သို့) အဟောင်းဖြစ်စေ allUsers ထဲသို့ status 'Pending' ဖြင့် ထည့်သွင်းခြင်း (Admin မှ approve လုပ်ရန်)
+            const newUserObj = { name, email, phone, role: 'Contributor', status: 'Pending' };
+            allUsers.push(newUserObj);
             
             saveToLocalStorage();
-            alert('Registration submitted! Awaiting Admin Approval.');
+            alert('Registration submitted successfully! Please wait for Admin approval to login.');
             closeAuthModal();
+            document.getElementById('registerForm').reset();
             updateAdminDashboard();
         }
 
@@ -737,14 +747,16 @@
 
         // --- Admin Dashboard & Action Logic ---
         function updateAdminDashboard() {
-            document.getElementById('adminStatContributors').innerText = contributors.length + allUsers.filter(u => u.role.includes('Contributor')).length;
+            document.getElementById('adminStatContributors').innerText = allUsers.length;
             document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
             
-            const totalPendingCount = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
+            // Pending Account များကိုပါ ရေတွက်ရာတွင် ထည့်သွင်းခြင်း
+            const pendingAccountsCount = allUsers.filter(u => u.status === 'Pending').length;
+            const totalPendingCount = pendingProducts.length + pendingAccountsCount + topupRequests.length + withdrawalRequests.length;
             document.getElementById('adminStatPending').innerText = totalPendingCount;
             document.getElementById('adminBadgeCount').innerText = totalPendingCount;
 
-            // 0. All Users Table
+            // 0. All Registered Users Table
             const allUsersTable = document.getElementById('adminAllUsersTable');
             if (allUsers.length === 0) {
                 allUsersTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No registered users.</td></tr>`;
@@ -754,7 +766,7 @@
                         <td class="p-3 text-white font-medium">${u.name}</td>
                         <td class="p-3 text-slate-300">${u.email}</td>
                         <td class="p-3 text-slate-300">${u.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${u.role}</td>
+                        <td class="p-3 text-amber-400 font-bold">${u.role} (${u.status})</td>
                         <td class="p-3">
                             ${u.email !== 'veryacomputerclass@gmail.com' ? `<button onclick="deleteUser(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Remove User</button>` : `<span class="text-xs text-slate-500">System Admin</span>`}
                         </td>
@@ -762,23 +774,28 @@
                 `).join('');
             }
 
-            // 1. Contributor Table
+            // 1. Contributor Account Applications (အဟောင်းရော အသစ်ပါ status 'Pending' ဖြစ်နေသူအားလုံးကို ဤနေရာတွင် ပြသမည်)
             const conTable = document.getElementById('adminContributorTable');
-            if (pendingContributors.length === 0) {
+            const pendingAccs = allUsers.filter(u => u.status === 'Pending');
+            
+            if (pendingAccs.length === 0) {
                 conTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>`;
             } else {
-                conTable.innerHTML = pendingContributors.map((c, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white font-medium">${c.name}</td>
-                        <td class="p-3 text-slate-300">${c.email}</td>
-                        <td class="p-3 text-slate-300">${c.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${c.status}</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveContributor(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
-                            <button onclick="rejectContributor(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
+                conTable.innerHTML = pendingAccs.map((c) => {
+                    const originalIndex = allUsers.findIndex(u => u.email === c.email);
+                    return `
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3 text-white font-medium">${c.name}</td>
+                            <td class="p-3 text-slate-300">${c.email}</td>
+                            <td class="p-3 text-slate-300">${c.phone}</td>
+                            <td class="p-3 text-amber-400 font-bold">${c.status}</td>
+                            <td class="p-3 space-x-2">
+                                <button onclick="approveContributor(${originalIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                                <button onclick="rejectContributor(${originalIndex})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
             }
 
             // 2. Pending Products Table
@@ -821,7 +838,7 @@
                 `).join('');
             }
 
-            // 4. Withdrawal Table (KBZPay / WavePay Payouts)
+            // 4. Withdrawal Table
             const withdrawTable = document.getElementById('adminWithdrawTable');
             if (withdrawalRequests.length === 0) {
                 withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
@@ -851,28 +868,16 @@
         }
 
         function approveContributor(index) {
-            const approved = pendingContributors.splice(index, 1)[0];
-            approved.status = 'Approved';
-            contributors.push(approved);
-            
-            let targetUser = allUsers.find(u => u.email === approved.email);
-            if(targetUser) {
-                targetUser.role = 'Approved Contributor';
-            }
-
+            allUsers[index].status = 'Approved';
             saveToLocalStorage();
-            alert(`Contributor ${approved.name} has been approved!`);
+            alert(`Account ${allUsers[index].name} has been approved successfully by Admin!`);
             updateAdminDashboard();
         }
 
         function rejectContributor(index) {
-            const rejected = pendingContributors.splice(index, 1)[0];
-            let targetUserIndex = allUsers.findIndex(u => u.email === rejected.email);
-            if(targetUserIndex !== -1) {
-                allUsers.splice(targetUserIndex, 1);
-            }
+            allUsers.splice(index, 1);
             saveToLocalStorage();
-            alert('Contributor application rejected.');
+            alert('Account application rejected and removed.');
             updateAdminDashboard();
         }
 
