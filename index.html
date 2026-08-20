@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Ultimate Digital Asset Store v12.0</title>
+    <title>Verya Stock - Ultimate Digital Asset Store v13.0</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -35,7 +35,7 @@
                     <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">Home</a>
                     <a href="#" onclick="switchTab('downloads')" class="hover:text-amber-400 transition">My Downloads</a>
                     <a href="#" onclick="switchTab('contributor')" class="hover:text-amber-400 transition">Contributor Portal</a>
-                    <a href="#" onclick="switchTab('admin')" class="hover:text-amber-400 transition">Admin Panel</a>
+                    <a href="#" onclick="switchTab('admin')" class="hover:text-amber-400 transition text-amber-400 font-bold">Admin Panel</a>
                     <a href="#" onclick="switchTab('contact')" class="hover:text-amber-400 transition">Contact</a>
                 </nav>
             </div>
@@ -69,7 +69,7 @@
         <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
                 <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Stunning Stock Images & Digital Assets</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v12.0 - Professional Asset Marketplace & Contributor System</p>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v13.0 - Professional Asset Marketplace & Contributor System</p>
                 
                 <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
                     <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
@@ -121,7 +121,7 @@
                     </div>
                 </div>
 
-                <!-- 1. Advanced Product Upload Form -->
+                <!-- Product Upload Form -->
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
                     <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload New Product (Pending Admin Review)</h2>
                     <form id="contributorForm" onsubmit="handleContributorUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-6 rounded-xl border border-slate-800">
@@ -164,7 +164,7 @@
                     </form>
                 </div>
 
-                <!-- 2. Coin Withdrawal Section -->
+                <!-- Coin Withdrawal Section -->
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
                     <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (Payout Request)</h2>
                     <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
@@ -187,27 +187,38 @@
             <p class="text-slate-300 text-sm"><strong>Email:</strong> veryacomputerclass@gmail.com</p>
         </section>
 
-        <!-- ADMIN DASHBOARD TAB -->
+        <!-- ADMIN DASHBOARD TAB (Password-less One-Click Access & Contributor Control) -->
         <section id="tab-admin" class="hidden space-y-8 max-w-5xl mx-auto">
-            <div id="adminLoginGate" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl max-w-md mx-auto">
-                <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-lock"></i> Admin Portal Login</h2>
-                <p class="text-slate-400 text-sm">Please log in using Administrator credentials.</p>
-                <div class="space-y-3 text-left">
-                    <input type="email" id="adminEmailInput" placeholder="Admin Email" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                    <input type="password" id="adminPassInput" placeholder="Password" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                    <button onclick="verifyAdminLogin()" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Login as Admin</button>
-                </div>
-            </div>
-
-            <div id="adminDashboardContent" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold gold-text">Admin Master Dashboard</h2>
-                    <button onclick="adminLogout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition">Logout Admin</button>
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Master Control Panel</h2>
+                    <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Password-less Access Active</span>
                 </div>
                 
-                <!-- Pending Product Approvals -->
+                <!-- 1. Contributor Accounts Management -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3">Pending Product Approvals</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users-gear mr-1"></i> Registered Contributors Control</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3">Email</th>
+                                    <th class="p-3">Phone</th>
+                                    <th class="p-3">Earnings</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminContributorsTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No contributors registered yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Pending Product Approvals -->
+                <div class="border-b border-slate-800 pb-6">
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -225,9 +236,9 @@
                     </div>
                 </div>
 
-                <!-- Pending TopUp Approvals -->
+                <!-- 3. Pending TopUp Approvals -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3">Pending Top-Up Approvals (KBZPay/WavePay 5-Digit Codes)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay/WavePay 5-Digit Codes)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -246,9 +257,9 @@
                     </div>
                 </div>
 
-                <!-- Pending Withdrawal Requests -->
+                <!-- 4. Pending Withdrawal Requests -->
                 <div>
-                    <h3 class="font-bold text-sm text-amber-400 mb-3">Pending Payout / Withdrawal Requests</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -386,21 +397,20 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        let products = JSON.parse(localStorage.getItem('vs_v12_prod')) || [
+        let products = JSON.parse(localStorage.getItem('vs_v13_prod')) || [
             { id: 1, title: "Abstract Neon Background", category: "Photos", coins: 20, image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80", downloadLink: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe", desc: "High resolution neon background.", contributor: "System Admin" },
             { id: 2, title: "Modern Business Workspace", category: "UI/UX", coins: 35, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80", downloadLink: "https://images.unsplash.com/photo-1498050108023-c5249f4df085", desc: "Clean workspace template.", contributor: "System Admin" }
         ];
 
-        let pendingProducts = JSON.parse(localStorage.getItem('vs_v12_pending_prod')) || [];
-        let topupRequests = JSON.parse(localStorage.getItem('vs_v12_topups')) || [];
-        let withdrawRequests = JSON.parse(localStorage.getItem('vs_v12_withdraws')) || [];
+        let pendingProducts = JSON.parse(localStorage.getItem('vs_v13_pending_prod')) || [];
+        let topupRequests = JSON.parse(localStorage.getItem('vs_v13_topups')) || [];
+        let withdrawRequests = JSON.parse(localStorage.getItem('vs_v13_withdraws')) || [];
         
-        let currentUser = JSON.parse(localStorage.getItem('vs_v12_session')) || { name: "Guest User", email: "", role: "user", coins: 300, earnings: 0, phone: "" };
-        let registeredUsers = JSON.parse(localStorage.getItem('vs_v12_users')) || [];
-        let downloads = JSON.parse(localStorage.getItem('vs_v12_down')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('vs_v13_session')) || { name: "Guest User", email: "", role: "user", coins: 300, earnings: 0, phone: "" };
+        let registeredUsers = JSON.parse(localStorage.getItem('vs_v13_users')) || [];
+        let downloads = JSON.parse(localStorage.getItem('vs_v13_down')) || [];
         let cart = [];
         let currentCategory = 'All';
-        let isAdminLoggedIn = JSON.parse(localStorage.getItem('vs_v12_admin_auth')) || false;
 
         function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
@@ -439,11 +449,12 @@
         function handleRegister(e) {
             e.preventDefault();
             const newUser = {
+                id: Date.now(),
                 name: document.getElementById('regFullName').value,
                 email: document.getElementById('regEmail').value,
                 password: document.getElementById('regPassword').value,
                 role: document.getElementById('regRole').value,
-                phone: document.getElementById('regPhone')?.value || "",
+                phone: document.getElementById('regPhone')?.value || "No Phone",
                 coins: 300,
                 earnings: 0
             };
@@ -452,9 +463,9 @@
                 return;
             }
             registeredUsers.push(newUser);
-            localStorage.setItem('vs_v12_users', JSON.stringify(registeredUsers));
+            localStorage.setItem('vs_v13_users', JSON.stringify(registeredUsers));
             currentUser = newUser;
-            localStorage.setItem('vs_v12_session', JSON.stringify(currentUser));
+            localStorage.setItem('vs_v13_session', JSON.stringify(currentUser));
             closeAuthModal();
             updateUIAfterAuth();
             alert('Account registered successfully!');
@@ -468,7 +479,7 @@
             const found = registeredUsers.find(u => u.email === email && u.password === pass);
             if(found) {
                 currentUser = found;
-                localStorage.setItem('vs_v12_session', JSON.stringify(currentUser));
+                localStorage.setItem('vs_v13_session', JSON.stringify(currentUser));
                 closeAuthModal();
                 updateUIAfterAuth();
                 alert('Login successful!');
@@ -568,8 +579,8 @@
                 });
                 cart = [];
                 document.getElementById('cartCountBadge').innerText = 0;
-                localStorage.setItem('vs_v12_down', JSON.stringify(downloads));
-                localStorage.setItem('vs_v12_session', JSON.stringify(currentUser));
+                localStorage.setItem('vs_v13_down', JSON.stringify(downloads));
+                localStorage.setItem('vs_v13_session', JSON.stringify(currentUser));
                 closeCartModal();
                 alert('Purchase successful!');
                 switchTab('downloads');
@@ -586,8 +597,8 @@
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 if(!downloads.some(d => d.id === id)) downloads.push(p);
                 distributeContributorEarnings(p.contributor, p.coins);
-                localStorage.setItem('vs_v12_down', JSON.stringify(downloads));
-                localStorage.setItem('vs_v12_session', JSON.stringify(currentUser));
+                localStorage.setItem('vs_v13_down', JSON.stringify(downloads));
+                localStorage.setItem('vs_v13_session', JSON.stringify(currentUser));
                 alert('Purchased successfully!');
                 switchTab('downloads');
             } else {
@@ -603,7 +614,7 @@
                 let commission = Math.floor(price * 0.8); // 80% to contributor
                 targetCon.earnings = (targetCon.earnings || 0) + commission;
                 if(currentUser.name === targetCon.name) currentUser.earnings = targetCon.earnings;
-                localStorage.setItem('vs_v12_users', JSON.stringify(registeredUsers));
+                localStorage.setItem('vs_v13_users', JSON.stringify(registeredUsers));
             }
         }
 
@@ -647,7 +658,7 @@
                 contributor: currentUser.name
             };
             pendingProducts.push(newProduct);
-            localStorage.setItem('vs_v12_pending_prod', JSON.stringify(pendingProducts));
+            localStorage.setItem('vs_v13_pending_prod', JSON.stringify(pendingProducts));
             document.getElementById('contributorForm').reset();
             alert('Product submitted for admin review successfully!');
             switchTab('home');
@@ -670,15 +681,15 @@
                 coins: amount
             });
             currentUser.earnings -= amount;
-            localStorage.setItem('vs_v12_session', JSON.stringify(currentUser));
+            localStorage.setItem('vs_v13_session', JSON.stringify(currentUser));
             
             let idx = registeredUsers.findIndex(u => u.email === currentUser.email);
             if(idx !== -1) {
                 registeredUsers[idx].earnings = currentUser.earnings;
-                localStorage.setItem('vs_v12_users', JSON.stringify(registeredUsers));
+                localStorage.setItem('vs_v13_users', JSON.stringify(registeredUsers));
             }
 
-            localStorage.setItem('vs_v12_withdraws', JSON.stringify(withdrawRequests));
+            localStorage.setItem('vs_v13_withdraws', JSON.stringify(withdrawRequests));
             renderContributorPortal();
             alert('Withdrawal payout request submitted to Admin successfully.');
         }
@@ -695,43 +706,30 @@
                 return;
             }
             topupRequests.push({ id: Date.now(), user: currentUser.name || "Guest", coins, code });
-            localStorage.setItem('vs_v12_topups', JSON.stringify(topupRequests));
+            localStorage.setItem('vs_v13_topups', JSON.stringify(topupRequests));
             closeTopUpModal();
             alert('Top-up request sent to Admin for approval.');
         }
 
-        // Admin Dashboard
-        function verifyAdminLogin() {
-            const email = document.getElementById('adminEmailInput').value;
-            const pass = document.getElementById('adminPassInput').value;
-            if(email === "admin@veryastock.com" && pass === "admin123") {
-                isAdminLoggedIn = true;
-                localStorage.setItem('vs_v12_admin_auth', JSON.stringify(true));
-                renderAdminDashboard();
-                alert('Admin Logged In Successfully!');
-            } else {
-                alert('Incorrect Admin Credentials! (Use admin@veryastock.com / admin123)');
-            }
-        }
-
-        function adminLogout() {
-            isAdminLoggedIn = false;
-            localStorage.setItem('vs_v12_admin_auth', JSON.stringify(false));
-            renderAdminDashboard();
-        }
-
+        // Admin Dashboard (Password-less & Contributor Control)
         function renderAdminDashboard() {
-            const gate = document.getElementById('adminLoginGate');
-            const content = document.getElementById('adminDashboardContent');
-            if(!isAdminLoggedIn) {
-                gate.classList.remove('hidden');
-                content.classList.add('hidden');
-                return;
-            }
-            gate.classList.add('hidden');
-            content.classList.remove('hidden');
+            // 1. Render Contributors List
+            const conTbody = document.getElementById('adminContributorsTable');
+            let contributorsList = registeredUsers.filter(u => u.role === 'contributor');
+            conTbody.innerHTML = contributorsList.length === 0 ? `<tr><td colspan="5" class="p-3 text-center text-slate-500">No contributors registered yet.</td></tr>` :
+            contributorsList.map(c => `
+                <tr class="border-b border-slate-800">
+                    <td class="p-3 font-bold text-amber-400">${c.name}</td>
+                    <td class="p-3 text-xs text-slate-300">${c.email}</td>
+                    <td class="p-3 text-xs text-slate-400">${c.phone}</td>
+                    <td class="p-3 text-amber-400 font-bold">${c.earnings || 0} Coins</td>
+                    <td class="p-3">
+                        <button onclick="removeContributor(${c.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">Remove</button>
+                    </td>
+                </tr>
+            `).join('');
 
-            // 1. Pending Products
+            // 2. Pending Products
             const prodTbody = document.getElementById('adminProductTable');
             prodTbody.innerHTML = pendingProducts.length === 0 ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>` :
             pendingProducts.map(p => `
@@ -746,7 +744,7 @@
                 </tr>
             `).join('');
 
-            // 2. Top-Ups
+            // 3. Top-Ups
             const topupTbody = document.getElementById('adminTopupTable');
             topupTbody.innerHTML = topupRequests.length === 0 ? `<tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>` :
             topupRequests.map(r => `
@@ -761,7 +759,7 @@
                 </tr>
             `).join('');
 
-            // 3. Withdrawals
+            // 4. Withdrawals
             const withdrawTbody = document.getElementById('adminWithdrawTable');
             withdrawTbody.innerHTML = withdrawRequests.length === 0 ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>` :
             withdrawRequests.map(w => `
@@ -776,13 +774,20 @@
             `).join('');
         }
 
+        function removeContributor(id) {
+            registeredUsers = registeredUsers.filter(u => u.id !== id);
+            localStorage.setItem('vs_v13_users', JSON.stringify(registeredUsers));
+            renderAdminDashboard();
+            alert('Contributor account removed successfully.');
+        }
+
         function approveProduct(id) {
             const prod = pendingProducts.find(x => x.id === id);
             if(prod) {
                 products.unshift(prod);
                 pendingProducts = pendingProducts.filter(x => x.id !== id);
-                localStorage.setItem('vs_v12_prod', JSON.stringify(products));
-                localStorage.setItem('vs_v12_pending_prod', JSON.stringify(pendingProducts));
+                localStorage.setItem('vs_v13_prod', JSON.stringify(products));
+                localStorage.setItem('vs_v13_pending_prod', JSON.stringify(pendingProducts));
                 renderAdminDashboard();
                 alert('Product approved and published successfully.');
             }
@@ -790,7 +795,7 @@
 
         function rejectProduct(id) {
             pendingProducts = pendingProducts.filter(x => x.id !== id);
-            localStorage.setItem('vs_v12_pending_prod', JSON.stringify(pendingProducts));
+            localStorage.setItem('vs_v13_pending_prod', JSON.stringify(pendingProducts));
             renderAdminDashboard();
             alert('Product upload rejected.');
         }
@@ -801,8 +806,8 @@
                 currentUser.coins += req.coins;
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 topupRequests = topupRequests.filter(x => x.id !== id);
-                localStorage.setItem('vs_v12_topups', JSON.stringify(topupRequests));
-                localStorage.setItem('vs_v12_session', JSON.stringify(currentUser));
+                localStorage.setItem('vs_v13_topups', JSON.stringify(topupRequests));
+                localStorage.setItem('vs_v13_session', JSON.stringify(currentUser));
                 renderAdminDashboard();
                 alert('Top-up approved successfully.');
             }
@@ -810,7 +815,7 @@
 
         function approveWithdraw(id) {
             withdrawRequests = withdrawRequests.filter(x => x.id !== id);
-            localStorage.setItem('vs_v12_withdraws', JSON.stringify(withdrawRequests));
+            localStorage.setItem('vs_v13_withdraws', JSON.stringify(withdrawRequests));
             renderAdminDashboard();
             alert('Withdrawal payout approved successfully.');
         }
