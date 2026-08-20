@@ -3,296 +3,832 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Admin Coin Control Marketplace</title>
+    
+    <!-- SEO Meta Tags & Search Engine Optimization Core -->
+    <title>Verya Stock - Ultimate Mega Enterprise Cloud OS v10000 (10,000+ Integrated Sub-Systems)</title>
+    <meta name="description" content="Verya Ultimate Mega Enterprise Cloud OS v10000 featuring 10,000+ microservices, AI neural models, quantum smart contracts, and cloud frameworks. Founded by Hein Yazar Soe.">
+    <meta name="keywords" content="Verya OS, Hein Yazar Soe, Cloud OS, Enterprise Software, Myanmar Tech, Sagaing, Pale, West Minma, 10000 Modules">
+    <meta name="author" content="Hein Yazar Soe">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media SEO -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Verya Ultimate Mega Cloud OS v10000">
+    <meta property="og:description" content="Enterprise Cloud OS with 10,000+ modules and subsystems. Founder: Hein Yazar Soe.">
+    <meta property="og:image" content="https://example.com/verya-og.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: {} } }
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
     <style>
-        .gold-text { color: #fbbf24; }
-        .gold-btn { background: linear-gradient(135deg, #fbbf24, #d97706); }
-        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #fbbf24; font-size: 10px; padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+        .gold-gradient { background: linear-gradient(135deg, #fbbf24, #d97706); }
+        .blue-gradient { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .emerald-gradient { background: linear-gradient(135deg, #10b981, #047857); }
+        .purple-gradient { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .rose-gradient { background: linear-gradient(135deg, #f43f5e, #be123c); }
+        .glass-panel { background: rgba(3, 7, 18, 0.99); backdrop-filter: blur(50px); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .terminal-glow { text-shadow: 0 0 15px rgba(16, 185, 129, 0.7); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300">
+<body class="bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-black min-h-screen flex flex-col justify-between">
 
-    <!-- Header / Navbar -->
-    <header class="bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-6">
-                <a href="#" onclick="switchTab('home')" class="text-2xl font-black flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-amber-500"></i> Verya Stock
-                </a>
-                <nav class="hidden md:flex space-x-5 text-sm font-medium text-slate-300">
-                    <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">Home</a>
-                    <a href="#" onclick="switchTab('purchased')" class="hover:text-amber-400 transition">One-Time Downloads</a>
-                    <a href="#" onclick="switchTab('contributor')" class="hover:text-amber-400 transition">Contributor Portal</a>
-                    <a href="#" id="navAdminLink" onclick="switchTab('admin')" class="hover:text-amber-400 transition text-amber-400 font-bold hidden flex items-center gap-1">
-                        Admin Panel <span id="adminBadgeCount" class="bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">0</span>
-                    </a>
-                </nav>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
+
+    <!-- Announcement & System Status Bar -->
+    <div class="bg-amber-500 text-slate-950 text-xs font-black py-2.5 px-4 text-center tracking-wider flex justify-center items-center gap-3 shadow-2xl">
+        <i class="fa-solid fa-network-wired animate-pulse"></i> 
+        <span>VERYA ULTIMATE MEGA-OS v10000 | 10,000+ Integrated Sub-Systems | Founder: Hein Yazar Soe | Master Admin: veryacomputerclass@gmail.com</span>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="glass-panel border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+                <h1 class="font-black text-xl text-amber-400 cursor-pointer flex items-center gap-2" onclick="showSection('home')">
+                    <i class="fa-solid fa-cube"></i> VERYA <span class="text-white">OS v10000</span>
+                </h1>
+                <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full font-black border border-amber-500/20">10,000 MODULES PRIME</span>
             </div>
-            
-            <div class="flex items-center space-x-3">
-                <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold text-amber-400 flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-coins"></i>
-                    <span id="userCoinBalance">0</span>
-                </div>
-                <button onclick="openAuthModal()" id="authNavBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3.5 py-1.5 rounded-lg text-sm font-medium border border-slate-700 transition">
-                    <i class="fa-solid fa-user mr-1"></i> Login / Register
+            <nav class="flex gap-1 items-center font-bold text-xs flex-wrap">
+                <button onclick="showSection('home')" class="hover:text-amber-400 transition px-3 py-2">Marketplace</button>
+                <button onclick="showSection('subsystems')" class="hover:text-amber-400 transition px-3 py-2 flex items-center gap-1 text-emerald-400"><i class="fa-solid fa-cubes"></i> 10K Modules</button>
+                <button onclick="showSection('vault')" class="hover:text-amber-400 transition px-3 py-2">Secure Vault</button>
+                <button onclick="showSection('vendors')" class="hover:text-amber-400 transition px-3 py-2">Vendors</button>
+                <button onclick="showSection('terminal')" class="hover:text-amber-400 transition px-3 py-2 flex items-center gap-1"><i class="fa-solid fa-terminal text-emerald-400"></i> CLI</button>
+                <button onclick="showSection('ledger')" class="hover:text-amber-400 transition px-3 py-2">Ledger</button>
+                <button onclick="showSection('analytics')" class="hover:text-amber-400 transition px-3 py-2">Metrics</button>
+                <button onclick="showSection('support')" class="hover:text-amber-400 transition px-3 py-2">Contact & Support</button>
+                <button onclick="showSection('admin')" id="adminNav" class="hidden text-red-400 hover:text-red-300 transition px-3 py-2 flex items-center gap-1 font-black">
+                    <i class="fa-solid fa-shield-halved"></i> Admin Core
                 </button>
-            </div>
+                <button onclick="toggleModal('topupModal')" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 px-3 py-2 rounded-xl font-black shadow transition ml-2">
+                    <i class="fa-solid fa-wallet mr-1"></i> Top-up
+                </button>
+                <button onclick="toggleModal('cartModal')" class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl shadow relative">
+                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
+                    <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-[10px] px-1.5 py-0.5 font-black">0</span>
+                </button>
+                <div onclick="toggleModal('profileModal')" class="bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-full flex items-center gap-2 shadow cursor-pointer">
+                    <i class="fa-solid fa-coins text-amber-400"></i> <span id="userBalance" class="font-black">0</span>
+                </div>
+                <button id="authBtn" onclick="toggleAuth()" class="gold-gradient text-slate-950 px-4 py-2 rounded-xl shadow-lg font-black">Login</button>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 w-full flex-grow">
 
-        <!-- HOME TAB -->
-        <section id="tab-home" class="space-y-8">
-            <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
-                <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Stunning Stock Images & Digital Assets</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock - One-Time Download Marketplace System</p>
-                
-                <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
-                    <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
-                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search assets, photos, UI templates..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
-                    <button onclick="filterProducts()" class="gold-btn text-slate-950 font-bold px-6 py-3 rounded-xl transition">Search</button>
+        <!-- SECTION 1: MARKETPLACE -->
+        <section id="section-home" class="space-y-6">
+            <div class="glass-panel border border-slate-800 p-8 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl">
+                <div class="space-y-2">
+                    <h2 class="text-3xl font-black text-amber-400">Enterprise Cloud Marketplace v10000</h2>
+                    <p class="text-xs text-slate-400">Full ecosystem covering 10,000+ microservices, AI neural models, quantum smart contracts, and cloud frameworks. Founded by <strong>Hein Yazar Soe</strong>.</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto flex-wrap">
+                    <select id="categoryFilter" onchange="handleSearch()" class="bg-slate-950 border border-slate-800 px-4 py-3 rounded-2xl text-xs font-bold text-white">
+                        <option value="all">All Categories</option>
+                        <option value="Source Code">Source Code</option>
+                        <option value="Cloud Script">Cloud Script</option>
+                        <option value="AI Model">AI Model</option>
+                        <option value="Database">Database Dump</option>
+                        <option value="Kubernetes">Kubernetes Stack</option>
+                        <option value="Fintech Core">Fintech Core</option>
+                        <option value="Quantum Core">Quantum Core</option>
+                    </select>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search 10,000+ cloud modules..." class="bg-slate-950 border border-slate-800 px-4 py-3 rounded-2xl text-xs w-full md:w-64 font-bold text-white">
                 </div>
             </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" id="productGrid"></div>
+        </section>
 
-            <div>
-                <h2 class="text-xl font-bold mb-6 text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-fire"></i> Available Marketplace Assets
-                </h2>
-                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        <!-- SECTION 2: 10,000+ SUBSYSTEMS DIRECTORY -->
+        <section id="section-subsystems" class="hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4 flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-emerald-400"><i class="fa-solid fa-network-wired mr-2"></i> 10,000+ Enterprise Sub-Systems Registry</h2>
+                    <p class="text-xs text-slate-400">Categorized matrix of all active modules integrated into Verya OS v10000 (Fully scaled to 10,000 distinct operational nodes).</p>
+                </div>
+                <input type="text" id="subSearch" oninput="filterSubsystems()" placeholder="Search 10K subsystem index..." class="bg-slate-950 border border-slate-800 p-3 rounded-2xl text-xs w-64 text-white font-bold">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4" id="subsystemGrid"></div>
+        </section>
+
+        <!-- SECTION 3: SECURE VAULT -->
+        <section id="section-vault" class="hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-black text-amber-400"><i class="fa-solid fa-vault mr-2"></i> Cryptographic Secure Vault</h2>
+                <p class="text-xs text-slate-400">Encrypted download links, license keys, and deployment bundles for purchased cloud assets.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="vaultGrid"></div>
+        </section>
+
+        <!-- SECTION 4: VENDORS -->
+        <section id="section-vendors" class="hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-black text-amber-400"><i class="fa-solid fa-store mr-2"></i> Verified Enterprise Vendors</h2>
+                <p class="text-xs text-slate-400">Authorized corporate contributors and global infrastructure providers.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6" id="vendorGrid"></div>
+        </section>
+
+        <!-- SECTION 5: CLI TERMINAL SIMULATION -->
+        <section id="section-terminal" class="hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-black text-emerald-400"><i class="fa-solid fa-terminal mr-2"></i> Live Enterprise Cloud CLI Terminal v10000</h2>
+                <p class="text-xs text-slate-400">Execute live shell commands (status, deploy, audit, modules, logs, clear) on the Verya Core grid.</p>
+            </div>
+            <div class="glass-panel border border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xl">
+                <div id="terminalOutput" class="bg-slate-950 p-4 rounded-2xl h-64 overflow-y-auto font-mono text-xs text-emerald-400 space-y-1 terminal-glow">
+                    <div>Verya Cloud OS v10000 Terminal Initialized. Type 'help' for command manual.</div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="terminalInput" onkeydown="handleTerminalKey(event)" placeholder="Enter command (e.g., status, modules, help)..." class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl font-mono text-xs w-full text-white">
+                    <button onclick="executeTerminalCommand()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black px-6 rounded-2xl text-xs shadow">Execute</button>
+                </div>
             </div>
         </section>
 
-        <!-- ONE-TIME PURCHASED DOWNLOADS TAB -->
-        <section id="tab-purchased" class="hidden space-y-6">
-            <h2 class="text-2xl font-bold border-b border-slate-800 pb-4">One-Time Download Tokens (Single Download Only)</h2>
-            <div id="purchasedGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-        </section>
-
-        <!-- CONTRIBUTOR PORTAL TAB -->
-        <section id="tab-contributor" class="hidden space-y-8 max-w-4xl mx-auto">
-            <div id="contributorGuestView" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl">
-                <h2 class="text-2xl font-bold gold-text">Contributor Portal Access</h2>
-                <p class="text-slate-400 text-sm">Please log in to upload products.</p>
-                <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register</button>
+        <!-- SECTION 6: FINANCIAL LEDGER -->
+        <section id="section-ledger" class="hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-black text-amber-400"><i class="fa-solid fa-file-invoice-dollar mr-2"></i> User Financial & Transaction Ledger</h2>
+                <p class="text-xs text-slate-400">Complete immutable historical record of all wallet top-ups, microservice purchases, and admin grants.</p>
             </div>
-            <div id="contributorDashboard" class="hidden space-y-8">
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center shadow-lg">
-                    <div>
-                        <h3 class="text-lg font-bold text-amber-400" id="conWelcomeName">Welcome</h3>
-                        <p class="text-xs text-slate-400">Status: Approved</p>
-                    </div>
-                    <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center">
-                        <span class="text-[10px] text-slate-400 block">Balance</span>
-                        <strong id="conStatEarnings" class="text-amber-400 text-base">0 Coins</strong>
-                    </div>
-                </div>
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 overflow-x-auto">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead>
+                        <tr class="text-slate-400 bg-slate-950 border-b border-slate-800 font-black text-xs">
+                            <th class="p-3.5">Timestamp</th>
+                            <th class="p-3.5">Transaction Type</th>
+                            <th class="p-3.5">Gateway / Reference</th>
+                            <th class="p-3.5">Coins Amount</th>
+                            <th class="p-3.5">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerTableBody" class="divide-y divide-slate-800 text-xs"></tbody>
+                </table>
             </div>
         </section>
 
-        <!-- ADMIN DASHBOARD TAB -->
-        <section id="tab-admin" class="hidden space-y-8 max-w-6xl mx-auto">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Control Panel (Direct Coin Control)</h2>
+        <!-- SECTION 7: ANALYTICS -->
+        <section id="section-analytics" class="hidden space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-black text-amber-400"><i class="fa-solid fa-chart-line mr-2"></i> Comprehensive Infrastructure Metrics</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                <div class="glass-panel border border-slate-800 p-6 rounded-3xl space-y-2">
+                    <span class="text-xs text-slate-400 font-bold">Registered Users</span>
+                    <h3 id="analyticsUsers" class="text-3xl font-black text-amber-400">0</h3>
                 </div>
+                <div class="glass-panel border border-slate-800 p-6 rounded-3xl space-y-2">
+                    <span class="text-xs text-slate-400 font-bold">Active Sub-Systems</span>
+                    <h3 class="text-3xl font-black text-emerald-400">10,248</h3>
+                </div>
+                <div class="glass-panel border border-slate-800 p-6 rounded-3xl space-y-2">
+                    <span class="text-xs text-slate-400 font-bold">Secure Vault Downloads</span>
+                    <h3 id="analyticsDownloads" class="text-3xl font-black text-blue-400">0</h3>
+                </div>
+                <div class="glass-panel border border-slate-800 p-6 rounded-3xl space-y-2">
+                    <span class="text-xs text-slate-400 font-bold">Platform Volume</span>
+                    <h3 id="analyticsRevenue" class="text-3xl font-black text-purple-400">0</h3>
+                </div>
+            </div>
+        </section>
 
-                <!-- Manage Users & Add/Remove Coins Directly -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Manage Users & Direct Coin Top-Up/Withdraw</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Name</th>
-                                    <th class="p-3">Email</th>
-                                    <th class="p-3">Role</th>
-                                    <th class="p-3">Current Coins</th>
-                                    <th class="p-3">Action (Admin Coin Adjust)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminAllUsersTable" class="divide-y divide-slate-800"></tbody>
-                        </table>
+        <!-- SECTION 8: CONTACT US & SUPPORT DESK -->
+        <section id="section-support" class="hidden max-w-5xl mx-auto space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Contact Details Card -->
+                <div class="glass-panel border border-slate-800 p-8 rounded-3xl space-y-6 shadow-2xl">
+                    <h3 class="text-lg font-black text-amber-400"><i class="fa-solid fa-address-book mr-2"></i> Official Contact Information</h3>
+                    <div class="space-y-4 text-xs">
+                        <div class="flex items-start gap-3 bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                            <i class="fa-solid fa-user-tie text-amber-400 text-sm mt-0.5"></i>
+                            <div>
+                                <span class="text-slate-400 block font-bold">Founder & Lead Architect</span>
+                                <strong class="text-white text-sm">Hein Yazar Soe</strong>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                            <i class="fa-solid fa-location-dot text-emerald-400 text-sm mt-0.5"></i>
+                            <div>
+                                <span class="text-slate-400 block font-bold">Corporate Headquarters Location</span>
+                                <strong class="text-white text-sm">West Minma, Pale, Sagaing, Myanmar</strong>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                            <i class="fa-solid fa-phone text-blue-400 text-sm mt-0.5"></i>
+                            <div>
+                                <span class="text-slate-400 block font-bold">Direct Phone Hotlines</span>
+                                <strong class="text-white text-sm block">(+95) 941117896</strong>
+                                <strong class="text-white text-sm block">(+95) 429515474</strong>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                            <i class="fa-brands fa-viber text-purple-400 text-sm mt-0.5"></i>
+                            <div>
+                                <span class="text-slate-400 block font-bold">Viber Messaging</span>
+                                <strong class="text-white text-sm">941117896</strong>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                            <i class="fa-solid fa-envelope text-amber-400 text-sm mt-0.5"></i>
+                            <div>
+                                <span class="text-slate-400 block font-bold">Official Email Address</span>
+                                <strong class="text-white text-sm">veryacomputerclass@gmail.com</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Ticket Desk Form -->
+                <div class="glass-panel border border-slate-800 p-8 rounded-3xl space-y-6 shadow-2xl">
+                    <h3 class="text-lg font-black text-amber-400"><i class="fa-solid fa-headset mr-2"></i> Enterprise Support Ticket Desk</h3>
+                    <form onsubmit="handleSupportSubmit(event)" class="space-y-4 text-xs">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="suppName" required placeholder="Your Name" class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl font-bold">
+                            <input type="email" id="suppEmail" required placeholder="Your Email" class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl font-bold">
+                        </div>
+                        <select id="suppCategory" class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl w-full font-bold">
+                            <option value="Top-up Verification">Top-up Payment Slip Verification</option>
+                            <option value="API Integration">API Integration Issue</option>
+                            <option value="Security Audit">Security Vulnerability Report</option>
+                        </select>
+                        <textarea id="suppMessage" rows="4" required placeholder="Describe issue details..." class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-2xl font-bold"></textarea>
+                        <button type="submit" class="w-full gold-gradient text-slate-950 font-black py-3.5 rounded-2xl shadow-xl">Transmit Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 9: ADMIN CORE -->
+        <section id="section-admin" class="hidden space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 flex-wrap gap-4">
+                <div>
+                    <h2 class="text-3xl font-black text-red-500"><i class="fa-solid fa-shield-dog mr-2"></i> Master Admin Control Core v10000</h2>
+                    <span class="text-xs text-slate-400 font-bold">Founder & Admin: Hein Yazar Soe (veryacomputerclass@gmail.com)</span>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="adminAddNewProductPrompt()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-2xl text-xs font-black shadow">+ Add Asset</button>
+                    <button onclick="exportSystemJSON()" class="bg-slate-900 border border-slate-700 text-amber-400 px-4 py-2.5 rounded-2xl text-xs font-black shadow">Export Database</button>
+                    <button onclick="resetSystemCore()" class="bg-red-950 border border-red-800 text-red-300 px-4 py-2.5 rounded-2xl text-xs font-black shadow">Factory Reset</button>
+                </div>
+            </div>
+
+            <!-- Top-up Slip Approvals -->
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-4">
+                <h3 class="font-black text-sm text-emerald-400"><i class="fa-solid fa-money-bill-transfer mr-2"></i> Pending Wallet Top-up Approvals</h3>
+                <div id="adminTopupContainer" class="space-y-3"></div>
+            </div>
+
+            <!-- User Management Table -->
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 overflow-x-auto space-y-4">
+                <h3 class="font-black text-sm text-red-400"><i class="fa-solid fa-users-gear mr-2"></i> User Directory & Access Control Matrix</h3>
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead>
+                        <tr class="text-slate-400 bg-slate-950 border-b border-slate-800 font-black text-xs">
+                            <th class="p-3.5">Name</th>
+                            <th class="p-3.5">Email</th>
+                            <th class="p-3.5">Role</th>
+                            <th class="p-3.5">Status</th>
+                            <th class="p-3.5">Coins</th>
+                            <th class="p-3.5">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUserTableBody" class="divide-y divide-slate-800 text-xs"></tbody>
+                </table>
+            </div>
+
+            <!-- Audit Logs -->
+            <div class="glass-panel p-6 rounded-3xl border border-slate-800 space-y-3">
+                <h3 class="font-black text-sm text-amber-400"><i class="fa-solid fa-clipboard-list mr-2"></i> Security Audit Trail Logs</h3>
+                <div id="adminAuditLogs" class="bg-slate-950 p-4 rounded-2xl text-xs font-mono text-slate-300 max-h-48 overflow-y-auto space-y-1"></div>
             </div>
         </section>
 
     </main>
 
-    <!-- AUTHENTICATION MODAL -->
-    <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-xl font-bold text-amber-400">Login / Register</h3>
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Email</label>
-                    <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="veryacomputerclass@gmail.com">
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-slate-800 py-6 px-4 text-center text-xs text-slate-500 mt-12 space-y-1">
+        <p>Verya Ultimate Mega Enterprise Cloud OS v10000 &copy; 2026. All rights reserved.</p>
+        <p class="text-slate-400 font-bold">Founder: Hein Yazar Soe | Location: West Minma, Pale, Sagaing, Myanmar | Phone: (+95) 941117896, (+95) 429515474 | Viber: 941117896</p>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-slate-800 p-6 rounded-3xl w-full max-w-md space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-black text-amber-400 text-base"><i class="fa-solid fa-user-gear mr-2"></i> User Profile & Settings</h3>
+                <button onclick="toggleModal('profileModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                    <span class="text-slate-400 block">Name</span>
+                    <span id="modalProfileName" class="font-bold text-white text-sm"></span>
                 </div>
-                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Login Now</button>
+                <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                    <span class="text-slate-400 block">Email Address</span>
+                    <span id="modalProfileEmail" class="font-bold text-white text-sm truncate block"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                        <span class="text-slate-400 block">Role</span>
+                        <span id="modalProfileRole" class="font-extrabold text-amber-400 text-sm">User</span>
+                    </div>
+                    <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800">
+                        <span class="text-slate-400 block">Status</span>
+                        <span id="modalProfileStatus" class="font-extrabold text-emerald-400 text-sm">Active</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="toggleModal('profileModal')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-2xl text-xs transition">Close</button>
+        </div>
+    </div>
+
+    <!-- Top-up Modal -->
+    <div id="topupModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-slate-800 p-6 rounded-3xl w-full max-w-md space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-black text-amber-400 text-base"><i class="fa-solid fa-wallet mr-2"></i> Secure Wallet Top-up Gateway</h3>
+                <button onclick="toggleModal('topupModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="handleTopupSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="text-slate-400 font-bold">Payment Gateway Provider</label>
+                    <select id="topupGateway" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl mt-1 font-bold text-white">
+                        <option value="KBZPay (09-41117896)">KBZPay - 09-41117896 (Hein Yazar Soe)</option>
+                        <option value="WavePay (09-41117896)">WavePay - 09-41117896 (Hein Yazar Soe)</option>
+                        <option value="USDT TRC20 Crypto">USDT Crypto Vault (Automatic)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-slate-400 font-bold">Coins Amount</label>
+                    <input type="number" id="topupCoins" value="1000" min="100" required class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl mt-1 font-bold text-amber-400">
+                </div>
+                <div>
+                    <label class="text-slate-400 font-bold">Transaction Slip Reference ID</label>
+                    <input type="text" id="topupRef" placeholder="Enter reference slip number" required class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl mt-1 font-bold text-white uppercase">
+                </div>
+                <button type="submit" class="w-full gold-gradient text-slate-950 font-black py-3 rounded-xl shadow-lg mt-2">Submit Payment Slip</button>
             </form>
         </div>
     </div>
 
+    <!-- Cart Drawer Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex justify-end">
+        <div class="glass-panel border-l border-slate-800 w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 class="font-black text-amber-400 text-base"><i class="fa-solid fa-cart-shopping mr-2"></i> Enterprise Cart Checkout</h3>
+                    <button onclick="toggleModal('cartModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div id="cartItemsContainer" class="space-y-3 overflow-y-auto max-h-[50vh]"></div>
+                <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                    <label class="text-xs text-slate-400 font-bold">Enterprise Promo Coupon</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="couponInput" placeholder="VERYA10000" class="bg-slate-950 border border-slate-700 px-3 py-2 rounded-xl text-xs w-full font-bold uppercase">
+                        <button onclick="applyCoupon()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 px-4 py-2 rounded-xl font-black text-xs">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-4 space-y-4">
+                <div class="flex justify-between font-black text-base">
+                    <span>Net Total:</span>
+                    <span id="cartTotalPrice" class="text-amber-400">0 Coins</span>
+                </div>
+                <button onclick="checkoutCart()" class="w-full gold-gradient text-slate-950 font-black py-3 rounded-2xl text-xs shadow-lg">Authorize Secure Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core JavaScript Execution Engine -->
     <script>
-        let currentUser = JSON.parse(localStorage.getItem('verya_currentUser')) || null;
-        let products = JSON.parse(localStorage.getItem('verya_products')) || [
-            { id: 1, title: 'Abstract Golden Wave', category: 'Vectors', price: 25, image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500', downloadLink: '#', status: 'approved', contributor: 'Admin' }
+        let users = JSON.parse(localStorage.getItem('verya_users_v10000')) || [
+            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', role: 'Master Admin', status: 'Active', coins: 999999, password: 'admin' }
+        ];
+        let products = JSON.parse(localStorage.getItem('verya_products_v10000')) || [
+            { id: 1, title: 'Enterprise Cloud Server Core v10000', category: 'Source Code', price: 250, link: 'https://example.com/dl-1', vendor: 'Hein Yazar Soe' },
+            { id: 2, title: 'AI Neural Network Matrix Script', category: 'AI Model', price: 400, link: 'https://example.com/dl-2', vendor: 'Neural AI' },
+            { id: 3, title: 'Distributed Microservices Docker Stack', category: 'Cloud Script', price: 300, link: 'https://example.com/dl-3', vendor: 'CloudScale' },
+            { id: 4, title: 'High-Throughput PostgreSQL DB Dump', category: 'Database', price: 150, link: 'https://example.com/dl-4', vendor: 'DataWorks' },
+            { id: 5, title: 'Kubernetes Multi-Cluster Orchestrator', category: 'Kubernetes', price: 500, link: 'https://example.com/dl-5', vendor: 'K8s Prime' },
+            { id: 6, title: 'Decentralized Fintech Ledger Engine', category: 'Fintech Core', price: 450, link: 'https://example.com/dl-6', vendor: 'Fintech Prime' },
+            { id: 7, title: 'Quantum Cryptographic Vault Module', category: 'Quantum Core', price: 650, link: 'https://example.com/dl-7', vendor: 'QuantumLab' }
         ];
         
-        let allUsers = JSON.parse(localStorage.getItem('verya_allUsers')) || [
-            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', role: 'Admin', coins: 99999, status: 'Approved' }
+        // Generate 10,000+ Subsystems Mock Index (Fully expanded to 10k nodes)
+        let subsystems = [];
+        for(let i = 1; i <= 10000; i++) {
+            subsystems.push({
+                id: i,
+                name: `Sub-Module #${i}: ${i > 5000 ? 'Quantum Hyper-Node' : 'Enterprise Core Node'}`,
+                status: i % 17 === 0 ? 'Standby' : 'Operational',
+                cluster: 'Cluster-Node-' + ((i % 128) + 1)
+            });
+        }
+
+        let vendors = JSON.parse(localStorage.getItem('verya_vendors_v10000')) || [
+            { name: 'Hein Yazar Soe (Verya Core)', assets: 35, rating: 5.0, badge: 'Founder & Lead' },
+            { name: 'Neural AI Solutions', assets: 22, rating: 4.8, badge: 'Elite Partner' },
+            { name: 'CloudScale Microservices', assets: 26, rating: 4.7, badge: 'Trusted Vendor' },
+            { name: 'K8s Prime Orchestrators', assets: 19, rating: 4.9, badge: 'Enterprise Gold' },
+            { name: 'QuantumLab Security', assets: 14, rating: 5.0, badge: 'Advanced R&D' }
         ];
-        let oneTimeTokens = JSON.parse(localStorage.getItem('verya_oneTimeTokens')) || [];
+        let vault = JSON.parse(localStorage.getItem('verya_vault_v10000')) || [];
+        let topupRequests = JSON.parse(localStorage.getItem('verya_topups_v10000')) || [];
+        let ledger = JSON.parse(localStorage.getItem('verya_ledger_v10000')) || [];
+        let auditLogs = JSON.parse(localStorage.getItem('verya_logs_v10000')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('verya_currentUser_v10000')) || null;
+        let cart = JSON.parse(localStorage.getItem('verya_cart_v10000')) || [];
+        let discountApplied = 0;
 
-        function saveToLocalStorage() {
-            localStorage.setItem('verya_products', JSON.stringify(products));
-            localStorage.setItem('verya_allUsers', JSON.stringify(allUsers));
-            localStorage.setItem('verya_oneTimeTokens', JSON.stringify(oneTimeTokens));
-            localStorage.setItem('verya_currentUser', JSON.stringify(currentUser));
+        function saveState() {
+            localStorage.setItem('verya_users_v10000', JSON.stringify(users));
+            localStorage.setItem('verya_products_v10000', JSON.stringify(products));
+            localStorage.setItem('verya_vendors_v10000', JSON.stringify(vendors));
+            localStorage.setItem('verya_vault_v10000', JSON.stringify(vault));
+            localStorage.setItem('verya_topups_v10000', JSON.stringify(topupRequests));
+            localStorage.setItem('verya_ledger_v10000', JSON.stringify(ledger));
+            localStorage.setItem('verya_logs_v10000', JSON.stringify(auditLogs));
+            localStorage.setItem('verya_currentUser_v10000', JSON.stringify(currentUser));
+            localStorage.setItem('verya_cart_v10000', JSON.stringify(cart));
         }
 
-        function switchTab(tabId) {
-            if(tabId === 'admin' && (!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com')) {
-                alert('Access Denied!'); return;
+        function showToast(msg, type='success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `p-3 rounded-2xl text-xs font-black text-white shadow-2xl ${type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`;
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if(id === 'profileModal' && !currentUser) { showToast('Authentication required!', 'error'); toggleAuth(); return; }
+            modal.classList.toggle('hidden');
+            if(id === 'profileModal' && !modal.classList.contains('hidden')) {
+                document.getElementById('modalProfileName').innerText = currentUser.name;
+                document.getElementById('modalProfileEmail').innerText = currentUser.email;
+                document.getElementById('modalProfileRole').innerText = currentUser.role;
+                document.getElementById('modalProfileStatus').innerText = currentUser.status || 'Active';
             }
-            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            if(tabId === 'home') renderProducts();
-            if(tabId === 'purchased') renderPurchasedDownloads();
-            if(tabId === 'admin') updateAdminDashboard();
+            if(id === 'cartModal') renderCart();
         }
 
-        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
-        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            if(email === 'veryacomputerclass@gmail.com') {
-                currentUser = { name: 'Hein Yazar Soe', email: email, role: 'Admin', coins: 99999, status: 'Approved' };
-            } else {
-                let found = allUsers.find(u => u.email === email);
-                if(!found) {
-                    found = { name: email.split('@')[0], email: email, role: 'User', coins: 100, status: 'Approved' };
-                    allUsers.push(found);
-                }
-                currentUser = found;
-            }
-            saveToLocalStorage(); updateUserUI(); closeAuthModal(); alert('Logged in successfully!');
-        }
-
-        function updateUserUI() {
+        function initSystem() {
+            renderProducts(products);
+            renderSubsystems(subsystems.slice(0, 60)); // Render initial batch for DOM performance
+            renderVendors();
+            updateCartBadge();
             if(currentUser) {
-                document.getElementById('userCoinBalance').innerText = currentUser.coins;
-                document.getElementById('authNavBtn').innerText = currentUser.name;
-                if(currentUser.email === 'veryacomputerclass@gmail.com') {
-                    document.getElementById('navAdminLink').classList.remove('hidden');
+                let fresh = users.find(u => u.email === currentUser.email);
+                if(fresh && fresh.status === 'Suspended') { alert('Account suspended.'); toggleAuth(); return; }
+                document.getElementById('userBalance').innerText = currentUser.coins;
+                document.getElementById('authBtn').innerText = 'Logout';
+                if(currentUser.email === 'veryacomputerclass@gmail.com' || currentUser.role === 'Master Admin') {
+                    document.getElementById('adminNav').classList.remove('hidden');
                 }
             }
         }
 
-        function renderProducts() {
+        function showSection(id) {
+            if(id === 'admin' && (!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com')) {
+                showToast('Access Denied: Master Admin Only!', 'error');
+                return;
+            }
+            document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('section-' + id).classList.remove('hidden');
+            if(id === 'admin') renderAdminCore();
+            if(id === 'vault') renderVault();
+            if(id === 'ledger') renderLedger();
+            if(id === 'analytics') renderAnalytics();
+        }
+
+        function renderProducts(list) {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = products.map(p => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg p-4 space-y-3">
-                    <img src="${p.image}" class="w-full h-32 object-cover rounded-lg">
-                    <h3 class="font-bold text-sm text-white">${p.title}</h3>
-                    <div class="flex justify-between items-center">
-                        <span class="text-amber-400 font-bold text-sm">${p.price} Coins</span>
-                        <button onclick="buyProduct(${p.id})" class="gold-btn text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs">Buy</button>
+            grid.innerHTML = list.map(p => `
+                <div class="glass-panel border border-slate-800 p-5 rounded-3xl flex flex-col justify-between shadow-xl">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full font-black uppercase">${p.category}</span>
+                            <span class="text-[10px] text-slate-400 font-bold">${p.vendor || 'Hein Yazar Soe'}</span>
+                        </div>
+                        <div class="h-28 bg-slate-950 rounded-2xl my-3 flex items-center justify-center text-slate-700 font-black text-xs border border-slate-900">MODULE v10000</div>
+                        <h3 class="font-black text-sm text-white">${p.title}</h3>
+                        <p class="text-amber-400 font-black text-base mt-2">${p.price} Coins</p>
                     </div>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button onclick="buyDirect(${p.id})" class="gold-gradient text-slate-950 font-black py-2.5 rounded-xl text-xs shadow">Buy Now</button>
+                        <button onclick="addToCart(${p.id})" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-black py-2.5 rounded-xl text-xs transition">+ Cart</button>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-slate-500 col-span-full text-center py-10 font-bold">No cloud assets found.</p>';
+        }
+
+        function renderSubsystems(list) {
+            const grid = document.getElementById('subsystemGrid');
+            if(!grid) return;
+            grid.innerHTML = list.map(sub => `
+                <div class="glass-panel border border-slate-800 p-4 rounded-2xl space-y-2 shadow">
+                    <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full font-black">${sub.status}</span>
+                    <h4 class="font-bold text-xs text-white truncate">${sub.name}</h4>
+                    <span class="text-[10px] text-slate-400 block font-mono">${sub.cluster}</span>
                 </div>
             `).join('');
         }
 
-        function buyProduct(id) {
-            if(!currentUser) { alert('Please login first!'); openAuthModal(); return; }
-            let p = products.find(item => item.id === id);
-            if(currentUser.coins < p.price) { alert('Insufficient coins!'); return; }
-            
-            currentUser.coins -= p.price;
-            oneTimeTokens.push({ user: currentUser.email, title: p.title, link: p.downloadLink });
-            saveToLocalStorage(); updateUserUI();
-            alert('Purchased! One-time download token generated.');
+        function filterSubsystems() {
+            let q = document.getElementById('subSearch').value.toLowerCase();
+            let filtered = subsystems.filter(s => s.name.toLowerCase().includes(q) || s.cluster.toLowerCase().includes(q));
+            renderSubsystems(filtered.slice(0, 60));
         }
 
-        function renderPurchasedDownloads() {
-            if(!currentUser) return;
-            let userTokens = oneTimeTokens.filter(t => t.user === currentUser.email);
-            document.getElementById('purchasedGrid').innerHTML = userTokens.map((t, index) => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-                    <h3 class="font-bold text-sm text-white">${t.title}</h3>
-                    <button onclick="consumeDownloadToken(${index})" class="w-full gold-btn text-slate-950 font-bold py-2 rounded-xl text-xs">Download File (One-Time)</button>
+        function renderVendors() {
+            const grid = document.getElementById('vendorGrid');
+            if(!grid) return;
+            grid.innerHTML = vendors.map(v => `
+                <div class="glass-panel border border-slate-800 p-6 rounded-3xl space-y-3 shadow-xl">
+                    <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full font-black">${v.badge}</span>
+                    <h3 class="font-black text-base text-white">${v.name}</h3>
+                    <div class="text-xs text-slate-400">Assets Published: <strong class="text-white">${v.assets}</strong></div>
+                    <div class="text-xs text-slate-400">Vendor Rating: <strong class="text-amber-400"><i class="fa-solid fa-star"></i> ${v.rating} / 5.0</strong></div>
                 </div>
-            `).join('') || '<p class="text-slate-500 col-span-full text-center">No active download tokens.</p>';
+            `).join('');
         }
 
-        function consumeDownloadToken(index) {
-            let userTokens = oneTimeTokens.filter(t => t.user === currentUser.email);
-            let tokenToConsume = userTokens[index];
-            window.open(tokenToConsume.link, '_blank');
-            
-            let globalIndex = oneTimeTokens.findIndex(t => t === tokenToConsume);
-            if(globalIndex !== -1) {
-                oneTimeTokens.splice(globalIndex, 1);
-                saveToLocalStorage();
-                renderPurchasedDownloads();
-                alert('File downloaded! Token expired.');
-            }
+        function handleSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const cat = document.getElementById('categoryFilter').value;
+            let filtered = products.filter(p => p.title.toLowerCase().includes(q));
+            if(cat !== 'all') filtered = filtered.filter(p => p.category === cat);
+            renderProducts(filtered);
         }
 
-        // --- ADMIN DIRECT COIN CONTROL SYSTEM ---
-        function updateAdminDashboard() {
-            let html = '';
-            allUsers.forEach((u, i) => {
-                html += `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3">${u.name}</td>
-                        <td class="p-3">${u.email}</td>
-                        <td class="p-3 text-amber-400 font-bold">${u.role || 'User'}</td>
-                        <td class="p-3 font-extrabold text-emerald-400">${u.coins} Coins</td>
-                        <td class="p-3 flex items-center gap-2">
-                            <input type="number" id="coinInput_${i}" value="50" class="w-20 bg-slate-950 border border-slate-700 p-1 rounded text-xs text-white">
-                            <button onclick="adminAdjustCoins(${i}, 'add')" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold">+ Add</button>
-                            <button onclick="adminAdjustCoins(${i}, 'sub')" class="bg-red-600 text-white px-2.5 py-1 rounded text-xs font-bold">- Deduct</button>
-                        </td>
-                    </tr>
-                `;
+        function addToCart(id) {
+            if(!currentUser) { showToast('Authentication required!', 'error'); toggleAuth(); return; }
+            let p = products.find(x => x.id === id);
+            if(cart.some(item => item.id === id)) { showToast('Asset already added to cart', 'error'); return; }
+            cart.push(p);
+            saveState();
+            updateCartBadge();
+            showToast('Asset added to cart successfully');
+        }
+
+        function updateCartBadge() { document.getElementById('cartCountBadge').innerText = cart.length; }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                total += item.price;
+                return `<div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex justify-between items-center text-xs">
+                    <div><strong class="text-white">${item.title}</strong><div class="text-amber-400 font-bold">${item.price} Coins</div></div>
+                    <button onclick="cart = cart.filter(x => x.id !== ${item.id}); saveState(); renderCart(); updateCartBadge();" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
+            }).join('') || '<p class="text-slate-500 text-xs text-center py-6 font-bold">Shopping cart is empty</p>';
+            document.getElementById('cartTotalPrice').innerText = Math.max(0, total - discountApplied) + ' Coins';
+        }
+
+        function applyCoupon() {
+            let code = document.getElementById('couponInput').value.trim().toUpperCase();
+            if(code === 'VERYA10000' || code === 'VERYA2026') { discountApplied = 250; showToast('Enterprise promo coupon applied (-250 coins)!'); renderCart(); }
+            else { showToast('Invalid promo coupon code', 'error'); }
+        }
+
+        function checkoutCart() {
+            if(cart.length === 0) return;
+            let total = cart.reduce((s, i) => s + i.price, 0);
+            let finalCost = Math.max(0, total - discountApplied);
+            if(currentUser.coins < finalCost) { showToast('Insufficient wallet coins balance!', 'error'); return; }
+
+            currentUser.coins -= finalCost;
+            users.find(u => u.email === currentUser.email).coins = currentUser.coins;
+            cart.forEach(item => {
+                vault.push({ id: Date.now() + Math.random(), user: currentUser.email, title: item.title, link: item.link });
+                ledger.unshift({ time: new Date().toLocaleTimeString(), user: currentUser.email, type: 'Purchase', ref: item.title, coins: '-' + item.price, status: 'Completed' });
             });
-            document.getElementById('adminAllUsersTable').innerHTML = html;
+            auditLogs.unshift({ time: new Date().toLocaleTimeString(), action: `${currentUser.email} executed enterprise cart checkout` });
+            cart = []; discountApplied = 0;
+            saveState(); initSystem(); toggleModal('cartModal');
+            showToast('Checkout authorized! Assets securely stored in Vault.');
         }
 
-        function adminAdjustCoins(index, action) {
-            let amount = Number(document.getElementById(`coinInput_${index}`).value);
-            if(action === 'add') {
-                allUsers[index].coins += amount;
-                alert(`Successfully added ${amount} coins to ${allUsers[index].name}!`);
+        function buyDirect(id) {
+            if(!currentUser) { showToast('Authentication required!', 'error'); toggleAuth(); return; }
+            let p = products.find(x => x.id === id);
+            if(currentUser.coins < p.price) { showToast('Insufficient wallet coins balance!', 'error'); return; }
+            currentUser.coins -= p.price;
+            users.find(u => u.email === currentUser.email).coins = currentUser.coins;
+            vault.push({ id: Date.now(), user: currentUser.email, title: p.title, link: p.link });
+            ledger.unshift({ time: new Date().toLocaleTimeString(), user: currentUser.email, type: 'Direct Purchase', ref: p.title, coins: '-' + p.price, status: 'Completed' });
+            auditLogs.unshift({ time: new Date().toLocaleTimeString(), action: `${currentUser.email} directly purchased ${p.title}` });
+            saveState(); initSystem();
+            showToast('Direct acquisition successful! Sent to Vault.');
+        }
+
+        function renderVault() {
+            const grid = document.getElementById('vaultGrid');
+            let myVault = vault.filter(v => v.user === currentUser.email);
+            grid.innerHTML = myVault.map(v => `
+                <div class="glass-panel border border-amber-500/30 p-5 rounded-3xl space-y-4 shadow-xl">
+                    <h3 class="font-black text-sm text-white">${v.title}</h3>
+                    <button onclick="window.open('${v.link}', '_blank'); showToast('Initiating secure asset download...');" class="w-full gold-gradient text-slate-950 font-black py-3 rounded-2xl text-xs shadow-lg">Download Secure Bundle</button>
+                </div>
+            `).join('') || '<p class="text-slate-500 col-span-full text-center py-10 font-bold">Secure vault is empty.</p>';
+        }
+
+        function renderLedger() {
+            const tbody = document.getElementById('ledgerTableBody');
+            tbody.innerHTML = ledger.map(l => `
+                <tr class="hover:bg-slate-950">
+                    <td class="p-3.5 font-mono text-slate-400">${l.time}</td>
+                    <td class="p-3.5 font-bold text-amber-400">${l.type}</td>
+                    <td class="p-3.5 text-slate-200">${l.ref}</td>
+                    <td class="p-3.5 font-black text-emerald-400">${l.coins}</td>
+                    <td class="p-3.5 font-bold text-emerald-500">${l.status}</td>
+                </tr>
+            `).join('') || '<p class="text-slate-500 text-xs text-center py-6 font-bold">No ledger records found.</p>';
+        }
+
+        function renderAnalytics() {
+            document.getElementById('analyticsUsers').innerText = users.length;
+            document.getElementById('analyticsDownloads').innerText = vault.length;
+            let rev = vault.length * 350;
+            document.getElementById('analyticsRevenue').innerText = rev + ' Coins';
+        }
+
+        function handleTopupSubmit(e) {
+            e.preventDefault();
+            if(!currentUser) { showToast('Authentication required!', 'error'); toggleAuth(); return; }
+            let gateway = document.getElementById('topupGateway').value;
+            let coins = Number(document.getElementById('topupCoins').value);
+            let ref = document.getElementById('topupRef').value;
+            topupRequests.unshift({ id: Date.now(), user: currentUser.email, gateway, coins, ref });
+            auditLogs.unshift({ time: new Date().toLocaleTimeString(), action: `${currentUser.email} requested top-up (${coins} coins)` });
+            saveState();
+            toggleModal('topupModal');
+            showToast('Top-up payment slip transmitted to Admin Core!');
+        }
+
+        function handleSupportSubmit(e) {
+            e.preventDefault();
+            showToast('Support ticket successfully transmitted to helpdesk (veryacomputerclass@gmail.com)!');
+            e.target.reset();
+        }
+
+        // --- CLI Terminal Simulation Engine ---
+        function handleTerminalKey(e) {
+            if(e.key === 'Enter') executeTerminalCommand();
+        }
+
+        function executeTerminalCommand() {
+            let input = document.getElementById('terminalInput');
+            let cmd = input.value.trim().toLowerCase();
+            if(!cmd) return;
+            let output = document.getElementById('terminalOutput');
+            output.innerHTML += `<div>root@verya-os:~# ${input.value}</div>`;
+
+            if(cmd === 'help') {
+                output.innerHTML += `<div>Available Commands: status, modules, deploy, list-nodes, clear, whoami, version, contact</div>`;
+            } else if(cmd === 'status') {
+                output.innerHTML += `<div class="text-emerald-400">Cluster Status: Healthy (10,248 Subsystems Online, CPU Load: 6.2%, RAM: 512GB/4096GB)</div>`;
+            } else if(cmd === 'modules') {
+                output.innerHTML += `<div class="text-amber-400">Total active subsystems registered: 10,000 core microservices, quantum pipelines, and ledgers. Founder: Hein Yazar Soe.</div>`;
+            } else if(cmd === 'contact') {
+                output.innerHTML += `<div class="text-blue-400">Location: West Minma, Pale, Sagaing, Myanmar | Phone: (+95) 941117896, (+95) 429515474 | Viber: 941117896</div>`;
+            } else if(cmd === 'whoami') {
+                output.innerHTML += `<div>Logged in as: ${currentUser ? currentUser.email : 'Guest (Unauthenticated)'}</div>`;
+            } else if(cmd === 'version') {
+                output.innerHTML += `<div>Verya Cloud OS Ultimate v10000-PROD</div>`;
+            } else if(cmd === 'clear') {
+                output.innerHTML = `<div>Verya Cloud OS v10000 Terminal Initialized. Type 'help' for command manual.</div>`;
+                input.value = '';
+                return;
             } else {
-                allUsers[index].coins = Math.max(0, allUsers[index].coins - amount);
-                alert(`Successfully deducted ${amount} coins from ${allUsers[index].name}!`);
+                output.innerHTML += `<div class="text-red-400">Command not recognized: ${cmd}. Type 'help' for valid commands.</div>`;
             }
-            
-            // If admin modified their own account, update current session
-            if(currentUser && currentUser.email === allUsers[index].email) {
-                currentUser.coins = allUsers[index].coins;
-                updateUserUI();
-            }
-            
-            saveToLocalStorage();
-            updateAdminDashboard();
+            input.value = '';
+            output.scrollTop = output.scrollHeight;
         }
 
-        updateUserUI(); renderProducts();
+        // --- Master Admin Core Logic ---
+        function renderAdminCore() {
+            const container = document.getElementById('adminTopupContainer');
+            container.innerHTML = topupRequests.map((req, idx) => `
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex justify-between items-center text-xs">
+                    <div>
+                        <strong class="text-white">${req.user}</strong> requested <span class="text-amber-400 font-bold">${req.coins} Coins</span> via ${req.gateway}
+                        <div class="text-slate-400">Slip Reference: <span class="text-white font-mono font-bold">${req.ref}</span></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="approveTopup(${idx})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl font-black">Approve</button>
+                        <button onclick="rejectTopup(${idx})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-xl font-black">Reject</button>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-slate-500 text-xs">No pending top-up requests.</p>';
+
+            const userTable = document.getElementById('adminUserTableBody');
+            userTable.innerHTML = users.map(u => `
+                <tr class="hover:bg-slate-950">
+                    <td class="p-3.5 font-bold">${u.name}</td>
+                    <td class="p-3.5 text-slate-400">${u.email}</td>
+                    <td class="p-3.5 text-amber-400 font-black">${u.role}</td>
+                    <td class="p-3.5 font-black text-emerald-400">${u.status || 'Active'}</td>
+                    <td class="p-3.5 font-black text-emerald-400">${u.coins}</td>
+                    <td class="p-3.5">
+                        <button onclick="adminAdjustCoins('${u.email}', 2000)" class="bg-emerald-600 text-white px-2.5 py-1.5 rounded-xl font-black">+2000 Coins</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('adminAuditLogs').innerHTML = auditLogs.map(l => `<div>[${l.time}] - ${l.action}</div>`).join('') || '<div class="text-slate-500">No security audit logs.</div>';
+        }
+
+        function approveTopup(idx) {
+            let req = topupRequests[idx];
+            let targetUser = users.find(u => u.email === req.user);
+            if(targetUser) {
+                targetUser.coins += req.coins;
+                if(currentUser && currentUser.email === targetUser.email) currentUser.coins = targetUser.coins;
+                ledger.unshift({ time: new Date().toLocaleTimeString(), user: req.user, type: 'Top-up Approved', ref: req.gateway + ' (' + req.ref + ')', coins: '+' + req.coins, status: 'Success' });
+            }
+            auditLogs.unshift({ time: new Date().toLocaleTimeString(), action: `Admin approved top-up for ${req.user} (+${req.coins})` });
+            topupRequests.splice(idx, 1);
+            saveState(); renderAdminCore(); initSystem();
+            showToast('Top-up request approved successfully!');
+        }
+
+        function rejectTopup(idx) {
+            topupRequests.splice(idx, 1);
+            saveState(); renderAdminCore();
+            showToast('Top-up request rejected', 'error');
+        }
+
+        function adminAdjustCoins(email, amount) {
+            let u = users.find(x => x.email === email);
+            if(u) {
+                u.coins += amount;
+                if(currentUser && currentUser.email === email) { currentUser.coins = u.coins; document.getElementById('userBalance').innerText = currentUser.coins; }
+                ledger.unshift({ time: new Date().toLocaleTimeString(), user: email, type: 'Admin Adjustment', ref: 'Manual Balance Grant', coins: '+' + amount, status: 'Success' });
+                saveState(); renderAdminCore();
+                showToast('Wallet balance adjusted successfully');
+            }
+        }
+
+        function adminAddNewProductPrompt() {
+            let title = prompt('Enter enterprise cloud asset title:');
+            if(!title) return;
+            let price = Number(prompt('Enter price in coins:', '350')) || 150;
+            products.push({ id: Date.now(), title, category: 'Quantum Core', price, link: 'https://example.com/dl-new', vendor: 'Hein Yazar Soe' });
+            saveState(); renderProducts(products);
+            showToast('New cloud asset deployed successfully!');
+        }
+
+        function exportSystemJSON() {
+            const data = JSON.stringify({ users, products, vendors, vault, topupRequests, ledger, auditLogs }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'verya_mega_enterprise_os_v10000_backup.json'; a.click();
+        }
+
+        function resetSystemCore() {
+            if(confirm('Factory reset system database core?')) { localStorage.clear(); location.reload(); }
+        }
+
+        function toggleAuth() {
+            if(currentUser) { localStorage.removeItem('verya_currentUser_v10000'); location.reload(); }
+            else {
+                let email = prompt('Enter user email (Master Admin: veryacomputerclass@gmail.com):');
+                if(!email) return;
+                email = email.trim().toLowerCase();
+                let found = users.find(u => u.email === email);
+                if(!found) {
+                    let pass = prompt('Create enterprise password:') || '123456';
+                    found = { name: email.split('@')[0], email, role: 'User', status: 'Active', coins: 2000, password: pass };
+                    users.push(found);
+                } else {
+                    let pass = prompt('Enter password:');
+                    if(pass !== found.password && found.email !== 'veryacomputerclass@gmail.com') { alert('Incorrect password'); return; }
+                }
+                currentUser = found;
+                auditLogs.unshift({ time: new Date().toLocaleTimeString(), action: `${currentUser.email} logged into the system` });
+                saveState(); showToast('Welcome back, ' + currentUser.name);
+                location.reload();
+            }
+        }
+
+        initSystem();
     </script>
 </body>
 </html>
