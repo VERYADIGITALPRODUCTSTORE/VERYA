@@ -583,6 +583,15 @@
                 } else {
                     btn.className = "category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition";
                 }
+                <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
+                            <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <!-- အောက်ပါ စာကြောင်းသစ် ထည့်ပါ -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Confirm Password</label>
+                            <input type="password" id="regConfirmPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                        </div>
             });
             filterProducts();
         }
@@ -607,7 +616,26 @@
                                         `<a href="${p.downloadLink || p.image}" target="_blank" download class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold inline-block"><i class="fa-solid fa-download"></i> Download</a>` :
                                         `<button onclick="addToCart(${p.id})" class="bg-slate-800 text-amber-400 p-2 rounded-lg text-xs border border-slate-700"><i class="fa-solid fa-cart-plus"></i></button>
                                          <button onclick="openPreview(${p.id})" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold">Buy</button>`
-                                    }
+                                    }<form onsubmit="handleProfileUpdate(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Full Name</label>
+                    <input type="text" id="profileName" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number</label>
+                    <input type="text" id="profilePhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <!-- Password အသစ်ပြောင်းရန် စာကြောင်းသစ်များ ထည့်ပါ -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Current Password (စစ်ဆေးရန်)</label>
+                    <input type="password" id="profileCurrentPassword" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">New Password (ပြောင်းရန်)</label>
+                    <input type="password" id="profileNewPassword" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Save Changes</button>
+            </form>
                                 </div>
                             </div>
                         </div>
@@ -653,6 +681,15 @@
         }
         function closePreviewModal() { document.getElementById('previewModal').classList.add('hidden'); }
 
+        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
+                            <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <!-- အောက်ပါ စာကြောင်းသစ် ထည့်ပါ -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Confirm Password</label>
+                            <input type="password" id="regConfirmPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                        </div>
         function addToCart(id) {
             if(!currentUser) { alert('Please login first.'); openAuthModal(); return; }
             const p = products.find(x => x.id === id);
@@ -795,7 +832,24 @@
                         <td class="p-3 text-xs text-slate-400">${s.buyer}</td>
                         <td class="p-3 text-slate-300">${s.price} Coins</td>
                         <td class="p-3 text-amber-400 font-bold">+${s.commission} Coins</td>
-                    </tr>
+                    </tr>function handleProfileUpdate(e) {
+            e.preventDefault();
+            const currentPwInput = document.getElementById('profileCurrentPassword').value;
+            const newPwInput = document.getElementById('profileNewPassword').value;
+
+            // Password ပြောင်းလိုမှ စစ်ဆေးခြင်း
+            if(newPwInput.trim() !== "") {
+                if(currentPwInput !== currentUser.password) {
+                    alert('လက်ရှိသုံးနေသော Current Password မှားယွင်းနေပါသည်။');
+                    return;
+                }
+                currentUser.password = newPwInput;
+            }
+
+            currentUser.name = document.getElementById('profileName').value.trim();
+            currentUser.phone = document.getElementById('profilePhone').value.trim();
+            updateUserSession();
+            // ... ကျန်သည့် code များ
                 `).join('');
             }
         }
