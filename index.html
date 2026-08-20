@@ -166,14 +166,14 @@
 
                 <!-- Coin Withdrawal Section -->
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (Payout Request)</h2>
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (KBZPay / WavePay Payout Request)</h2>
                     <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
-                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Payout via KBZPay / WavePay)</p>
+                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Admin will send money to your registered phone number via KBZPay / WavePay)</p>
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-1">Withdrawal Amount (Coins)</label>
                             <input type="number" id="withdrawCoins" min="50" value="50" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                         </div>
-                        <button onclick="requestWithdrawal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Request Payout</button>
+                        <button onclick="requestWithdrawal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Request Payout from Admin</button>
                     </div>
                 </div>
             </div>
@@ -215,6 +215,27 @@
                     </div>
                 </div>
 
+                <!-- 0. Manage All Registered Users -->
+                <div class="border-b border-slate-800 pb-6">
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-address-book mr-1"></i> Manage All Registered Users & Accounts</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3">Email</th>
+                                    <th class="p-3">Phone</th>
+                                    <th class="p-3">Role</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAllUsersTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No registered users.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- 1. Contributor Approvals -->
                 <div class="border-b border-slate-800 pb-6">
                     <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications</h3>
@@ -238,13 +259,13 @@
 
                 <!-- 2. Pending Product Approvals -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals (Admin Control)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
                                     <th class="p-3">Image</th>
-                                    <th class="p-3">Title & Details</th>
+                                    <th class="p-3">Title & Contributor</th>
                                     <th class="p-3">Price</th>
                                     <th class="p-3">Action</th>
                                 </tr>
@@ -258,13 +279,13 @@
 
                 <!-- 3. Pending TopUp Approvals -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay/WavePay 5-Digit Codes)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay/WavePay Codes)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
                                     <th class="p-3">User</th>
-                                    <th class="p-3">Payment Info</th>
+                                    <th class="p-3">Payment Phone</th>
                                     <th class="p-3">Coins</th>
                                     <th class="p-3">Last 5 Digits</th>
                                     <th class="p-3">Action</th>
@@ -277,17 +298,17 @@
                     </div>
                 </div>
 
-                <!-- 4. Pending Withdrawal Requests -->
+                <!-- 4. Pending Withdrawal Requests (KBZPay/WavePay Payouts) -->
                 <div>
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests (Admin Pays via KPay/Wave)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
                                     <th class="p-3">Contributor</th>
-                                    <th class="p-3">Phone</th>
+                                    <th class="p-3">KBZPay/Wave Phone</th>
                                     <th class="p-3">Coins</th>
-                                    <th class="p-3">Action</th>
+                                    <th class="p-3">Action (Admin Transfer)</th>
                                 </tr>
                             </thead>
                             <tbody id="adminWithdrawTable" class="divide-y divide-slate-800">
@@ -340,7 +361,7 @@
                     <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number (For Payouts)</label>
                     <input type="text" id="regPhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="09xxxxxxxxx">
                 </div>
                 <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Register as Contributor</button>
@@ -385,8 +406,8 @@
             <h3 class="text-lg font-bold text-amber-400">Top Up Coins (KBZPay / WavePay)</h3>
             
             <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
-                <p><strong>Receiver Name:</strong> Hein Yazar Soe</p>
-                <p><strong>Phone Number:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
+                <p><strong>Admin Receiver Name:</strong> Hein Yazar Soe</p>
+                <p><strong>Admin Phone Number:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
             </div>
 
             <div class="space-y-3">
@@ -402,7 +423,7 @@
                     <label class="block text-xs font-bold text-slate-400 mb-1">Your Payment Phone Number</label>
                     <input type="text" id="topupPhone" placeholder="09xxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
                 </div>
-                <button onclick="submitTopUp()" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Submit Top-Up Request</button>
+                <button onclick="submitTopUp()" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Submit Top-Up Request to Admin</button>
             </div>
         </div>
     </div>
@@ -419,6 +440,12 @@
         ];
         
         let pendingProducts = JSON.parse(localStorage.getItem('verya_pendingProducts')) || [];
+        
+        let allUsers = JSON.parse(localStorage.getItem('verya_allUsers')) || [
+            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin' },
+            { name: 'Default Contributor', email: 'contributor@verya.com', phone: '09941117896', role: 'Contributor' }
+        ];
+
         let contributors = JSON.parse(localStorage.getItem('verya_contributors')) || [
             { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', status: 'Approved', earnings: 0 }
         ];
@@ -430,6 +457,7 @@
         function saveToLocalStorage() {
             localStorage.setItem('verya_products', JSON.stringify(products));
             localStorage.setItem('verya_pendingProducts', JSON.stringify(pendingProducts));
+            localStorage.setItem('verya_allUsers', JSON.stringify(allUsers));
             localStorage.setItem('verya_contributors', JSON.stringify(contributors));
             localStorage.setItem('verya_pendingContributors', JSON.stringify(pendingContributors));
             localStorage.setItem('verya_topupRequests', JSON.stringify(topupRequests));
@@ -489,7 +517,8 @@
                 document.getElementById('navAdminLink').classList.remove('hidden');
                 alert('Admin Login Successful!');
             } else {
-                currentUser = { name: 'Valued Contributor', email: email, role: 'contributor', coins: 150, phone: '09941117896' };
+                let foundUser = allUsers.find(u => u.email === email);
+                currentUser = { name: foundUser ? foundUser.name : 'Valued User', email: email, role: 'contributor', coins: 150, phone: foundUser ? foundUser.phone : '09941117896' };
                 document.getElementById('navAdminLink').classList.add('hidden');
                 alert('Successfully Logged In!');
             }
@@ -508,6 +537,10 @@
             if(email === 'veryacomputerclass@gmail.com') {
                 alert('This email is reserved for System Admin.');
                 return;
+            }
+
+            if(!allUsers.some(u => u.email === email)) {
+                allUsers.push({ name, email, phone, role: 'Contributor (Pending)' });
             }
 
             pendingContributors.push({ name, email, phone, status: 'Pending' });
@@ -653,7 +686,7 @@
             topupRequests.push({ user: currentUser.email, coins, code, phone });
             saveToLocalStorage();
             closeTopUpModal();
-            alert('Top-up request submitted for admin review!');
+            alert('Top-up request sent to Admin for verification!');
             updateAdminDashboard();
         }
 
@@ -684,7 +717,7 @@
             };
             pendingProducts.push(newProd);
             saveToLocalStorage();
-            alert('Product submitted for admin review!');
+            alert('Product submitted! Admin must review and approve it before publishing.');
             document.getElementById('contributorForm').reset();
             updateAdminDashboard();
         }
@@ -694,7 +727,7 @@
             const amt = document.getElementById('withdrawCoins').value;
             withdrawalRequests.push({ contributor: currentUser.name, phone: currentUser.phone || '09941117896', coins: amt });
             saveToLocalStorage();
-            alert('Withdrawal request sent to admin.');
+            alert('Withdrawal request sent to Admin. Admin will transfer via KBZPay / WavePay.');
             updateAdminDashboard();
         }
 
@@ -706,6 +739,24 @@
             const totalPendingCount = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
             document.getElementById('adminStatPending').innerText = totalPendingCount;
             document.getElementById('adminBadgeCount').innerText = totalPendingCount;
+
+            // 0. All Users Table
+            const allUsersTable = document.getElementById('adminAllUsersTable');
+            if (allUsers.length === 0) {
+                allUsersTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No registered users.</td></tr>`;
+            } else {
+                allUsersTable.innerHTML = allUsers.map((u, index) => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3 text-white font-medium">${u.name}</td>
+                        <td class="p-3 text-slate-300">${u.email}</td>
+                        <td class="p-3 text-slate-300">${u.phone}</td>
+                        <td class="p-3 text-amber-400 font-bold">${u.role}</td>
+                        <td class="p-3">
+                            ${u.email !== 'veryacomputerclass@gmail.com' ? `<button onclick="deleteUser(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Remove User</button>` : `<span class="text-xs text-slate-500">System Admin</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+            }
 
             // 1. Contributor Table
             const conTable = document.getElementById('adminContributorTable');
@@ -740,7 +791,7 @@
                         </td>
                         <td class="p-3 text-amber-400 font-bold">${p.price} Coins</td>
                         <td class="p-3 space-x-2">
-                            <button onclick="approveProduct(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                            <button onclick="approveProduct(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve & Publish</button>
                             <button onclick="rejectProduct(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
                         </td>
                     </tr>
@@ -759,14 +810,14 @@
                         <td class="p-3 text-amber-400 font-bold">${t.coins} Coins</td>
                         <td class="p-3 text-emerald-400 font-mono font-bold">${t.code}</td>
                         <td class="p-3 space-x-2">
-                            <button onclick="approveTopup(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                            <button onclick="approveTopup(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Verify & Add Coins</button>
                             <button onclick="rejectTopup(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
                         </td>
                     </tr>
                 `).join('');
             }
 
-            // 4. Withdrawal Table
+            // 4. Withdrawal Table (KBZPay / WavePay Payouts)
             const withdrawTable = document.getElementById('adminWithdrawTable');
             if (withdrawalRequests.length === 0) {
                 withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
@@ -774,10 +825,10 @@
                 withdrawTable.innerHTML = withdrawalRequests.map((w, index) => `
                     <tr class="border-b border-slate-800">
                         <td class="p-3 text-white font-medium">${w.contributor}</td>
-                        <td class="p-3 text-slate-300">${w.phone}</td>
+                        <td class="p-3 text-amber-400 font-bold">${w.phone}</td>
                         <td class="p-3 text-amber-400 font-bold">${w.coins} Coins</td>
                         <td class="p-3 space-x-2">
-                            <button onclick="approveWithdrawal(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                            <button onclick="approveWithdrawal(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Paid via KPay/Wave</button>
                             <button onclick="rejectWithdrawal(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
                         </td>
                     </tr>
@@ -786,10 +837,23 @@
         }
 
         // Admin Action Functions
+        function deleteUser(index) {
+            if(confirm('Are you sure you want to remove this user account?')) {
+                allUsers.splice(index, 1);
+                saveToLocalStorage();
+                alert('User account removed successfully.');
+                updateAdminDashboard();
+            }
+        }
+
         function approveContributor(index) {
             const approved = pendingContributors.splice(index, 1)[0];
             approved.status = 'Approved';
             contributors.push(approved);
+            
+            let targetUser = allUsers.find(u => u.email === approved.email);
+            if(targetUser) targetUser.role = 'Approved Contributor';
+
             saveToLocalStorage();
             alert(`Contributor ${approved.name} has been approved!`);
             updateAdminDashboard();
@@ -807,7 +871,7 @@
             prod.status = 'approved';
             products.push(prod);
             saveToLocalStorage();
-            alert(`Product "${prod.title}" approved and published to marketplace!`);
+            alert(`Product "${prod.title}" approved and published successfully!`);
             updateAdminDashboard();
             renderProducts();
         }
@@ -815,14 +879,14 @@
         function rejectProduct(index) {
             pendingProducts.splice(index, 1);
             saveToLocalStorage();
-            alert('Product upload rejected.');
+            alert('Product upload rejected by admin.');
             updateAdminDashboard();
         }
 
         function approveTopup(index) {
-            topupRequests.splice(index, 1);
+            const topup = topupRequests.splice(index, 1)[0];
             saveToLocalStorage();
-            alert('Top-up request approved successfully!');
+            alert(`Top-up request approved! (Code verified: ${topup.code})`);
             updateAdminDashboard();
         }
 
@@ -834,9 +898,9 @@
         }
 
         function approveWithdrawal(index) {
-            withdrawalRequests.splice(index, 1);
+            const req = withdrawalRequests.splice(index, 1)[0];
             saveToLocalStorage();
-            alert('Withdrawal request approved successfully!');
+            alert(`Withdrawal marked as paid! Please ensure money has been sent to ${req.phone} via KBZPay / WavePay.`);
             updateAdminDashboard();
         }
 
