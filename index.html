@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); }
+        .glass-panel { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); }
         .red-gradient { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
     </style>
 </head>
@@ -26,6 +26,7 @@
                 <button onclick="filterByCategory('Vectors')" class="hover:text-red-400 transition">Vectors</button>
                 <button onclick="filterByCategory('Videos')" class="hover:text-red-400 transition">Videos</button>
                 <button onclick="switchTab('upload')" class="hover:text-red-400 transition text-red-400"><i class="fa-solid fa-cloud-arrow-up"></i> Sell Content</button>
+                <button onclick="switchTab('contact')" class="hover:text-red-400 transition">Contact Us</button>
             </nav>
         </div>
         <div class="flex items-center space-x-4">
@@ -114,15 +115,14 @@
             <section class="glass-panel border border-slate-800 p-8 rounded-3xl max-w-xl mx-auto space-y-6 shadow-2xl">
                 <div class="space-y-2 text-center">
                     <h3 class="font-black text-xl text-white">Wallet Top-up Gateway</h3>
-                    <p class="text-xs text-slate-400">Top-up coins via KBZ Pay, Wave Money, or USDT.</p>
+                    <p class="text-xs text-slate-400">Top-up coins via KPay or WavePay.</p>
                 </div>
                 <form onsubmit="handleTopupSubmit(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Payment Method</label>
                         <select id="topupGateway" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
-                            <option value="KBZ Pay">KBZ Pay (0991234567 - Verya Official)</option>
-                            <option value="Wave Money">Wave Money (0991234567 - Verya Official)</option>
-                            <option value="USDT Crypto">USDT TRC20 Address</option>
+                            <option value="KPay">KPay: 09941117896 (Hein Yazar Soe)</option>
+                            <option value="WavePay">WavePay: 09429515474 (Hein Yazar Soe)</option>
                         </select>
                     </div>
                     <div>
@@ -138,17 +138,54 @@
             </section>
         </div>
 
+        <!-- Contact Us Tab -->
+        <div id="tab-contact" class="space-y-6 hidden">
+            <section class="glass-panel border border-slate-800 p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
+                <div class="space-y-2 text-center">
+                    <h3 class="font-black text-2xl text-white">Contact VeryaStock Support</h3>
+                    <p class="text-xs text-slate-400">Get in touch with our team for inquiries, assistance, or account support.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <strong class="text-red-400 block"><i class="fa-solid fa-user-tie"></i> Founder</strong>
+                        <span class="text-slate-300">Hein Yazar Soe</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <strong class="text-red-400 block"><i class="fa-solid fa-location-dot"></i> Location</strong>
+                        <span class="text-slate-300">West Minma, Pale, Sagaing, Myanmar</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <strong class="text-red-400 block"><i class="fa-solid fa-phone"></i> Phone Numbers</strong>
+                        <span class="text-slate-300 block">09941117896</span>
+                        <span class="text-slate-300 block">09429515474</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <strong class="text-red-400 block"><i class="fa-solid fa-envelope"></i> Email Address</strong>
+                        <span class="text-slate-300">veryacomputerclass@gmail.com</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <strong class="text-red-400 block"><i class="fa-brands fa-viber"></i> Viber Support</strong>
+                        <span class="text-slate-300">09941117896</span>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <strong class="text-red-400 block"><i class="fa-brands fa-telegram"></i> Telegram Support</strong>
+                        <span class="text-slate-300">09941117896</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
         <!-- Admin Control Panel Tab -->
         <div id="tab-admin" class="space-y-6 hidden">
             <section class="glass-panel border border-red-500/30 p-8 rounded-3xl space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                     <h3 class="font-black text-red-400 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved"></i> VeryaStock Admin Dashboard
+                        <i class="fa-solid fa-shield-halved"></i> VeryaStock Master Control Panel
                     </h3>
-                    <span class="text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded-full font-black border border-red-500/20">Master Access</span>
+                    <span class="text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded-full font-black border border-red-500/20">Admin: veryacomputerclass@gmail.com</span>
                 </div>
                 <div class="space-y-4">
-                    <h4 class="font-bold text-xs text-slate-300">Pending Top-up Slips:</h4>
+                    <h4 class="font-bold text-xs text-slate-300">Pending Top-up Slips (KPay / WavePay):</h4>
                     <div id="adminTopupContainer" class="space-y-3"></div>
                 </div>
             </section>
@@ -157,7 +194,7 @@
     </main>
 
     <!-- Asset Detail Modal -->
-    <div id="assetModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+    <div id="assetModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="glass-panel border border-slate-800 p-6 rounded-3xl w-full max-w-2xl space-y-4 shadow-2xl relative">
             <button onclick="closeAssetModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="modalContent" class="space-y-4"></div>
@@ -165,16 +202,16 @@
     </div>
 
     <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+    <div id="authModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="glass-panel border border-slate-800 p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl relative">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center space-y-2">
                 <h3 class="font-black text-xl text-white">VeryaStock Account</h3>
-                <p class="text-xs text-slate-400">Login or Register with Username</p>
+                <p class="text-xs text-slate-400">Login or Register</p>
             </div>
             <div class="space-y-4">
-                <input type="text" id="authUsername" placeholder="Username (Admin: stock_admin)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
-                <input type="password" id="authPassword" placeholder="Password (Admin: adminpassword)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
+                <input type="text" id="authUsername" placeholder="Email or Username (Admin: veryacomputerclass@gmail.com)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
+                <input type="password" id="authPassword" placeholder="Password (Admin: admin123)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
                 <div class="flex gap-3 pt-2">
                     <button onclick="handleAuthAction(false)" class="flex-1 red-gradient text-white font-black py-3 rounded-xl text-xs shadow-lg">Login</button>
                     <button onclick="handleAuthAction(true)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs">Register</button>
@@ -186,16 +223,16 @@
     <!-- JavaScript Application Core -->
     <script>
         let users = JSON.parse(localStorage.getItem('veryastock_users')) || [
-            { username: 'stock_admin', password: 'adminpassword', role: 'Admin', coins: 99999 }
+            { username: 'veryacomputerclass@gmail.com', password: 'admin123', role: 'Admin', coins: 99999 }
         ];
         let pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending')) || [];
         let currentUser = JSON.parse(localStorage.getItem('veryastock_current_user')) || null;
 
         let assets = JSON.parse(localStorage.getItem('veryastock_assets')) || [
-            { id: 1, title: 'Abstract Digital Wave Background', category: 'Vectors', price: 40, url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', author: 'stock_admin' },
-            { id: 2, title: 'Modern Minimalist Office Workspace', category: 'Photos', price: 25, url: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', author: 'stock_admin' },
-            { id: 3, title: 'Futuristic Neon Tech Circuit', category: 'Photos', price: 60, url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', author: 'stock_admin' },
-            { id: 4, title: 'Green Nature Mountain Landscape', category: 'Photos', price: 30, url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', author: 'stock_admin' }
+            { id: 1, title: 'Abstract Digital Wave Background', category: 'Vectors', price: 40, url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', author: 'veryacomputerclass@gmail.com' },
+            { id: 2, title: 'Modern Minimalist Office Workspace', category: 'Photos', price: 25, url: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', author: 'veryacomputerclass@gmail.com' },
+            { id: 3, title: 'Futuristic Neon Tech Circuit', category: 'Photos', price: 60, url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', author: 'veryacomputerclass@gmail.com' },
+            { id: 4, title: 'Green Nature Mountain Landscape', category: 'Photos', price: 30, url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', author: 'veryacomputerclass@gmail.com' }
         ];
 
         window.onload = function() {
@@ -204,14 +241,16 @@
         };
 
         function switchTab(tabName) {
-            ['explore', 'upload', 'wallet', 'admin'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
+            ['explore', 'upload', 'wallet', 'contact', 'admin'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) el.classList.add('hidden');
             });
             if (tabName === 'admin' && (!currentUser || currentUser.role !== 'Admin')) {
                 alert('Admin access required.');
                 return;
             }
-            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const target = document.getElementById(`tab-${tabName}`);
+            if(target) target.classList.remove('hidden');
             if(tabName === 'admin') renderAdminDashboard();
         }
 
@@ -233,7 +272,7 @@
                         const nav = document.querySelector('header nav');
                         const adminBtn = document.createElement('button');
                         adminBtn.id = 'adminNavBtn';
-                        adminBtn.className = 'hover:text-red-400 transition text-amber-400';
+                        adminBtn.className = 'hover:text-red-400 transition text-amber-400 font-bold';
                         adminBtn.textContent = 'Admin Panel';
                         adminBtn.onclick = () => switchTab('admin');
                         nav.appendChild(adminBtn);
@@ -254,16 +293,17 @@
             const password = document.getElementById('authPassword').value.trim();
 
             if (!username || !password) {
-                alert('Please enter username and password.');
+                alert('Please enter username/email and password.');
                 return;
             }
 
             if (isRegister) {
                 if (users.some(u => u.username === username)) {
-                    alert('Username already exists.');
+                    alert('User already exists.');
                     return;
                 }
-                users.push({ username, password, role: 'User', coins: 150 });
+                const role = (username === 'veryacomputerclass@gmail.com') ? 'Admin' : 'User';
+                users.push({ username, password, role, coins: 150 });
                 localStorage.setItem('veryastock_users', JSON.stringify(users));
                 alert('Account registered successfully! Received 150 bonus coins.');
                 toggleAuthModal();
@@ -384,7 +424,7 @@
             if (!asset) return;
 
             if (currentUser.coins < asset.price) {
-                alert('Insufficient coins! Please top-up your wallet.');
+                alert('Insufficient coins! Please top-up your wallet via KPay or WavePay.');
                 closeAssetModal();
                 switchTab('wallet');
                 return;
