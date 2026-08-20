@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Ultimate Digital Assets & Contributor Marketplace System (30+ Features)</title>
+    <title>Verya Stock - Admin Coin Control Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: {} } }
@@ -26,30 +26,19 @@
                 </a>
                 <nav class="hidden md:flex space-x-5 text-sm font-medium text-slate-300">
                     <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">Home</a>
-                    <a href="#" onclick="switchTab('downloads')" class="hover:text-amber-400 transition">My Downloads</a>
+                    <a href="#" onclick="switchTab('purchased')" class="hover:text-amber-400 transition">One-Time Downloads</a>
                     <a href="#" onclick="switchTab('contributor')" class="hover:text-amber-400 transition">Contributor Portal</a>
                     <a href="#" id="navAdminLink" onclick="switchTab('admin')" class="hover:text-amber-400 transition text-amber-400 font-bold hidden flex items-center gap-1">
                         Admin Panel <span id="adminBadgeCount" class="bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">0</span>
                     </a>
-                    <a href="#" onclick="switchTab('contact')" class="hover:text-amber-400 transition">Contact</a>
                 </nav>
             </div>
             
             <div class="flex items-center space-x-3">
-                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-lg border border-slate-700 transition">
-                    <i id="themeIcon" class="fa-solid fa-sun"></i>
-                </button>
                 <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold text-amber-400 flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-coins"></i>
                     <span id="userCoinBalance">0</span>
                 </div>
-                <button onclick="openTopUpModal()" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-95 transition hidden sm:inline-block">
-                    Top Up
-                </button>
-                <button onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 transition">
-                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
-                    <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
-                </button>
                 <button onclick="openAuthModal()" id="authNavBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3.5 py-1.5 rounded-lg text-sm font-medium border border-slate-700 transition">
                     <i class="fa-solid fa-user mr-1"></i> Login / Register
                 </button>
@@ -64,30 +53,12 @@
         <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
                 <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Stunning Stock Images & Digital Assets</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock - Advanced Contributor & Admin Marketplace System (30+ Features)</p>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock - One-Time Download Marketplace System</p>
                 
                 <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
                     <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
                     <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search assets, photos, UI templates..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
                     <button onclick="filterProducts()" class="gold-btn text-slate-950 font-bold px-6 py-3 rounded-xl transition">Search</button>
-                </div>
-            </div>
-
-            <!-- Categories & Sorting -->
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pb-2">
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="filterCategory('All')" class="category-btn bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">All Assets</button>
-                    <button onclick="filterCategory('Photos')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">Photos</button>
-                    <button onclick="filterCategory('Vectors')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">Vectors</button>
-                    <button onclick="filterCategory('UI/UX')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">UI/UX Templates</button>
-                    <button onclick="filterCategory('3D')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">3D Models</button>
-                </div>
-                <div>
-                    <select id="sortSelect" onchange="filterProducts()" class="bg-slate-900 border border-slate-800 text-slate-300 text-xs px-4 py-2 rounded-xl focus:outline-none">
-                        <option value="default">Sort by: Default</option>
-                        <option value="low-high">Price: Low to High</option>
-                        <option value="high-low">Price: High to Low</option>
-                    </select>
                 </div>
             </div>
 
@@ -99,257 +70,59 @@
             </div>
         </section>
 
-        <!-- MY DOWNLOADS TAB -->
-        <section id="tab-downloads" class="hidden space-y-6">
-            <h2 class="text-2xl font-bold border-b border-slate-800 pb-4">My Purchased Downloads (Permanent Access)</h2>
-            <div id="downloadGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        <!-- ONE-TIME PURCHASED DOWNLOADS TAB -->
+        <section id="tab-purchased" class="hidden space-y-6">
+            <h2 class="text-2xl font-bold border-b border-slate-800 pb-4">One-Time Download Tokens (Single Download Only)</h2>
+            <div id="purchasedGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
         </section>
 
         <!-- CONTRIBUTOR PORTAL TAB -->
         <section id="tab-contributor" class="hidden space-y-8 max-w-4xl mx-auto">
             <div id="contributorGuestView" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl">
                 <h2 class="text-2xl font-bold gold-text">Contributor Portal Access</h2>
-                <p class="text-slate-400 text-sm">Please log in or register an account to upload products and request cash payouts.</p>
-                <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register Account</button>
+                <p class="text-slate-400 text-sm">Please log in to upload products.</p>
+                <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register</button>
             </div>
-
             <div id="contributorDashboard" class="hidden space-y-8">
-                <!-- Announcement Banner -->
-                <div id="contributorAnnouncementBox" class="bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-xl text-sm flex items-center gap-3 hidden">
-                    <i class="fa-solid fa-bullhorn text-lg"></i>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center shadow-lg">
                     <div>
-                        <strong class="block text-amber-400">Admin Announcement:</strong>
-                        <span id="announcementTextContent">No announcements yet.</span>
+                        <h3 class="text-lg font-bold text-amber-400" id="conWelcomeName">Welcome</h3>
+                        <p class="text-xs text-slate-400">Status: Approved</p>
+                    </div>
+                    <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center">
+                        <span class="text-[10px] text-slate-400 block">Balance</span>
+                        <strong id="conStatEarnings" class="text-amber-400 text-base">0 Coins</strong>
                     </div>
                 </div>
-
-                <!-- Welcome & Analytics Card -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4 shadow-lg">
-                    <div>
-                        <h3 class="text-lg font-bold text-amber-400" id="conWelcomeName">Welcome Contributor</h3>
-                        <p class="text-xs text-slate-400">Account Status: <span id="conStatusBadge" class="text-emerald-400 font-bold">Approved</span> | Commission Share: <strong class="text-white">80%</strong></p>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 block">Total Uploads</span>
-                            <strong id="conStatUploads" class="text-amber-400 text-base">0</strong>
-                        </div>
-                        <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 block">Current Balance</span>
-                            <strong id="conStatEarnings" class="text-amber-400 text-base">0 Coins</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Upload Form -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload New Product (Pending Admin Review)</h2>
-                    <form id="contributorForm" onsubmit="handleContributorUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-6 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Title</label>
-                            <input type="text" id="conTitle" required class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white" placeholder="e.g. Modern Dashboard UI">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Category</label>
-                            <select id="conCategory" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                                <option value="Photos">Photos</option>
-                                <option value="Vectors">Vectors</option>
-                                <option value="UI/UX">UI/UX Templates</option>
-                                <option value="3D">3D Models</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Price (Coins)</label>
-                            <input type="number" id="conCoins" required min="5" value="20" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Tags</label>
-                            <input type="text" id="conTags" placeholder="design, ui, darkmode" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Preview Image URL</label>
-                            <input type="url" id="conImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Download Link (Google Drive / Mega)</label>
-                            <input type="url" id="conDownloadLink" required placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Description</label>
-                            <textarea id="conDesc" rows="3" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white" placeholder="Describe your asset..."></textarea>
-                        </div>
-                        <div class="md:col-span-2">
-                            <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-3 rounded-lg text-sm shadow-md">Submit Product for Admin Review</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Coin Withdrawal Section -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (KBZPay / WavePay Payout Request)</h2>
-                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
-                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Admin will transfer cash to your registered phone number via KBZPay / WavePay)</p>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Withdrawal Amount (Coins)</label>
-                            <input type="number" id="withdrawCoins" min="50" value="50" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <button onclick="requestWithdrawal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Request Payout from Admin</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CONTACT TAB -->
-        <section id="tab-contact" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-4 shadow-xl">
-            <h2 class="text-2xl font-bold gold-text border-b border-slate-800 pb-4"><i class="fa-solid fa-address-book mr-2"></i> Contact Us</h2>
-            <div class="space-y-3 text-sm text-slate-300">
-                <p><strong>Founder:</strong> Hein Yazar Soe</p>
-                <p><strong>Payment Number (KBZPay / WavePay):</strong> 09941117896</p>
-                <p class="flex items-center gap-2"><strong>Viber:</strong> <i class="fa-brands fa-viber text-purple-400"></i> <a href="viber://chat?number=%2B959941117896" class="text-amber-400 hover:underline">09941117896</a></p>
-                <p><strong>Email:</strong> veryacomputerclass@gmail.com</p>
-                <p><strong>Location:</strong> Min Ma, Pale, Sagaing, Myanmar</p>
             </div>
         </section>
 
         <!-- ADMIN DASHBOARD TAB -->
-        <section id="tab-admin" class="hidden space-y-8 max-w-5xl mx-auto">
+        <section id="tab-admin" class="hidden space-y-8 max-w-6xl mx-auto">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Master Control Panel (30+ Features)</h2>
-                    <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Admin: veryacomputerclass@gmail.com</span>
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Control Panel (Direct Coin Control)</h2>
                 </div>
 
-                <!-- Admin Analytics Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Total Users / Accounts</span>
-                        <strong id="adminStatContributors" class="text-amber-400 text-xl">0</strong>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Published Products</span>
-                        <strong id="adminStatProducts" class="text-amber-400 text-xl">0</strong>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Platform Revenue</span>
-                        <strong id="adminStatRevenue" class="text-amber-400 text-xl">0 Coins</strong>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Pending Reviews</span>
-                        <strong id="adminStatPending" class="text-amber-400 text-xl">0</strong>
-                    </div>
-                </div>
-
-                <!-- Broadcast Announcement Feature -->
-                <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-3">
-                    <h3 class="font-bold text-sm text-amber-400"><i class="fa-solid fa-bullhorn mr-1"></i> Send Broadcast Announcement to All Contributors</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="adminAnnouncementInput" placeholder="Type notification or system announcement here..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        <button onclick="sendAnnouncement()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm whitespace-nowrap">Broadcast</button>
-                    </div>
-                </div>
-
-                <!-- 0. Manage All Registered Users & Roles -->
+                <!-- Manage Users & Add/Remove Coins Directly -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-address-book mr-1"></i> Manage All Registered Users & Roles</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Manage Users & Direct Coin Top-Up/Withdraw</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
                                     <th class="p-3">Name</th>
                                     <th class="p-3">Email</th>
-                                    <th class="p-3">Phone</th>
                                     <th class="p-3">Role</th>
-                                    <th class="p-3">Action</th>
+                                    <th class="p-3">Current Coins</th>
+                                    <th class="p-3">Action (Admin Coin Adjust)</th>
                                 </tr>
                             </thead>
-                            <tbody id="adminAllUsersTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No registered users.</td></tr>
-                            </tbody>
+                            <tbody id="adminAllUsersTable" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- 1. Contributor Account Applications -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Name</th>
-                                    <th class="p-3">Email</th>
-                                    <th class="p-3">Phone</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminContributorTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No account requests.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 2. Pending Product Approvals -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Image</th>
-                                    <th class="p-3">Title & Contributor</th>
-                                    <th class="p-3">Price</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminProductTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 3. Pending TopUp Approvals -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay / WavePay)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">User</th>
-                                    <th class="p-3">Payment Phone</th>
-                                    <th class="p-3">Coins</th>
-                                    <th class="p-3">Last 5 Digits</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminTopupTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. Pending Withdrawal Requests -->
-                <div>
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Contributor</th>
-                                    <th class="p-3">KBZPay / Wave Phone</th>
-                                    <th class="p-3">Coins</th>
-                                    <th class="p-3">Action (Admin Transfer)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminWithdrawTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -359,663 +132,167 @@
     <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="authModalTitle" class="text-xl font-bold text-amber-400">Account Login / Register</h3>
-            
-            <div class="flex border-b border-slate-800 pb-2 space-x-2">
-                <button onclick="switchAuthMode('login')" id="tabLoginBtn" class="flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg">Login</button>
-                <button onclick="switchAuthMode('register')" id="tabRegBtn" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg">Register Account</button>
-            </div>
-
-            <!-- Login Form -->
+            <h3 class="text-xl font-bold text-amber-400">Login / Register</h3>
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Email</label>
                     <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="veryacomputerclass@gmail.com">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
-                    <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="Password">
                 </div>
                 <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Login Now</button>
             </form>
-
-            <!-- Register Form -->
-            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 hidden">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="regFullName" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="John Doe">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
-                    <input type="email" id="regEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
-                    <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number</label>
-                    <input type="text" id="regPhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="09xxxxxxxxx">
-                </div>
-                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Register & Request Approval</button>
-            </form>
         </div>
     </div>
 
-    <!-- PREVIEW MODAL -->
-    <div id="previewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 relative shadow-2xl">
-            <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="modalTitle" class="text-lg font-bold"></h3>
-            <div class="relative rounded-xl overflow-hidden bg-black flex justify-center">
-                <img id="modalImage" class="max-h-[220px] object-contain w-full">
-                <div class="watermark">Verya Stock Secure</div>
-            </div>
-            <p id="modalDesc" class="text-xs text-slate-300"></p>
-            <div class="flex justify-between items-center pt-2">
-                <span id="modalPrice" class="text-amber-400 font-extrabold text-lg"></span>
-                <div id="modalActionContainer"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CART MODAL -->
-    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
-            <button onclick="closeCartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-xl font-bold">Shopping Cart</h3>
-            <div id="cartList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
-            <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-sm">
-                <span>Total: <strong id="cartTotal" class="text-amber-400 text-lg">0 Coins</strong></span>
-                <button onclick="checkoutCart()" class="gold-btn text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Checkout</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- TOP-UP MODAL -->
-    <div id="topUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
-            <button onclick="closeTopUpModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-lg font-bold text-amber-400">Top Up Coins (KBZPay / WavePay)</h3>
-            
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
-                <p><strong>Admin Receiver Name:</strong> Hein Yazar Soe</p>
-                <p><strong>Admin Phone Number:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
-            </div>
-
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Coins Amount</label>
-                    <input type="number" id="topupCoins" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Transaction Last 5 Digits</label>
-                    <input type="text" id="topupCode" maxlength="5" placeholder="e.g. 45892" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Your Payment Phone Number</label>
-                    <input type="text" id="topupPhone" placeholder="09xxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <button onclick="submitTopUp()" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Submit Top-Up Request to Admin</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript Application Logic -->
     <script>
         let currentUser = JSON.parse(localStorage.getItem('verya_currentUser')) || null;
-        let currentCategory = 'All';
-        let cart = [];
-        
         let products = JSON.parse(localStorage.getItem('verya_products')) || [
-            { id: 1, title: 'Abstract Golden Wave', category: 'Vectors', price: 25, image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500', downloadLink: '#', desc: 'High-res vector wave background.', status: 'approved', contributor: 'Hein Yazar Soe' },
-            { id: 2, title: 'Dark SaaS Dashboard UI', category: 'UI/UX', price: 40, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500', downloadLink: '#', desc: 'Figma UI kit for modern SaaS.', status: 'approved', contributor: 'Hein Yazar Soe' }
+            { id: 1, title: 'Abstract Golden Wave', category: 'Vectors', price: 25, image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500', downloadLink: '#', status: 'approved', contributor: 'Admin' }
         ];
-        
-        let pendingProducts = JSON.parse(localStorage.getItem('verya_pendingProducts')) || [];
         
         let allUsers = JSON.parse(localStorage.getItem('verya_allUsers')) || [
-            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin', status: 'Approved', coins: 99999 }
+            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', role: 'Admin', coins: 99999, status: 'Approved' }
         ];
-
-        let topupRequests = JSON.parse(localStorage.getItem('verya_topupRequests')) || [];
-        let withdrawalRequests = JSON.parse(localStorage.getItem('verya_withdrawalRequests')) || [];
-        let userDownloads = JSON.parse(localStorage.getItem('verya_userDownloads')) || [];
-        let platformRevenue = Number(localStorage.getItem('verya_platformRevenue')) || 0;
-        let systemAnnouncement = localStorage.getItem('verya_announcement') || "Welcome to Verya Stock Marketplace!";
+        let oneTimeTokens = JSON.parse(localStorage.getItem('verya_oneTimeTokens')) || [];
 
         function saveToLocalStorage() {
             localStorage.setItem('verya_products', JSON.stringify(products));
-            localStorage.setItem('verya_pendingProducts', JSON.stringify(pendingProducts));
             localStorage.setItem('verya_allUsers', JSON.stringify(allUsers));
-            localStorage.setItem('verya_topupRequests', JSON.stringify(topupRequests));
-            localStorage.setItem('verya_withdrawalRequests', JSON.stringify(withdrawalRequests));
-            localStorage.setItem('verya_userDownloads', JSON.stringify(userDownloads));
+            localStorage.setItem('verya_oneTimeTokens', JSON.stringify(oneTimeTokens));
             localStorage.setItem('verya_currentUser', JSON.stringify(currentUser));
-            localStorage.setItem('verya_platformRevenue', platformRevenue);
-            localStorage.setItem('verya_announcement', systemAnnouncement);
         }
 
-        // --- Navigation & Access Control ---
         function switchTab(tabId) {
-            if(tabId === 'admin') {
-                if(!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com') {
-                    alert('Access Denied! Admin only area (veryacomputerclass@gmail.com).');
-                    return;
-                }
+            if(tabId === 'admin' && (!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com')) {
+                alert('Access Denied!'); return;
             }
-
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             if(tabId === 'home') renderProducts();
-            if(tabId === 'downloads') renderDownloads();
-            if(tabId === 'contributor') updateContributorDashboard();
+            if(tabId === 'purchased') renderPurchasedDownloads();
             if(tabId === 'admin') updateAdminDashboard();
         }
 
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-            const icon = document.getElementById('themeIcon');
-            icon.classList.toggle('fa-sun');
-            icon.classList.toggle('fa-moon');
-        }
-
-        // --- Authentication ---
         function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
-        
-        function switchAuthMode(mode) {
-            if(mode === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('registerForm').classList.add('hidden');
-                document.getElementById('tabLoginBtn').className = "flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg";
-                document.getElementById('tabRegBtn').className = "flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg";
-            } else {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('tabRegBtn').className = "flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg";
-                document.getElementById('tabLoginBtn').className = "flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg";
-            }
-        }
 
-        function handleLogin(event) {
-            event.preventDefault();
+        function handleLogin(e) {
+            e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
-            
             if(email === 'veryacomputerclass@gmail.com') {
-                currentUser = { name: 'Hein Yazar Soe (Admin)', email: email, role: 'Admin', coins: 99999, phone: '09941117896', status: 'Approved' };
-                document.getElementById('navAdminLink').classList.remove('hidden');
-                alert('Admin Login Successful!');
-                saveToLocalStorage();
-                updateUserUI();
-                closeAuthModal();
-                return;
-            }
-
-            let foundUser = allUsers.find(u => u.email === email);
-            if(!foundUser) {
-                alert('This email is not registered! Please register an account first.');
-                return;
-            }
-
-            if(foundUser.status !== 'Approved') {
-                alert('Your account is pending Admin approval! Please wait for approval by veryacomputerclass@gmail.com.');
-                return;
-            }
-
-            currentUser = { name: foundUser.name, email: foundUser.email, role: foundUser.role, coins: foundUser.coins || 150, phone: foundUser.phone, status: foundUser.status };
-            if(currentUser.role === 'Admin' || currentUser.email === 'veryacomputerclass@gmail.com') {
-                document.getElementById('navAdminLink').classList.remove('hidden');
+                currentUser = { name: 'Hein Yazar Soe', email: email, role: 'Admin', coins: 99999, status: 'Approved' };
             } else {
-                document.getElementById('navAdminLink').classList.add('hidden');
+                let found = allUsers.find(u => u.email === email);
+                if(!found) {
+                    found = { name: email.split('@')[0], email: email, role: 'User', coins: 100, status: 'Approved' };
+                    allUsers.push(found);
+                }
+                currentUser = found;
             }
-            alert('Successfully Logged In!');
-            
-            saveToLocalStorage();
-            updateUserUI();
-            closeAuthModal();
-        }
-
-        function handleRegister(event) {
-            event.preventDefault();
-            const name = document.getElementById('regFullName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            
-            if(email === 'veryacomputerclass@gmail.com') {
-                alert('This email is reserved for System Admin.');
-                return;
-            }
-
-            if(allUsers.some(u => u.email === email)) {
-                alert('This email is already registered in the system!');
-                return;
-            }
-
-            const newUserObj = { name, email, phone, role: 'Contributor', status: 'Pending', coins: 150 };
-            allUsers.push(newUserObj);
-            
-            saveToLocalStorage();
-            alert('Registration submitted successfully! Please wait for Admin approval to login.');
-            closeAuthModal();
-            document.getElementById('registerForm').reset();
-            updateAdminDashboard();
+            saveToLocalStorage(); updateUserUI(); closeAuthModal(); alert('Logged in successfully!');
         }
 
         function updateUserUI() {
             if(currentUser) {
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
-                document.getElementById('authNavBtn').innerHTML = `<i class="fa-solid fa-user-check mr-1"></i> ${currentUser.name}`;
-                if(currentUser.email === 'veryacomputerclass@gmail.com' || currentUser.role === 'Admin') {
+                document.getElementById('authNavBtn').innerText = currentUser.name;
+                if(currentUser.email === 'veryacomputerclass@gmail.com') {
                     document.getElementById('navAdminLink').classList.remove('hidden');
                 }
             }
         }
 
-        // --- Marketplace & Filtering ---
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.className = "category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition";
-                if(btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) {
-                    btn.className = "category-btn bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition";
-                }
-            });
-            renderProducts();
-        }
-
-        function filterProducts() { renderProducts(); }
-
         function renderProducts() {
             const grid = document.getElementById('productGrid');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const sort = document.getElementById('sortSelect').value;
-            
-            let filtered = products.filter(p => {
-                const matchesCat = currentCategory === 'All' || p.category === currentCategory;
-                const matchesSearch = p.title.toLowerCase().includes(search);
-                return matchesCat && matchesSearch && p.status === 'approved';
-            });
-
-            if(sort === 'low-high') filtered.sort((a,b) => a.price - b.price);
-            if(sort === 'high-low') filtered.sort((a,b) => b.price - a.price);
-
-            grid.innerHTML = filtered.map(p => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between group">
-                    <div>
-                        <div class="relative h-40 overflow-hidden bg-black">
-                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${p.title}">
-                            <span class="absolute top-2 left-2 bg-slate-950/80 text-amber-400 text-[10px] px-2 py-0.5 rounded-md font-bold">${p.category}</span>
-                        </div>
-                        <div class="p-4 space-y-1">
-                            <h3 class="font-bold text-sm text-white truncate">${p.title}</h3>
-                            <p class="text-xs text-slate-400">By ${p.contributor}</p>
-                        </div>
-                    </div>
-                    <div class="p-4 pt-0 flex justify-between items-center">
+            grid.innerHTML = products.map(p => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg p-4 space-y-3">
+                    <img src="${p.image}" class="w-full h-32 object-cover rounded-lg">
+                    <h3 class="font-bold text-sm text-white">${p.title}</h3>
+                    <div class="flex justify-between items-center">
                         <span class="text-amber-400 font-bold text-sm">${p.price} Coins</span>
-                        <button onclick="openPreview(${p.id})" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700">View</button>
+                        <button onclick="buyProduct(${p.id})" class="gold-btn text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs">Buy</button>
                     </div>
                 </div>
-            `).join('') || '<p class="text-slate-500 col-span-full text-center py-8">No assets found.</p>';
+            `).join('');
         }
 
-        // --- Modals & Cart ---
-        function openPreview(id) {
-            const p = products.find(item => item.id === id);
-            document.getElementById('modalTitle').innerText = p.title;
-            document.getElementById('modalImage').src = p.image;
-            document.getElementById('modalDesc').innerText = p.desc;
-            document.getElementById('modalPrice').innerText = `${p.price} Coins`;
-            document.getElementById('modalActionContainer').innerHTML = `
-                <button onclick="addToCart(${p.id}); closePreviewModal();" class="gold-btn text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Add to Cart</button>
-            `;
-            document.getElementById('previewModal').classList.remove('hidden');
-        }
-        function closePreviewModal() { document.getElementById('previewModal').classList.add('hidden'); }
-
-        function openCartModal() { document.getElementById('cartModal').classList.remove('hidden'); renderCart(); }
-        function closeCartModal() { document.getElementById('cartModal').classList.add('hidden'); }
-
-        function addToCart(id) {
-            const p = products.find(item => item.id === id);
-            if(!cart.some(item => item.id === id)) {
-                cart.push(p);
-                document.getElementById('cartCountBadge').innerText = cart.length;
-                alert('Added to cart!');
-            } else {
-                alert('Item already in cart.');
-            }
-        }
-
-        function renderCart() {
-            const list = document.getElementById('cartList');
-            let total = 0;
-            list.innerHTML = cart.map(item => {
-                total += item.price;
-                return `<div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg"><span>${item.title}</span><span class="text-amber-400">${item.price} Coins</span></div>`;
-            }).join('') || '<p class="text-slate-500 text-center">Cart is empty.</p>';
-            document.getElementById('cartTotal').innerText = `${total} Coins`;
-        }
-
-        function checkoutCart() {
-            if(!currentUser) { alert('Please login first.'); return; }
-            let total = cart.reduce((sum, item) => sum + item.price, 0);
-            if(currentUser.coins < total) { alert('Insufficient coins! Please top up.'); return; }
+        function buyProduct(id) {
+            if(!currentUser) { alert('Please login first!'); openAuthModal(); return; }
+            let p = products.find(item => item.id === id);
+            if(currentUser.coins < p.price) { alert('Insufficient coins!'); return; }
             
-            currentUser.coins -= total;
-            platformRevenue += total;
-
-            // Distribute 80% commission to contributors
-            cart.forEach(item => {
-                let conUser = allUsers.find(u => u.name === item.contributor);
-                if(conUser) {
-                    let commission = Math.floor(item.price * 0.8);
-                    conUser.coins = (conUser.coins || 150) + commission;
-                }
-            });
-
-            userDownloads.push(...cart);
-            cart = [];
-            document.getElementById('cartCountBadge').innerText = '0';
-            saveToLocalStorage();
-            updateUserUI();
-            closeCartModal();
-            alert('Checkout successful! Assets added to My Downloads and Contributor earnings updated.');
+            currentUser.coins -= p.price;
+            oneTimeTokens.push({ user: currentUser.email, title: p.title, link: p.downloadLink });
+            saveToLocalStorage(); updateUserUI();
+            alert('Purchased! One-time download token generated.');
         }
 
-        function renderDownloads() {
-            const grid = document.getElementById('downloadGrid');
-            grid.innerHTML = userDownloads.map(p => `
+        function renderPurchasedDownloads() {
+            if(!currentUser) return;
+            let userTokens = oneTimeTokens.filter(t => t.user === currentUser.email);
+            document.getElementById('purchasedGrid').innerHTML = userTokens.map((t, index) => `
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-                    <img src="${p.image}" class="w-full h-32 object-cover rounded-xl" alt="${p.title}">
-                    <h3 class="font-bold text-sm">${p.title}</h3>
-                    <a href="${p.downloadLink}" target="_blank" class="block text-center gold-btn text-slate-950 font-bold py-2 rounded-xl text-xs">Download Secure File</a>
+                    <h3 class="font-bold text-sm text-white">${t.title}</h3>
+                    <button onclick="consumeDownloadToken(${index})" class="w-full gold-btn text-slate-950 font-bold py-2 rounded-xl text-xs">Download File (One-Time)</button>
                 </div>
-            `).join('') || '<p class="text-slate-500 col-span-full text-center py-8">No downloaded assets yet.</p>';
+            `).join('') || '<p class="text-slate-500 col-span-full text-center">No active download tokens.</p>';
         }
 
-        function openTopUpModal() { document.getElementById('topUpModal').classList.remove('hidden'); }
-        function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
-        
-        function submitTopUp() {
-            if(!currentUser) { alert('Please login first.'); return; }
-            const coins = document.getElementById('topupCoins').value;
-            const code = document.getElementById('topupCode').value;
-            const phone = document.getElementById('topupPhone').value;
+        function consumeDownloadToken(index) {
+            let userTokens = oneTimeTokens.filter(t => t.user === currentUser.email);
+            let tokenToConsume = userTokens[index];
+            window.open(tokenToConsume.link, '_blank');
             
-            topupRequests.push({ user: currentUser.email, coins, code, phone });
-            saveToLocalStorage();
-            closeTopUpModal();
-            alert('Top-up request sent to Admin for verification!');
-            updateAdminDashboard();
-        }
-
-        // --- Contributor Portal ---
-        function updateContributorDashboard() {
-            if(!currentUser) {
-                document.getElementById('contributorGuestView').classList.remove('hidden');
-                document.getElementById('contributorDashboard').classList.add('hidden');
-            } else {
-                document.getElementById('contributorGuestView').classList.add('hidden');
-                document.getElementById('contributorDashboard').classList.remove('hidden');
-                document.getElementById('conWelcomeName').innerText = `Welcome, ${currentUser.name}`;
-                
-                if(systemAnnouncement) {
-                    document.getElementById('contributorAnnouncementBox').classList.remove('hidden');
-                    document.getElementById('announcementTextContent').innerText = systemAnnouncement;
-                }
-
-                const userUploadsCount = products.filter(p => p.contributor === currentUser.name).length + pendingProducts.filter(p => p.contributor === currentUser.name).length;
-                document.getElementById('conStatUploads').innerText = userUploadsCount;
-                document.getElementById('conStatEarnings').innerText = `${currentUser.coins || 150} Coins`;
-            }
-        }
-
-        function handleContributorUpload(e) {
-            e.preventDefault();
-            const newProd = {
-                id: products.length + pendingProducts.length + 1,
-                title: document.getElementById('conTitle').value,
-                category: document.getElementById('conCategory').value,
-                price: Number(document.getElementById('conCoins').value),
-                image: document.getElementById('conImage').value,
-                downloadLink: document.getElementById('conDownloadLink').value,
-                desc: document.getElementById('conDesc').value,
-                status: 'pending',
-                contributor: currentUser ? currentUser.name : 'Unknown'
-            };
-            pendingProducts.push(newProd);
-            saveToLocalStorage();
-            alert('Product submitted! Admin must review and approve it before publishing.');
-            document.getElementById('contributorForm').reset();
-            updateAdminDashboard();
-            updateContributorDashboard();
-        }
-
-        function requestWithdrawal() {
-            if(!currentUser) { alert('Please login first.'); return; }
-            const amt = document.getElementById('withdrawCoins').value;
-            withdrawalRequests.push({ contributor: currentUser.name, phone: currentUser.phone || '09941117896', coins: amt });
-            saveToLocalStorage();
-            alert('Withdrawal request sent to Admin. Admin will transfer via KBZPay / WavePay.');
-            updateAdminDashboard();
-        }
-
-        // --- Admin Dashboard & Action Logic ---
-        function updateAdminDashboard() {
-            document.getElementById('adminStatContributors').innerText = allUsers.length;
-            document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
-            document.getElementById('adminStatRevenue').innerText = `${platformRevenue} Coins`;
-            
-            const pendingAccountsCount = allUsers.filter(u => u.status === 'Pending').length;
-            const totalPendingCount = pendingProducts.length + pendingAccountsCount + topupRequests.length + withdrawalRequests.length;
-            document.getElementById('adminStatPending').innerText = totalPendingCount;
-            document.getElementById('adminBadgeCount').innerText = totalPendingCount;
-
-            // 0. All Registered Users Table
-            const allUsersTable = document.getElementById('adminAllUsersTable');
-            if (allUsers.length === 0) {
-                allUsersTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No registered users.</td></tr>`;
-            } else {
-                allUsersTable.innerHTML = allUsers.map((u, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white font-medium">${u.name}</td>
-                        <td class="p-3 text-slate-300">${u.email}</td>
-                        <td class="p-3 text-slate-300">${u.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${u.role} (${u.status})</td>
-                        <td class="p-3 space-x-2">
-                            ${u.email !== 'veryacomputerclass@gmail.com' ? `
-                                <button onclick="toggleUserRole(${index})" class="bg-amber-600 hover:bg-amber-500 text-white px-2 py-1 rounded text-xs font-bold">Toggle Role</button>
-                                <button onclick="deleteUser(${index})" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">Remove</button>
-                            ` : `<span class="text-xs text-slate-500">Super Admin</span>`}
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 1. Contributor Account Applications
-            const conTable = document.getElementById('adminContributorTable');
-            const pendingAccs = allUsers.filter(u => u.status === 'Pending');
-            
-            if (pendingAccs.length === 0) {
-                conTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>`;
-            } else {
-                conTable.innerHTML = pendingAccs.map((c) => {
-                    const originalIndex = allUsers.findIndex(u => u.email === c.email);
-                    return `
-                        <tr class="border-b border-slate-800">
-                            <td class="p-3 text-white font-medium">${c.name}</td>
-                            <td class="p-3 text-slate-300">${c.email}</td>
-                            <td class="p-3 text-slate-300">${c.phone}</td>
-                            <td class="p-3 text-amber-400 font-bold">${c.status}</td>
-                            <td class="p-3 space-x-2">
-                                <button onclick="approveContributor(${originalIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
-                                <button onclick="rejectContributor(${originalIndex})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            // 2. Pending Products Table
-            const prodTable = document.getElementById('adminProductTable');
-            if (pendingProducts.length === 0) {
-                prodTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>`;
-            } else {
-                prodTable.innerHTML = pendingProducts.map((p, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg" alt="${p.title}"></td>
-                        <td class="p-3">
-                            <strong class="text-white block">${p.title}</strong>
-                            <span class="text-xs text-slate-400">By ${p.contributor} | Category: ${p.category}</span>
-                        </td>
-                        <td class="p-3 text-amber-400 font-bold">${p.price} Coins</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveProduct(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve & Publish</button>
-                            <button onclick="rejectProduct(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 3. Topup Table
-            const topupTable = document.getElementById('adminTopupTable');
-            if (topupRequests.length === 0) {
-                topupTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>`;
-            } else {
-                topupTable.innerHTML = topupRequests.map((t, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white">${t.user}</td>
-                        <td class="p-3 text-slate-300">Phone: ${t.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${t.coins} Coins</td>
-                        <td class="p-3 text-emerald-400 font-mono font-bold">${t.code}</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveTopup(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Verify & Add Coins</button>
-                            <button onclick="rejectTopup(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 4. Withdrawal Table
-            const withdrawTable = document.getElementById('adminWithdrawTable');
-            if (withdrawalRequests.length === 0) {
-                withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
-            } else {
-                withdrawTable.innerHTML = withdrawalRequests.map((w, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white font-medium">${w.contributor}</td>
-                        <td class="p-3 text-amber-400 font-bold">${w.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${w.coins} Coins</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveWithdrawal(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Paid via KPay/Wave</button>
-                            <button onclick="rejectWithdrawal(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        // Admin Action Functions
-        function sendAnnouncement() {
-            const text = document.getElementById('adminAnnouncementInput').value.trim();
-            if(!text) { alert('Please type an announcement text.'); return; }
-            systemAnnouncement = text;
-            saveToLocalStorage();
-            alert('Announcement broadcasted successfully to all contributors!');
-            document.getElementById('adminAnnouncementInput').value = '';
-        }
-
-        function deleteUser(index) {
-            if(confirm('Are you sure you want to remove this user account?')) {
-                allUsers.splice(index, 1);
+            let globalIndex = oneTimeTokens.findIndex(t => t === tokenToConsume);
+            if(globalIndex !== -1) {
+                oneTimeTokens.splice(globalIndex, 1);
                 saveToLocalStorage();
-                alert('User account removed successfully.');
-                updateAdminDashboard();
+                renderPurchasedDownloads();
+                alert('File downloaded! Token expired.');
             }
         }
 
-        function toggleUserRole(index) {
-            allUsers[index].role = allUsers[index].role === 'Admin' ? 'Contributor' : 'Admin';
-            saveToLocalStorage();
-            alert(`User role changed to ${allUsers[index].role}.`);
-            updateAdminDashboard();
+        // --- ADMIN DIRECT COIN CONTROL SYSTEM ---
+        function updateAdminDashboard() {
+            let html = '';
+            allUsers.forEach((u, i) => {
+                html += `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3">${u.name}</td>
+                        <td class="p-3">${u.email}</td>
+                        <td class="p-3 text-amber-400 font-bold">${u.role || 'User'}</td>
+                        <td class="p-3 font-extrabold text-emerald-400">${u.coins} Coins</td>
+                        <td class="p-3 flex items-center gap-2">
+                            <input type="number" id="coinInput_${i}" value="50" class="w-20 bg-slate-950 border border-slate-700 p-1 rounded text-xs text-white">
+                            <button onclick="adminAdjustCoins(${i}, 'add')" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold">+ Add</button>
+                            <button onclick="adminAdjustCoins(${i}, 'sub')" class="bg-red-600 text-white px-2.5 py-1 rounded text-xs font-bold">- Deduct</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('adminAllUsersTable').innerHTML = html;
         }
 
-        function approveContributor(index) {
-            allUsers[index].status = 'Approved';
-            saveToLocalStorage();
-            alert(`Account ${allUsers[index].name} has been approved successfully by Admin!`);
-            updateAdminDashboard();
-        }
-
-        function rejectContributor(index) {
-            allUsers.splice(index, 1);
-            saveToLocalStorage();
-            alert('Account application rejected and removed.');
-            updateAdminDashboard();
-        }
-
-        function approveProduct(index) {
-            const prod = pendingProducts.splice(index, 1)[0];
-            prod.status = 'approved';
-            products.push(prod);
-            saveToLocalStorage();
-            alert(`Product "${prod.title}" approved and published successfully!`);
-            updateAdminDashboard();
-            renderProducts();
-        }
-
-        function rejectProduct(index) {
-            pendingProducts.splice(index, 1);
-            saveToLocalStorage();
-            alert('Product upload rejected by admin.');
-            updateAdminDashboard();
-        }
-
-        function approveTopup(index) {
-            const topup = topupRequests.splice(index, 1)[0];
-            let targetUser = allUsers.find(u => u.email === topup.user);
-            if(targetUser) {
-                targetUser.coins = (targetUser.coins || 0) + Number(topup.coins);
+        function adminAdjustCoins(index, action) {
+            let amount = Number(document.getElementById(`coinInput_${index}`).value);
+            if(action === 'add') {
+                allUsers[index].coins += amount;
+                alert(`Successfully added ${amount} coins to ${allUsers[index].name}!`);
+            } else {
+                allUsers[index].coins = Math.max(0, allUsers[index].coins - amount);
+                alert(`Successfully deducted ${amount} coins from ${allUsers[index].name}!`);
             }
-            if(currentUser && currentUser.email === topup.user) {
-                currentUser.coins = (currentUser.coins || 0) + Number(topup.coins);
+            
+            // If admin modified their own account, update current session
+            if(currentUser && currentUser.email === allUsers[index].email) {
+                currentUser.coins = allUsers[index].coins;
                 updateUserUI();
             }
+            
             saveToLocalStorage();
-            alert(`Top-up request approved and ${topup.coins} coins added to user!`);
             updateAdminDashboard();
         }
 
-        function rejectTopup(index) {
-            topupRequests.splice(index, 1);
-            saveToLocalStorage();
-            alert('Top-up request rejected.');
-            updateAdminDashboard();
-        }
-
-        function approveWithdrawal(index) {
-            const req = withdrawalRequests.splice(index, 1)[0];
-            saveToLocalStorage();
-            alert(`Withdrawal marked as paid! Please ensure money has been sent to ${req.phone} via KBZPay / WavePay.`);
-            updateAdminDashboard();
-        }
-
-        function rejectWithdrawal(index) {
-            withdrawalRequests.splice(index, 1);
-            saveToLocalStorage();
-            alert('Withdrawal request rejected.');
-            updateAdminDashboard();
-        }
-
-        // Initialize App UI
-        updateUserUI();
-        renderProducts();
-        if(currentUser && (currentUser.email === 'veryacomputerclass@gmail.com' || currentUser.role === 'Admin')) {
-            updateAdminDashboard();
-        }
+        updateUserUI(); renderProducts();
     </script>
 </body>
 </html>
