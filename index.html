@@ -3,39 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VeryaStock - Ultimate Stock Media Marketplace</title>
+    <title>VeryaStock - Premium Stock Media Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .glass-panel { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); }
-        .red-gradient { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
+        .glass-panel { background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(20px); border: 1px solid rgba(217, 119, 6, 0.2); }
+        .premium-gradient { background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #78350f 100%); }
+        .gold-text { background: linear-gradient(135deg, #fef3c7 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-[#090a0f] text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
     <!-- Navbar -->
-    <header class="glass-panel border-b border-slate-800 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+    <header class="glass-panel border-b border-amber-500/20 sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-2xl">
         <div class="flex items-center space-x-6">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="switchTab('explore')">
-                <div class="w-10 h-10 rounded-xl red-gradient flex items-center justify-center text-white font-black text-xl shadow-lg">V</div>
-                <h1 class="font-black text-lg tracking-wider text-white">VERYA<span class="text-red-500">STOCK</span></h1>
+                <div class="w-10 h-10 rounded-xl premium-gradient flex items-center justify-center text-slate-950 font-black text-xl shadow-lg border border-amber-400/40">V</div>
+                <h1 class="font-black text-lg tracking-wider text-white">VERYA<span class="gold-text">STOCK</span></h1>
             </div>
             <nav class="hidden md:flex space-x-4 text-xs font-bold text-slate-300">
-                <button onclick="filterByCategory('All')" class="hover:text-red-400 transition">All Assets</button>
-                <button onclick="filterByCategory('Photos')" class="hover:text-red-400 transition">Photos</button>
-                <button onclick="filterByCategory('Vectors')" class="hover:text-red-400 transition">Vectors</button>
-                <button onclick="filterByCategory('Videos')" class="hover:text-red-400 transition">Videos</button>
-                <button onclick="switchTab('upload')" class="hover:text-red-400 transition text-red-400"><i class="fa-solid fa-cloud-arrow-up"></i> Sell Content</button>
-                <button onclick="switchTab('contact')" class="hover:text-red-400 transition">Contact Us</button>
+                <button onclick="filterByCategory('All')" class="hover:text-amber-400 transition">All Assets</button>
+                <button onclick="filterByCategory('Photos')" class="hover:text-amber-400 transition">Photos</button>
+                <button onclick="filterByCategory('Vectors')" class="hover:text-amber-400 transition">Vectors</button>
+                <button onclick="filterByCategory('Videos')" class="hover:text-amber-400 transition">Videos</button>
+                <button onclick="switchTab('upload')" class="hover:text-amber-400 transition text-amber-400"><i class="fa-solid fa-cloud-arrow-up"></i> Upload File</button>
+                <button onclick="switchTab('contact')" class="hover:text-amber-400 transition">Contact Us</button>
             </nav>
         </div>
         <div class="flex items-center space-x-4">
-            <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl flex items-center space-x-2">
+            <div class="bg-slate-900 border border-amber-500/30 px-4 py-2 rounded-xl flex items-center space-x-2 shadow-inner">
                 <i class="fa-solid fa-coins text-amber-400"></i>
                 <span id="userBalance" class="font-black text-amber-400 text-xs">0</span>
-                <button onclick="switchTab('wallet')" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-bold hover:bg-red-500/30">Top-up</button>
+                <button onclick="switchTab('wallet')" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold hover:bg-amber-500/30 border border-amber-500/40">Top-up</button>
             </div>
-            <button onclick="toggleAuthModal()" id="authBtn" class="red-gradient text-white px-4 py-2 rounded-xl shadow-lg font-black text-xs">Login</button>
+            <button onclick="toggleAuthModal()" id="authBtn" class="premium-gradient text-slate-950 px-5 py-2 rounded-xl shadow-lg font-black text-xs border border-amber-300/40">Login</button>
         </div>
     </header>
 
@@ -44,52 +45,52 @@
         
         <!-- Explore / Search Hero Section -->
         <div id="tab-explore" class="space-y-8">
-            <section class="glass-panel border border-slate-800 p-12 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-2xl">
-                <div class="absolute inset-0 bg-gradient-to-r from-red-600/10 to-transparent pointer-events-none"></div>
-                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Millions of stock images, vectors, and videos</h2>
-                <p class="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">Discover high-quality royalty-free digital assets for your creative projects.</p>
+            <section class="glass-panel p-12 rounded-3xl text-center space-y-6 relative overflow-hidden shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-r from-amber-600/10 via-transparent to-transparent pointer-events-none"></div>
+                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Premium stock assets for <span class="gold-text">elite creators</span></h2>
+                <p class="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">Discover high-resolution royalty-free digital assets with verified preview & download links.</p>
                 
-                <div class="max-w-2xl mx-auto flex gap-2 bg-slate-900 border border-slate-800 p-2 rounded-2xl shadow-xl">
-                    <input type="text" id="searchInput" oninput="filterAssets()" placeholder="Search assets (e.g., nature, background, tech)..." class="w-full bg-transparent px-4 text-xs text-white focus:outline-none">
-                    <button class="red-gradient text-white px-6 py-3 rounded-xl font-black text-xs shadow-lg"><i class="fa-solid fa-search"></i></button>
+                <div class="max-w-2xl mx-auto flex gap-2 bg-slate-900 border border-amber-500/30 p-2 rounded-2xl shadow-2xl">
+                    <input type="text" id="searchInput" oninput="filterAssets()" placeholder="Search assets (e.g., background, tech, nature)..." class="w-full bg-transparent px-4 text-xs text-white focus:outline-none">
+                    <button class="premium-gradient text-slate-950 px-6 py-3 rounded-xl font-black text-xs shadow-lg"><i class="fa-solid fa-search"></i></button>
                 </div>
                 
                 <!-- Quick Tags -->
                 <div class="flex flex-wrap justify-center gap-2 pt-2 text-[11px]">
                     <span class="text-slate-400 font-bold self-center">Trending:</span>
-                    <button onclick="quickSearch('Background')" class="bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg hover:border-red-500">Background</button>
-                    <button onclick="quickSearch('Technology')" class="bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg hover:border-red-500">Technology</button>
-                    <button onclick="quickSearch('Nature')" class="bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg hover:border-red-500">Nature</button>
-                    <button onclick="quickSearch('Abstract')" class="bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg hover:border-red-500">Abstract</button>
+                    <button onclick="quickSearch('Background')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Background</button>
+                    <button onclick="quickSearch('Technology')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Technology</button>
+                    <button onclick="quickSearch('Nature')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Nature</button>
+                    <button onclick="quickSearch('Abstract')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Abstract</button>
                 </div>
             </section>
 
             <!-- Asset Grid -->
             <section class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-black text-white text-base">Featured Portfolio</h3>
+                    <h3 class="font-black text-white text-base">Featured Premium Portfolio</h3>
                     <span id="assetCount" class="text-xs text-slate-400 font-mono">0 items</span>
                 </div>
                 <div id="assetGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
             </section>
         </div>
 
-        <!-- Upload Studio Tab -->
+        <!-- Upload File Tab -->
         <div id="tab-upload" class="space-y-6 hidden">
-            <section class="glass-panel border border-slate-800 p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
+            <section class="glass-panel p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
                 <div class="space-y-2">
-                    <h3 class="font-black text-xl text-white">Creator Upload Studio</h3>
-                    <p class="text-xs text-slate-400">Contribute your stock media with a JPG preview image and download link.</p>
+                    <h3 class="font-black text-xl text-white">Upload File Studio</h3>
+                    <p class="text-xs text-slate-400">Contribute your stock media with a JPG preview image and download link (Requires Admin approval).</p>
                 </div>
                 <form onsubmit="handleAssetUpload(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Asset Title</label>
-                        <input type="text" id="uploadTitle" placeholder="e.g., Sunset over mountain landscape" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                        <input type="text" id="uploadTitle" placeholder="e.g., Luxury gold abstract background" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-300 mb-1">Category</label>
-                            <select id="uploadCategory" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
+                            <select id="uploadCategory" class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white font-bold">
                                 <option value="Photos">Photos</option>
                                 <option value="Vectors">Vectors</option>
                                 <option value="Videos">Videos</option>
@@ -98,99 +99,107 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-300 mb-1">Price (Coins)</label>
-                            <input type="number" id="uploadPrice" value="50" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                            <input type="number" id="uploadPrice" value="50" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Preview Image URL (.jpg / .png)</label>
-                        <input type="url" id="uploadPreviewUrl" placeholder="https://images.unsplash.com/... (For display preview)" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                        <input type="url" id="uploadPreviewUrl" placeholder="https://images.unsplash.com/... (For display preview)" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Original Download File URL (Drive / Zip link)</label>
-                        <input type="url" id="uploadDownloadUrl" placeholder="https://drive.google.com/... (File to download after purchase)" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                        <input type="url" id="uploadDownloadUrl" placeholder="https://drive.google.com/... (File to download after purchase)" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
-                    <button type="submit" class="w-full red-gradient text-white font-black py-3 rounded-xl text-xs shadow-lg">Publish Asset</button>
+                    <button type="submit" class="w-full premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Submit File for Admin Approval</button>
                 </form>
             </section>
         </div>
 
         <!-- Wallet Top-up Tab -->
         <div id="tab-wallet" class="space-y-6 hidden">
-            <section class="glass-panel border border-slate-800 p-8 rounded-3xl max-w-xl mx-auto space-y-6 shadow-2xl">
+            <section class="glass-panel p-8 rounded-3xl max-w-xl mx-auto space-y-6 shadow-2xl">
                 <div class="space-y-2 text-center">
                     <h3 class="font-black text-xl text-white">Wallet Top-up Gateway</h3>
-                    <p class="text-xs text-slate-400">Top-up coins via KPay or WavePay.</p>
+                    <p class="text-xs text-slate-400">Top-up coins via KPay or WavePay (Requires Admin approval).</p>
                 </div>
                 <form onsubmit="handleTopupSubmit(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Payment Method</label>
-                        <select id="topupGateway" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
-                            <option value="KPay">KPay: 09941117896 (Hein Yazar Soe)</option>
-                            <option value="WavePay">WavePay: 09429515474 (Hein Yazar Soe)</option>
+                        <select id="topupGateway" class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white font-bold">
+                            <option value="KPay">KPay: 09941117896 (heinyazarsoe)</option>
+                            <option value="WavePay">WavePay: 09429515474 (heinyazarsoe)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Coins Amount</label>
-                        <input type="number" id="topupCoins" placeholder="1000" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                        <input type="number" id="topupCoins" placeholder="1000" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Transaction Ref / Slip ID</label>
-                        <input type="text" id="topupRef" placeholder="TRX-123456" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                        <input type="text" id="topupRef" placeholder="TRX-123456" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
-                    <button type="submit" class="w-full red-gradient text-white font-black py-3 rounded-xl text-xs shadow-lg">Submit Slip for Admin Approval</button>
+                    <button type="submit" class="w-full premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Submit Slip for Admin Approval</button>
                 </form>
             </section>
         </div>
 
         <!-- Contact Us Tab -->
         <div id="tab-contact" class="space-y-6 hidden">
-            <section class="glass-panel border border-slate-800 p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
+            <section class="glass-panel p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
                 <div class="space-y-2 text-center">
                     <h3 class="font-black text-2xl text-white">Contact VeryaStock Support</h3>
                     <p class="text-xs text-slate-400">Get in touch with our team for inquiries, assistance, or account support.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <strong class="text-red-400 block"><i class="fa-solid fa-user-tie"></i> Founder</strong>
-                        <span class="text-slate-300">Hein Yazar Soe</span>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                        <strong class="text-amber-400 block"><i class="fa-solid fa-user-tie"></i> Founder</strong>
+                        <span class="text-slate-300">heinyazarsoe</span>
                     </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <strong class="text-red-400 block"><i class="fa-solid fa-location-dot"></i> Location</strong>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                        <strong class="text-amber-400 block"><i class="fa-solid fa-location-dot"></i> Location</strong>
                         <span class="text-slate-300">West Minma, Pale, Sagaing, Myanmar</span>
                     </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <strong class="text-red-400 block"><i class="fa-solid fa-phone"></i> Phone Numbers</strong>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                        <strong class="text-amber-400 block"><i class="fa-solid fa-phone"></i> Phone Numbers</strong>
                         <span class="text-slate-300 block">09941117896</span>
                         <span class="text-slate-300 block">09429515474</span>
                     </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <strong class="text-red-400 block"><i class="fa-solid fa-envelope"></i> Email Address</strong>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                        <strong class="text-amber-400 block"><i class="fa-solid fa-envelope"></i> Email Address</strong>
                         <span class="text-slate-300">veryacomputerclass@gmail.com</span>
                     </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <strong class="text-red-400 block"><i class="fa-brands fa-viber"></i> Viber Support</strong>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                        <strong class="text-amber-400 block"><i class="fa-brands fa-viber"></i> Viber Support</strong>
                         <span class="text-slate-300">09941117896</span>
                     </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                        <strong class="text-red-400 block"><i class="fa-brands fa-telegram"></i> Telegram Support</strong>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                        <strong class="text-amber-400 block"><i class="fa-brands fa-telegram"></i> Telegram Support</strong>
                         <span class="text-slate-300">09941117896</span>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- Admin Control Panel Tab -->
+        <!-- Admin Control Panel Tab (Master Admin Only) -->
         <div id="tab-admin" class="space-y-6 hidden">
-            <section class="glass-panel border border-red-500/30 p-8 rounded-3xl space-y-6">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h3 class="font-black text-red-400 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved"></i> VeryaStock Master Control Panel
+            <section class="glass-panel border border-amber-500/40 p-8 rounded-3xl space-y-6 shadow-2xl">
+                <div class="flex justify-between items-center border-b border-amber-500/20 pb-4">
+                    <h3 class="font-black gold-text text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Master Admin Control Panel
                     </h3>
-                    <span class="text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded-full font-black border border-red-500/20">Admin: veryacomputerclass@gmail.com</span>
+                    <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full font-black border border-amber-500/30">Admin: veryacomputerclass@gmail.com</span>
                 </div>
-                <div class="space-y-4">
-                    <h4 class="font-bold text-xs text-slate-300">Pending Top-up Slips (KPay / WavePay):</h4>
-                    <div id="adminTopupContainer" class="space-y-3"></div>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-xs text-amber-300 mb-3"><i class="fa-solid fa-wallet"></i> Pending Coin Top-up Slips (KPay / WavePay):</h4>
+                        <div id="adminTopupContainer" class="space-y-3"></div>
+                    </div>
+
+                    <div class="border-t border-amber-500/20 pt-4">
+                        <h4 class="font-bold text-xs text-amber-300 mb-3"><i class="fa-solid fa-cloud-arrow-up"></i> Pending File Uploads (Products):</h4>
+                        <div id="adminUploadContainer" class="space-y-3"></div>
+                    </div>
                 </div>
             </section>
         </div>
@@ -199,7 +208,7 @@
 
     <!-- Asset Detail Modal -->
     <div id="assetModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
-        <div class="glass-panel border border-slate-800 p-6 rounded-3xl w-full max-w-2xl space-y-4 shadow-2xl relative">
+        <div class="glass-panel p-6 rounded-3xl w-full max-w-2xl space-y-4 shadow-2xl relative border border-amber-500/30">
             <button onclick="closeAssetModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="modalContent" class="space-y-4"></div>
         </div>
@@ -207,18 +216,18 @@
 
     <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
-        <div class="glass-panel border border-slate-800 p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl relative">
+        <div class="glass-panel p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl relative border border-amber-500/30">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center space-y-2">
                 <h3 class="font-black text-xl text-white">VeryaStock Account</h3>
-                <p class="text-xs text-slate-400">Login or Register</p>
+                <p class="text-xs text-slate-400">Login or Register (Regular users cannot access Admin features)</p>
             </div>
             <div class="space-y-4">
-                <input type="text" id="authUsername" placeholder="Email or Username (Admin: veryacomputerclass@gmail.com)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
-                <input type="password" id="authPassword" placeholder="Password (Admin: admin123)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white font-bold">
+                <input type="text" id="authUsername" placeholder="Email or Username" class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white font-bold">
+                <input type="password" id="authPassword" placeholder="Password" class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white font-bold">
                 <div class="flex gap-3 pt-2">
-                    <button onclick="handleAuthAction(false)" class="flex-1 red-gradient text-white font-black py-3 rounded-xl text-xs shadow-lg">Login</button>
-                    <button onclick="handleAuthAction(true)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs">Register</button>
+                    <button onclick="handleAuthAction(false)" class="flex-1 premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Login</button>
+                    <button onclick="handleAuthAction(true)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs border border-slate-700">Register</button>
                 </div>
             </div>
         </div>
@@ -229,17 +238,22 @@
         let users = JSON.parse(localStorage.getItem('veryastock_users')) || [
             { username: 'veryacomputerclass@gmail.com', password: 'admin123', role: 'Admin', coins: 99999 }
         ];
-        let pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending')) || [];
+        let pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
+        let pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
         let currentUser = JSON.parse(localStorage.getItem('veryastock_current_user')) || null;
 
         let assets = JSON.parse(localStorage.getItem('veryastock_assets')) || [
-            { id: 1, title: 'Abstract Digital Wave Background', category: 'Vectors', price: 40, previewUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', downloadUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', author: 'veryacomputerclass@gmail.com' },
-            { id: 2, title: 'Modern Minimalist Office Workspace', category: 'Photos', price: 25, previewUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', downloadUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', author: 'veryacomputerclass@gmail.com' },
-            { id: 3, title: 'Futuristic Neon Tech Circuit', category: 'Photos', price: 60, previewUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', downloadUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', author: 'veryacomputerclass@gmail.com' },
-            { id: 4, title: 'Green Nature Mountain Landscape', category: 'Photos', price: 30, previewUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', downloadUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', author: 'veryacomputerclass@gmail.com' }
+            { id: 1, title: 'Abstract Gold Digital Wave Background', category: 'Vectors', price: 40, previewUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', downloadUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', author: 'veryacomputerclass@gmail.com' },
+            { id: 2, title: 'Luxury Minimalist Office Workspace', category: 'Photos', price: 25, previewUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', downloadUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', author: 'veryacomputerclass@gmail.com' },
+            { id: 3, title: 'Futuristic Gold Tech Circuit', category: 'Photos', price: 60, previewUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', downloadUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', author: 'veryacomputerclass@gmail.com' },
+            { id: 4, title: 'Golden Nature Mountain Landscape', category: 'Photos', price: 30, previewUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', downloadUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', author: 'veryacomputerclass@gmail.com' }
         ];
 
         window.onload = function() {
+            // Strict enforce master admin role
+            if(currentUser && currentUser.username !== 'veryacomputerclass@gmail.com') {
+                currentUser.role = 'User';
+            }
             renderAssets(assets);
             updateNavbarState();
         };
@@ -249,8 +263,8 @@
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add('hidden');
             });
-            if (tabName === 'admin' && (!currentUser || currentUser.role !== 'Admin')) {
-                alert('Admin access required.');
+            if (tabName === 'admin' && (!currentUser || currentUser.username !== 'veryacomputerclass@gmail.com')) {
+                alert('Access Denied! Master Admin authorization required.');
                 return;
             }
             const target = document.getElementById(`tab-${tabName}`);
@@ -266,9 +280,16 @@
             const authBtn = document.getElementById('authBtn');
             const userBalance = document.getElementById('userBalance');
 
+            // Force security check on current user
+            if (currentUser && currentUser.username === 'veryacomputerclass@gmail.com') {
+                currentUser.role = 'Admin';
+            } else if (currentUser) {
+                currentUser.role = 'User';
+            }
+
             if (currentUser) {
                 authBtn.textContent = `Logout (${currentUser.username})`;
-                authBtn.className = 'bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl shadow-lg font-black text-xs';
+                authBtn.className = 'bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl shadow-lg font-black text-xs border border-slate-700';
                 userBalance.textContent = currentUser.coins;
                 
                 if(currentUser.role === 'Admin') {
@@ -276,15 +297,15 @@
                         const nav = document.querySelector('header nav');
                         const adminBtn = document.createElement('button');
                         adminBtn.id = 'adminNavBtn';
-                        adminBtn.className = 'hover:text-red-400 transition text-amber-400 font-bold';
-                        adminBtn.textContent = 'Admin Panel';
+                        adminBtn.className = 'hover:text-amber-400 transition text-amber-400 font-bold';
+                        adminBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Panel';
                         adminBtn.onclick = () => switchTab('admin');
                         nav.appendChild(adminBtn);
                     }
                 }
             } else {
                 authBtn.textContent = 'Login';
-                authBtn.className = 'red-gradient text-white px-4 py-2 rounded-xl shadow-lg font-black text-xs';
+                authBtn.className = 'premium-gradient text-slate-950 px-5 py-2 rounded-xl shadow-lg font-black text-xs border border-amber-300/40';
                 userBalance.textContent = '0';
                 const adminNavBtn = document.getElementById('adminNavBtn');
                 if(adminNavBtn) adminNavBtn.remove();
@@ -297,17 +318,20 @@
             const password = document.getElementById('authPassword').value.trim();
 
             if (!username || !password) {
-                alert('Please enter username/email and password.');
+                alert('Please enter email/username and password.');
                 return;
             }
 
             if (isRegister) {
+                if (username === 'veryacomputerclass@gmail.com') {
+                    alert('This master admin email is pre-registered. Please login instead.');
+                    return;
+                }
                 if (users.some(u => u.username === username)) {
                     alert('User already exists.');
                     return;
                 }
-                const role = (username === 'veryacomputerclass@gmail.com') ? 'Admin' : 'User';
-                users.push({ username, password, role, coins: 150 });
+                users.push({ username, password, role: 'User', coins: 150 });
                 localStorage.setItem('veryastock_users', JSON.stringify(users));
                 alert('Account registered successfully! Received 150 bonus coins.');
                 toggleAuthModal();
@@ -315,6 +339,12 @@
                 const found = users.find(u => u.username === username && u.password === password);
                 if (found) {
                     currentUser = found;
+                    // Enforce strict admin check
+                    if (currentUser.username === 'veryacomputerclass@gmail.com') {
+                        currentUser.role = 'Admin';
+                    } else {
+                        currentUser.role = 'User';
+                    }
                     toggleAuthModal();
                     updateNavbarState();
                     alert(`Welcome back, ${currentUser.username}!`);
@@ -331,17 +361,17 @@
 
             list.forEach(asset => {
                 const card = document.createElement('div');
-                card.className = 'glass-panel border border-slate-800 rounded-2xl overflow-hidden group shadow-xl flex flex-col justify-between';
+                card.className = 'glass-panel rounded-2xl overflow-hidden group shadow-xl flex flex-col justify-between border border-amber-500/20';
                 card.innerHTML = `
                     <div class="relative overflow-hidden h-48 bg-slate-900 cursor-pointer" onclick="openAssetModal(${asset.id})">
                         <img src="${asset.previewUrl}" alt="${asset.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur text-[10px] text-white px-2.5 py-1 rounded-lg font-bold">${asset.category}</span>
+                        <span class="absolute top-2 left-2 bg-slate-950/90 backdrop-blur text-[10px] text-amber-300 px-2.5 py-1 rounded-lg font-bold border border-amber-500/30">${asset.category}</span>
                     </div>
                     <div class="p-4 space-y-3">
                         <h4 class="font-black text-white text-xs truncate">${asset.title}</h4>
                         <div class="flex justify-between items-center">
                             <span class="text-amber-400 font-black text-xs"><i class="fa-solid fa-coins"></i> ${asset.price} Coins</span>
-                            <button onclick="openAssetModal(${asset.id})" class="red-gradient text-white px-3 py-1.5 rounded-xl text-[10px] font-black shadow">License & Download</button>
+                            <button onclick="openAssetModal(${asset.id})" class="premium-gradient text-slate-950 px-3 py-1.5 rounded-xl text-[10px] font-black shadow border border-amber-300/40">License & Download</button>
                         </div>
                     </div>
                 `;
@@ -377,7 +407,7 @@
             document.getElementById('assetModal').classList.remove('hidden');
             document.getElementById('modalContent').innerHTML = `
                 <div class="space-y-4">
-                    <div class="h-64 rounded-2xl overflow-hidden bg-slate-900">
+                    <div class="h-64 rounded-2xl overflow-hidden bg-slate-900 border border-amber-500/20">
                         <img src="${asset.previewUrl}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex justify-between items-center">
@@ -387,7 +417,7 @@
                         </div>
                         <span class="text-amber-400 font-black text-sm"><i class="fa-solid fa-coins"></i> ${asset.price} Coins</span>
                     </div>
-                    <button onclick="downloadAsset(${asset.id})" class="w-full red-gradient text-white font-black py-3 rounded-xl text-xs shadow-lg">Confirm Download</button>
+                    <button onclick="downloadAsset(${asset.id})" class="w-full premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Confirm Download</button>
                 </div>
             `;
         }
@@ -399,7 +429,7 @@
         function handleAssetUpload(e) {
             e.preventDefault();
             if (!currentUser) {
-                alert('Please login to upload assets.');
+                alert('Please login to upload files.');
                 toggleAuthModal();
                 return;
             }
@@ -410,12 +440,12 @@
             const previewUrl = document.getElementById('uploadPreviewUrl').value.trim();
             const downloadUrl = document.getElementById('uploadDownloadUrl').value.trim();
 
-            assets.unshift({ id: Date.now(), title, category, price, previewUrl, downloadUrl, author: currentUser.username });
-            localStorage.setItem('veryastock_assets', JSON.stringify(assets));
-            alert('Asset successfully published with preview JPG & download link!');
+            pendingUploads.push({ id: Date.now(), title, category, price, previewUrl, downloadUrl, author: currentUser.username, timestamp: new Date().toLocaleString() });
+            localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
+            
+            alert('File submitted successfully! Waiting for Master Admin approval.');
             e.target.reset();
             switchTab('explore');
-            renderAssets(assets);
         }
 
         function downloadAsset(id) {
@@ -459,37 +489,64 @@
             const ref = document.getElementById('topupRef').value.trim();
 
             pendingTopups.push({ username: currentUser.username, gateway, coins, ref, timestamp: new Date().toLocaleString() });
-            localStorage.setItem('veryastock_pending', JSON.stringify(pendingTopups));
-            alert('Top-up slip submitted successfully! Waiting for Admin approval.');
+            localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
+            
+            alert('Top-up slip submitted successfully! Waiting for Master Admin approval.');
             e.target.reset();
             switchTab('explore');
         }
 
         function renderAdminDashboard() {
-            const container = document.getElementById('adminTopupContainer');
-            container.innerHTML = '';
-
+            // Render Topup Slips
+            const topupContainer = document.getElementById('adminTopupContainer');
+            topupContainer.innerHTML = '';
             if (pendingTopups.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500">No pending top-up slips.</p>`;
-                return;
+                topupContainer.innerHTML = `<p class="text-xs text-slate-500">No pending top-up slips.</p>`;
+            } else {
+                pendingTopups.forEach((topup, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-slate-900 p-4 rounded-2xl border border-amber-500/20 flex justify-between items-center text-xs flex-wrap gap-3';
+                    div.innerHTML = `
+                        <div>
+                            <strong class="text-white block">User: ${topup.username}</strong>
+                            <span class="text-slate-400">Gateway: ${topup.gateway} | Coins: <strong class="text-amber-400">+${topup.coins}</strong></span>
+                            <span class="text-slate-500 block font-mono">Ref: ${topup.ref} (${topup.timestamp})</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="approveTopup(${index})" class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl hover:bg-amber-400">Approve</button>
+                            <button onclick="rejectTopup(${index})" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl hover:bg-red-500">Reject</button>
+                        </div>
+                    `;
+                    topupContainer.appendChild(div);
+                });
             }
 
-            pendingTopups.forEach((topup, index) => {
-                const div = document.createElement('div');
-                div.className = 'bg-slate-900 p-4 rounded-2xl border border-slate-800 flex justify-between items-center text-xs flex-wrap gap-3';
-                div.innerHTML = `
-                    <div>
-                        <strong class="text-white block">User: ${topup.username}</strong>
-                        <span class="text-slate-400">Gateway: ${topup.gateway} | Coins: <strong class="text-amber-400">+${topup.coins}</strong></span>
-                        <span class="text-slate-500 block font-mono">Ref: ${topup.ref} (${topup.timestamp})</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="approveTopup(${index})" class="bg-emerald-600 text-slate-950 font-black px-3 py-1.5 rounded-xl">Approve</button>
-                        <button onclick="rejectTopup(${index})" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl">Reject</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+            // Render Upload Files
+            const uploadContainer = document.getElementById('adminUploadContainer');
+            uploadContainer.innerHTML = '';
+            if (pendingUploads.length === 0) {
+                uploadContainer.innerHTML = `<p class="text-xs text-slate-500">No pending file uploads.</p>`;
+            } else {
+                pendingUploads.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-slate-900 p-4 rounded-2xl border border-amber-500/20 flex justify-between items-center text-xs flex-wrap gap-3';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <img src="${item.previewUrl}" class="w-12 h-12 object-cover rounded-lg border border-amber-500/30">
+                            <div>
+                                <strong class="text-white block">${item.title}</strong>
+                                <span class="text-slate-400">Author: @${item.author} | Category: ${item.category} | Price: <strong class="text-amber-400">${item.price} Coins</strong></span>
+                                <span class="text-slate-500 block font-mono">Submitted: ${item.timestamp}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="approveUpload(${index})" class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl hover:bg-amber-400">Approve</button>
+                            <button onclick="rejectUpload(${index})" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl hover:bg-red-500">Reject</button>
+                        </div>
+                    `;
+                    uploadContainer.appendChild(div);
+                });
+            }
         }
 
         function approveTopup(index) {
@@ -504,16 +561,42 @@
                 alert(`Approved ${topup.coins} coins for ${topup.username}!`);
             }
             pendingTopups.splice(index, 1);
-            localStorage.setItem('veryastock_pending', JSON.stringify(pendingTopups));
+            localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
             renderAdminDashboard();
             updateNavbarState();
         }
 
         function rejectTopup(index) {
             pendingTopups.splice(index, 1);
-            localStorage.setItem('veryastock_pending', JSON.stringify(pendingTopups));
+            localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
             renderAdminDashboard();
             alert('Top-up slip rejected.');
+        }
+
+        function approveUpload(index) {
+            const item = pendingUploads[index];
+            assets.unshift({
+                id: item.id,
+                title: item.title,
+                category: item.category,
+                price: item.price,
+                previewUrl: item.previewUrl,
+                downloadUrl: item.downloadUrl,
+                author: item.author
+            });
+            localStorage.setItem('veryastock_assets', JSON.stringify(assets));
+            pendingUploads.splice(index, 1);
+            localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
+            renderAdminDashboard();
+            renderAssets(assets);
+            alert(`Approved and published "${item.title}" successfully!`);
+        }
+
+        function rejectUpload(index) {
+            pendingUploads.splice(index, 1);
+            localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
+            renderAdminDashboard();
+            alert('File upload rejected.');
         }
     </script>
 </body>
