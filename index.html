@@ -1,11 +1,431 @@
-<!-- JavaScript Application Logic -->
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verya Stock - Contributor & Admin Control System v14.0</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // --- Core Application State ---
-        let currentUser = null; // { name, email, phone, role: 'admin'|'contributor'|'user', coins }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: {} }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .gold-text { color: #fbbf24; }
+        .gold-btn { background: linear-gradient(135deg, #fbbf24, #d97706); }
+        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fbbf24; font-size: 10px; padding: 2px 6px; border-radius: 4px; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900/85 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-6">
+                <a href="#" onclick="switchTab('home')" class="text-2xl font-black flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-amber-500"></i> Verya Stock
+                </a>
+                <nav class="hidden md:flex space-x-5 text-sm font-medium text-slate-300">
+                    <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">Home</a>
+                    <a href="#" onclick="switchTab('downloads')" class="hover:text-amber-400 transition">My Downloads</a>
+                    <a href="#" onclick="switchTab('contributor')" class="hover:text-amber-400 transition">Contributor Portal</a>
+                    <a href="#" id="navAdminLink" onclick="switchTab('admin')" class="hover:text-amber-400 transition text-amber-400 font-bold hidden flex items-center gap-1">
+                        Admin Panel <span id="adminBadgeCount" class="bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+                    </a>
+                    <a href="#" onclick="switchTab('contact')" class="hover:text-amber-400 transition">Contact</a>
+                </nav>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-lg border border-slate-700 transition">
+                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                </button>
+                <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold text-amber-400 flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-coins"></i>
+                    <span id="userCoinBalance">0</span>
+                </div>
+                <button onclick="openTopUpModal()" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-95 transition hidden sm:inline-block">
+                    Top Up
+                </button>
+                <button onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 transition">
+                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
+                    <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button onclick="openAuthModal()" id="authNavBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3.5 py-1.5 rounded-lg text-sm font-medium border border-slate-700 transition">
+                    <i class="fa-solid fa-user mr-1"></i> Login / Register
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+
+        <!-- HOME TAB -->
+        <section id="tab-home" class="space-y-8">
+            <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
+                <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Stunning Stock Images & Digital Assets</h1>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v14.0 - Advanced Contributor & Admin Marketplace</p>
+                
+                <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
+                    <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
+                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search assets..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
+                    <button onclick="filterProducts()" class="gold-btn text-slate-950 font-bold px-6 py-3 rounded-xl transition">Search</button>
+                </div>
+            </div>
+
+            <!-- Categories & Sorting -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pb-2">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterCategory('All')" class="category-btn bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">All Assets</button>
+                    <button onclick="filterCategory('Photos')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">Photos</button>
+                    <button onclick="filterCategory('Vectors')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">Vectors</button>
+                    <button onclick="filterCategory('UI/UX')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">UI/UX Templates</button>
+                    <button onclick="filterCategory('3D')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">3D Models</button>
+                </div>
+                <div>
+                    <select id="sortSelect" onchange="filterProducts()" class="bg-slate-900 border border-slate-800 text-slate-300 text-xs px-4 py-2 rounded-xl focus:outline-none">
+                        <option value="default">Sort by: Default</option>
+                        <option value="low-high">Price: Low to High</option>
+                        <option value="high-low">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold mb-6 text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-fire"></i> Available Assets
+                </h2>
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+            </div>
+        </section>
+
+        <!-- MY DOWNLOADS TAB -->
+        <section id="tab-downloads" class="hidden space-y-6">
+            <h2 class="text-2xl font-bold border-b border-slate-800 pb-4">My Purchased Downloads (Permanent Access)</h2>
+            <div id="downloadGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- CONTRIBUTOR PORTAL TAB -->
+        <section id="tab-contributor" class="hidden space-y-8 max-w-4xl mx-auto">
+            <div id="contributorGuestView" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl">
+                <h2 class="text-2xl font-bold gold-text">Contributor Portal Access</h2>
+                <p class="text-slate-400 text-sm">Please log in or register a Contributor account to upload products, top-up coins, and request payouts.</p>
+                <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register Account</button>
+            </div>
+
+            <div id="contributorDashboard" class="hidden space-y-8">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center shadow-lg">
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-400" id="conWelcomeName">Welcome Contributor</h3>
+                        <p class="text-xs text-slate-400">Status: <span id="conStatusBadge" class="text-emerald-400 font-bold">Approved</span></p>
+                    </div>
+                    <div class="text-right flex items-center gap-4">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Total Earnings (80%):</span>
+                            <strong id="contributorEarningsDisplay" class="text-amber-400 text-xl">0 Coins</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Upload Form -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload New Product (Pending Admin Review)</h2>
+                    <form id="contributorForm" onsubmit="handleContributorUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-6 rounded-xl border border-slate-800">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Title</label>
+                            <input type="text" id="conTitle" required class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white" placeholder="e.g. Modern Dashboard UI">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Category</label>
+                            <select id="conCategory" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                                <option value="Photos">Photos</option>
+                                <option value="Vectors">Vectors</option>
+                                <option value="UI/UX">UI/UX Templates</option>
+                                <option value="3D">3D Models</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Price (Coins)</label>
+                            <input type="number" id="conCoins" required min="5" value="20" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Tags (Comma separated)</label>
+                            <input type="text" id="conTags" placeholder="design, ui, darkmode" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Preview Image URL</label>
+                            <input type="url" id="conImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Download Link (Google Drive / Secure URL)</label>
+                            <input type="url" id="conDownloadLink" required placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Description</label>
+                            <textarea id="conDesc" rows="3" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white" placeholder="Describe your asset features..."></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-3 rounded-lg text-sm shadow-md">Submit Product for Admin Review</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Coin Withdrawal Section -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (Payout Request)</h2>
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Payout via KBZPay / WavePay)</p>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Withdrawal Amount (Coins)</label>
+                            <input type="number" id="withdrawCoins" min="50" value="50" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                        </div>
+                        <button onclick="requestWithdrawal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Request Payout</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT TAB -->
+        <section id="tab-contact" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-4 shadow-xl">
+            <h2 class="text-2xl font-bold gold-text border-b border-slate-800 pb-4"><i class="fa-solid fa-address-book mr-2"></i> Contact Us</h2>
+            <div class="space-y-3 text-sm text-slate-300">
+                <p><strong>Founder:</strong> Hein Yazar Soe</p>
+                <p><strong>Payment Number (KBZPay / WavePay):</strong> 09941117896</p>
+                <p class="flex items-center gap-2"><strong>Viber:</strong> <i class="fa-brands fa-viber text-purple-400"></i> <a href="viber://chat?number=%2B959941117896" class="text-amber-400 hover:underline">09941117896</a></p>
+                <p><strong>Email:</strong> veryacomputerclass@gmail.com</p>
+                <p><strong>Location:</strong> Min Ma, Pale, Sagaing, Myanmar</p>
+            </div>
+        </section>
+
+        <!-- ADMIN DASHBOARD TAB -->
+        <section id="tab-admin" class="hidden space-y-8 max-w-5xl mx-auto">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Master Control Panel</h2>
+                    <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Admin: veryacomputerclass@gmail.com</span>
+                </div>
+
+                <!-- Admin Analytics Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block">Total Contributors</span>
+                        <strong id="adminStatContributors" class="text-amber-400 text-xl">0</strong>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block">Published Products</span>
+                        <strong id="adminStatProducts" class="text-amber-400 text-xl">0</strong>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block">Pending Reviews</span>
+                        <strong id="adminStatPending" class="text-amber-400 text-xl">0</strong>
+                    </div>
+                </div>
+
+                <!-- 1. Contributor Approvals -->
+                <div class="border-b border-slate-800 pb-6">
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3">Email</th>
+                                    <th class="p-3">Phone</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminContributorTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Pending Product Approvals -->
+                <div class="border-b border-slate-800 pb-6">
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">Image</th>
+                                    <th class="p-3">Title & Details</th>
+                                    <th class="p-3">Price</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProductTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. Pending TopUp Approvals -->
+                <div class="border-b border-slate-800 pb-6">
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay/WavePay 5-Digit Codes)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">User</th>
+                                    <th class="p-3">Payment Info</th>
+                                    <th class="p-3">Coins</th>
+                                    <th class="p-3">Last 5 Digits</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTopupTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. Pending Withdrawal Requests -->
+                <div>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">Contributor</th>
+                                    <th class="p-3">Phone</th>
+                                    <th class="p-3">Coins</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminWithdrawTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="authModalTitle" class="text-xl font-bold text-amber-400">Account Login / Register</h3>
+            
+            <div class="flex border-b border-slate-800 pb-2 space-x-2">
+                <button onclick="switchAuthMode('login')" id="tabLoginBtn" class="flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg">Login</button>
+                <button onclick="switchAuthMode('register')" id="tabRegBtn" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg">Register Account</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
+                    <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="veryacomputerclass@gmail.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
+                    <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="Password">
+                </div>
+                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Login Now</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Full Name</label>
+                    <input type="text" id="regFullName" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
+                    <input type="email" id="regEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
+                    <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number</label>
+                    <input type="text" id="regPhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="09xxxxxxxxx">
+                </div>
+                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Register as Contributor</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PREVIEW MODAL -->
+    <div id="previewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 relative shadow-2xl">
+            <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modalTitle" class="text-lg font-bold"></h3>
+            <div class="relative rounded-xl overflow-hidden bg-black flex justify-center">
+                <img id="modalImage" class="max-h-[220px] object-contain w-full">
+                <div class="watermark">Verya Stock Secure</div>
+            </div>
+            <p id="modalDesc" class="text-xs text-slate-300"></p>
+            <div class="flex justify-between items-center pt-2">
+                <span id="modalPrice" class="text-amber-400 font-extrabold text-lg"></span>
+                <div id="modalActionContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
+            <button onclick="closeCartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-bold">Shopping Cart</h3>
+            <div id="cartList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
+            <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-sm">
+                <span>Total: <strong id="cartTotal" class="text-amber-400 text-lg">0 Coins</strong></span>
+                <button onclick="checkoutCart()" class="gold-btn text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP-UP MODAL -->
+    <div id="topUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
+            <button onclick="closeTopUpModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-lg font-bold text-amber-400">Top Up Coins (KBZPay / WavePay)</h3>
+            
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+                <p><strong>Receiver Name:</strong> Hein Yazar Soe</p>
+                <p><strong>Phone Number:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Coins Amount</label>
+                    <input type="number" id="topupCoins" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Transaction Last 5 Digits</label>
+                    <input type="text" id="topupCode" maxlength="5" placeholder="e.g. 45892" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Your Payment Phone Number</label>
+                    <input type="text" id="topupPhone" placeholder="09xxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <button onclick="submitTopUp()" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Submit Top-Up Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Combined JavaScript Application Logic -->
+    <script>
+        let currentUser = null;
         let currentCategory = 'All';
         let cart = [];
         
-        // Mock Databases (In-Memory)
         let products = [
             { id: 1, title: 'Abstract Golden Wave', category: 'Vectors', price: 25, image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500', downloadLink: '#', desc: 'High-res vector wave background in dark and gold.', status: 'approved', contributor: 'Hein Yazar Soe' },
             { id: 2, title: 'Dark SaaS Dashboard UI', category: 'UI/UX', price: 40, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500', downloadLink: '#', desc: 'Complete Figma UI kit for modern SaaS applications.', status: 'approved', contributor: 'Hein Yazar Soe' }
@@ -18,155 +438,17 @@
         let pendingContributors = [];
         let topupRequests = [];
         let withdrawalRequests = [];
-        let salesHistory = [];
         let userDownloads = [];
 
-        // --- Navigation & Tabs ---
+        // --- Navigation & Access Control ---
         function switchTab(tabId) {
-            // Admin tab ကို Admin မှလွဲ၍ အခြားသူများ ဝင်မရအောင် ကာကွယ်ခြင်း
             if(tabId === 'admin') {
                 if(!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com') {
                     alert('Access Denied! Admin only area (veryacomputerclass@gmail.com).');
                     return;
                 }
             }
-// --- Admin Dashboard Action & Table Rendering System ---
-        function updateAdminDashboard() {
-            // Admin ဟုတ်မဟုတ် ထပ်မံလုံခြုံရေး စစ်ဆေးခြင်း
-            if (!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com') {
-                return;
-            }
 
-            // Stat Counter များကို Update လုပ်ခြင်း
-            document.getElementById('adminStatContributors').innerText = contributors.length;
-            document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
-            document.getElementById('adminStatPending').innerText = pendingProducts.length + pendingContributors.length + topupRequests.length;
-            document.getElementById('adminBadgeCount').innerText = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
-
-            // 1. Contributor Applications Table Rendering
-            const conTable = document.getElementById('adminContributorTable');
-            if (pendingContributors.length === 0) {
-                conTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>`;
-            } else {
-                conTable.innerHTML = pendingContributors.map((c, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white font-medium">${c.name}</td>
-                        <td class="p-3 text-slate-300">${c.email}</td>
-                        <td class="p-3 text-slate-300">${c.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${c.status}</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveContributor(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
-                            <button onclick="rejectContributor(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 2. Pending Products Table Rendering
-            const prodTable = document.getElementById('adminProductTable');
-            if (pendingProducts.length === 0) {
-                prodTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>`;
-            } else {
-                prodTable.innerHTML = pendingProducts.map((p, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg"></td>
-                        <td class="p-3">
-                            <strong class="text-white block">${p.title}</strong>
-                            <span class="text-xs text-slate-400">By ${p.contributor} | Category: ${p.category}</span>
-                        </td>
-                        <td class="p-3 text-amber-400 font-bold">${p.price} Coins</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveProduct(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
-                            <button onclick="rejectProduct(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 3. Pending Top-Up Table Rendering
-            const topupTable = document.getElementById('adminTopupTable');
-            if (topupRequests.length === 0) {
-                topupTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>`;
-            } else {
-                topupTable.innerHTML = topupRequests.map((t, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white">${t.user}</td>
-                        <td class="p-3 text-slate-300">Phone: ${t.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${t.coins} Coins</td>
-                        <td class="p-3 text-emerald-400 font-mono font-bold">${t.code}</td>
-                        <td class="p-3 space-x-2">
-                            <button onclick="approveTopup(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
-                            <button onclick="rejectTopup(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // 4. Withdrawal Requests Table Rendering
-            const withdrawTable = document.getElementById('adminWithdrawTable');
-            if (withdrawalRequests.length === 0) {
-                withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
-            } else {
-                withdrawTable.innerHTML = withdrawalRequests.map((w, index) => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 text-white font-medium">${w.contributor}</td>
-                        <td class="p-3 text-slate-300">${w.phone}</td>
-                        <td class="p-3 text-amber-400 font-bold">${w.coins} Coins</td>
-                        <td class="p-3">
-                            <button onclick="approveWithdrawal(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Mark as Paid</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        // --- Admin Action Logic Functions ---
-        function approveContributor(index) {
-            const approved = pendingContributors.splice(index, 1)[0];
-            approved.status = 'Approved';
-            contributors.push(approved);
-            alert(`Contributor ${approved.name} has been approved!`);
-            updateAdminDashboard();
-        }
-
-        function rejectContributor(index) {
-            pendingContributors.splice(index, 1);
-            alert('Contributor application rejected.');
-            updateAdminDashboard();
-        }
-
-        function approveProduct(index) {
-            const prod = pendingProducts.splice(index, 1)[0];
-            prod.status = 'approved';
-            products.push(prod);
-            alert(`Product "${prod.title}" approved and published to marketplace!`);
-            updateAdminDashboard();
-        }
-
-        function rejectProduct(index) {
-            pendingProducts.splice(index, 1);
-            alert('Product upload rejected.');
-            updateAdminDashboard();
-        }
-
-        function approveTopup(index) {
-            const req = topupRequests.splice(index, 1)[0];
-            // အကယ်၍ လက်ရှိ Logged in ဖြစ်နေသူမှာ ထိုသူဖြစ်ပါက Coins ထည့်ပေးမည် (သို့မဟုတ် Mock အနေဖြင့်)
-            alert(`Approved ${req.coins} coins top-up for ${req.user}!`);
-            updateAdminDashboard();
-        }
-
-        function rejectTopup(index) {
-            topupRequests.splice(index, 1);
-            alert('Top-up request rejected.');
-            updateAdminDashboard();
-        }
-
-        function approveWithdrawal(index) {
-            withdrawalRequests.splice(index, 1);
-            alert('Withdrawal marked as paid successfully!');
-            updateAdminDashboard();
-        }
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             if(tabId === 'home') renderProducts();
@@ -176,14 +458,13 @@
         }
 
         function toggleTheme() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
+            document.documentElement.classList.toggle('dark');
             const icon = document.getElementById('themeIcon');
             icon.classList.toggle('fa-sun');
             icon.classList.toggle('fa-moon');
         }
 
-        // --- Authentication & Admin Enforcement ---
+        // --- Authentication ---
         function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
         function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
         
@@ -204,29 +485,13 @@
         function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
             
-            // Admin အကောင့် သီးသန့်စစ်ဆေးခြင်း (veryacomputerclass@gmail.com သာလျှင် Admin ဖြစ်ရမည်)
             if(email === 'veryacomputerclass@gmail.com') {
-                // လိုအပ်ပါက Admin password ကို ဤနေရာတွင် စစ်ဆေးနိုင်သည် (ဥပမာ- admin123)
-                currentUser = { 
-                    name: 'Hein Yazar Soe (Admin)', 
-                    email: email, 
-                    role: 'admin', 
-                    coins: 99999, 
-                    phone: '09941117896' 
-                };
+                currentUser = { name: 'Hein Yazar Soe (Admin)', email: email, role: 'admin', coins: 99999, phone: '09941117896' };
                 document.getElementById('navAdminLink').classList.remove('hidden');
                 alert('Admin Login Successful!');
             } else {
-                // သာမန် Contributor/User အကောင့်များအတွက်
-                currentUser = { 
-                    name: 'Valued Contributor', 
-                    email: email, 
-                    role: 'contributor', 
-                    coins: 150, 
-                    phone: '09941117896' 
-                };
+                currentUser = { name: 'Valued Contributor', email: email, role: 'contributor', coins: 150, phone: '09941117896' };
                 document.getElementById('navAdminLink').classList.add('hidden');
                 alert('Successfully Logged In!');
             }
@@ -241,7 +506,6 @@
             const email = document.getElementById('regEmail').value.trim();
             const phone = document.getElementById('regPhone').value;
             
-            // Register လုပ်ရာတွင် Admin email ဖြင့် မှတ်ပုံတင်ခွင့်မပြုရန် ကာကွယ်ခြင်း
             if(email === 'veryacomputerclass@gmail.com') {
                 alert('This email is reserved for System Admin.');
                 return;
@@ -305,7 +569,7 @@
             `).join('') || '<p class="text-slate-500 col-span-full text-center py-8">No assets found.</p>';
         }
 
-        // --- Modals (Preview, Cart, Top-Up) ---
+        // --- Modals & Cart ---
         function openPreview(id) {
             const p = products.find(item => item.id === id);
             document.getElementById('modalTitle').innerText = p.title;
@@ -370,6 +634,7 @@
 
         function openTopUpModal() { document.getElementById('topUpModal').classList.remove('hidden'); }
         function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
+        
         function submitTopUp() {
             const coins = document.getElementById('topupCoins').value;
             const code = document.getElementById('topupCode').value;
@@ -380,7 +645,7 @@
             alert('Top-up request submitted for admin review!');
         }
 
-        // --- Contributor & Admin Panels ---
+        // --- Contributor Portal ---
         function updateContributorDashboard() {
             if(!currentUser) {
                 document.getElementById('contributorGuestView').classList.remove('hidden');
@@ -416,8 +681,8 @@
             alert('Withdrawal request sent to admin.');
         }
 
+        // --- Admin Dashboard & Action Logic ---
         function updateAdminDashboard() {
-            // ထပ်မံလုံခြုံရေး စစ်ဆေးချက်
             if (!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com') {
                 return;
             }
@@ -426,8 +691,133 @@
             document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
             document.getElementById('adminStatPending').innerText = pendingProducts.length + pendingContributors.length + topupRequests.length;
             document.getElementById('adminBadgeCount').innerText = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
+
+            // 1. Contributor Table
+            const conTable = document.getElementById('adminContributorTable');
+            if (pendingContributors.length === 0) {
+                conTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>`;
+            } else {
+                conTable.innerHTML = pendingContributors.map((c, index) => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3 text-white font-medium">${c.name}</td>
+                        <td class="p-3 text-slate-300">${c.email}</td>
+                        <td class="p-3 text-slate-300">${c.phone}</td>
+                        <td class="p-3 text-amber-400 font-bold">${c.status}</td>
+                        <td class="p-3 space-x-2">
+                            <button onclick="approveContributor(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                            <button onclick="rejectContributor(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // 2. Pending Products Table
+            const prodTable = document.getElementById('adminProductTable');
+            if (pendingProducts.length === 0) {
+                prodTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>`;
+            } else {
+                prodTable.innerHTML = pendingProducts.map((p, index) => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg"></td>
+                        <td class="p-3">
+                            <strong class="text-white block">${p.title}</strong>
+                            <span class="text-xs text-slate-400">By ${p.contributor} | Category: ${p.category}</span>
+                        </td>
+                        <td class="p-3 text-amber-400 font-bold">${p.price} Coins</td>
+                        <td class="p-3 space-x-2">
+                            <button onclick="approveProduct(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                            <button onclick="rejectProduct(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // 3. Topup Table
+            const topupTable = document.getElementById('adminTopupTable');
+            if (topupRequests.length === 0) {
+                topupTable.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>`;
+            } else {
+                topupTable.innerHTML = topupRequests.map((t, index) => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3 text-white">${t.user}</td>
+                        <td class="p-3 text-slate-300">Phone: ${t.phone}</td>
+                        <td class="p-3 text-amber-400 font-bold">${t.coins} Coins</td>
+                        <td class="p-3 text-emerald-400 font-mono font-bold">${t.code}</td>
+                        <td class="p-3 space-x-2">
+                            <button onclick="approveTopup(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Approve</button>
+                            <button onclick="rejectTopup(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Reject</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // 4. Withdrawal Table
+            const withdrawTable = document.getElementById('adminWithdrawTable');
+            if (withdrawalRequests.length === 0) {
+                withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
+            } else {
+                withdrawTable.innerHTML = withdrawalRequests.map((w, index) => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3 text-white font-medium">${w.contributor}</td>
+                        <td class="p-3 text-slate-300">${w.phone}</td>
+                        <td class="p-3 text-amber-400 font-bold">${w.coins} Coins</td>
+                        <td class="p-3">
+                            <button onclick="approveWithdrawal(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Mark as Paid</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Admin Action Functions
+        function approveContributor(index) {
+            const approved = pendingContributors.splice(index, 1)[0];
+            approved.status = 'Approved';
+            contributors.push(approved);
+            alert(`Contributor ${approved.name} has been approved!`);
+            updateAdminDashboard();
+        }
+
+        function rejectContributor(index) {
+            pendingContributors.splice(index, 1);
+            alert('Contributor application rejected.');
+            updateAdminDashboard();
+        }
+
+        function approveProduct(index) {
+            const prod = pendingProducts.splice(index, 1)[0];
+            prod.status = 'approved';
+            products.push(prod);
+            alert(`Product "${prod.title}" approved and published to marketplace!`);
+            updateAdminDashboard();
+        }
+
+        function rejectProduct(index) {
+            pendingProducts.splice(index, 1);
+            alert('Product upload rejected.');
+            updateAdminDashboard();
+        }
+
+        function approveTopup(index) {
+            const req = topupRequests.splice(index, 1)[0];
+            alert(`Approved ${req.coins} coins top-up for ${req.user}!`);
+            updateAdminDashboard();
+        }
+
+        function rejectTopup(index) {
+            topupRequests.splice(index, 1);
+            alert('Top-up request rejected.');
+            updateAdminDashboard();
+        }
+
+        function approveWithdrawal(index) {
+            withdrawalRequests.splice(index, 1);
+            alert('Withdrawal marked as paid successfully!');
+            updateAdminDashboard();
         }
 
         // Initialize default view
         renderProducts();
     </script>
+</body>
+</html>
