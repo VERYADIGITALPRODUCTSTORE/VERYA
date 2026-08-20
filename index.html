@@ -1,1064 +1,289 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Contributor & Admin Control System v13.8</title>
+const express = require('express');
+const { PrismaClient } = require('@prisma/client');
+const app = express();
+const prisma = new PrismaClient();
+
+app.use(express.json());
+
+// ==========================================
+// 1. DATABASE SCHEMA REFERENCE (Prisma)
+// ==========================================
+/*
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String        @id @default(uuid())
+  email              String        @unique
+  password           String
+  name               String        @default("Mg Hein Yazar Soe")
+  role               String        @default("CONTRIBUTOR") // ADMIN or CONTRIBUTOR
+  accountStatus      String        @default("PENDING")     // PENDING, APPROVED, REJECTED (Contributor ရောင်းချခွင့်အတွက်)
+  coins              Float         @default(0.0)
+  products           Product[]
+  coinRequests       CoinRequest[]
+  createdAt          DateTime      @default(now())
+}
+
+model Product {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  priceInCoins  Float
+  imageJpgUrl   String   // JPG ပုံလင့်ခ် (.jpg / .jpeg)
+  catboxLink    String   // Catbox Link
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED (Product တင်ခွင့်အတွက်)
+  contributorId String
+  contributor   User     @relation(fields: [contributorId], references: [id])
+  createdAt     DateTime @default(now())
+}
+
+model CoinRequest {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Float
+  type      String   // "BUY" (ဝယ်ရန်) or "WITHDRAW" (ထုတ်ရန်)
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+}
+*/
+
+// ==========================================
+// 2. SYSTEM INITIALIZATION (Admin Setup)
+// ==========================================
+async function initVerstockSystem() {
+  try {
+    const adminEmail = 'veryacomputerclass@gmail.com';
+    const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
+
+    if (!existingAdmin) {
+      await prisma.user.create({
+        data: {
+          email: adminEmail,
+          password: 'AdminSecurePassword123!',
+          name: 'Mg Hein Yazar Soe (Founder)',
+          role: 'ADMIN',
+          accountStatus: 'APPROVED',
+          coins: 99999.0
+        }
+      });
+      console.log('Verstock Admin Account (veryacomputerclass@gmail.com) successfully initialized!');
+    }
+  } catch (error) {
+    console.error('Initialization error:', error.message);
+  }
+}
+
+// ==========================================
+// 3. STORE & FOUNDER INFO API
+// ==========================================
+app.get('/api/store/info', (req, res) => {
+  res.json({
+    storeName: 'Verstock Digital Product Store',
+    founder: 'Mg Hein Yazar Soe',
+    email: 'veryacomputerclass@gmail.com',
+    contacts: ['+95941117896', '+959429515474'],
+    location: 'Min Ma, Pale, Sagaing, Myanmar',
+    status: 'System Fully Secure & Operational'
+  });
+});
+
+// ==========================================
+// 4. CONTRIBUTOR REGISTRATION & ACCOUNT APPROVAL
+// ==========================================
+
+// Contributor အသစ်စာရင်းပေးသွင်းခြင်း
+app.post('/api/contributor/register', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: {} }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        .gold-text { color: #fbbf24; }
-        .gold-btn { background: linear-gradient(135deg, #fbbf24, #d97706); }
-        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fbbf24; font-size: 10px; padding: 2px 6px; border-radius: 4px; pointer-events: none; }
-    </style>
-</head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300">
-
-    <!-- Header / Navbar -->
-    <header class="bg-slate-900/85 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-6">
-                <a href="#" onclick="switchTab('home')" class="text-2xl font-black flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-amber-500"></i> Verya Stock
-                </a>
-                <nav class="hidden md:flex space-x-5 text-sm font-medium text-slate-300">
-                    <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">Home</a>
-                    <a href="#" onclick="switchTab('downloads')" class="hover:text-amber-400 transition">My Downloads</a>
-                    <a href="#" onclick="switchTab('contributor')" class="hover:text-amber-400 transition">Contributor Portal</a>
-                    <a href="#" id="navAdminLink" onclick="switchTab('admin')" class="hover:text-amber-400 transition text-amber-400 font-bold hidden">Admin Panel</a>
-                    <a href="#" onclick="switchTab('contact')" class="hover:text-amber-400 transition">Contact</a>
-                </nav>
-            </div>
-            
-            <div class="flex items-center space-x-3">
-                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-lg border border-slate-700 transition">
-                    <i id="themeIcon" class="fa-solid fa-sun"></i>
-                </button>
-                <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold text-amber-400 flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-coins"></i>
-                    <span id="userCoinBalance">0</span>
-                </div>
-                <button onclick="openTopUpModal()" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-95 transition">
-                    Top Up
-                </button>
-                <button onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 transition">
-                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
-                    <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
-                </button>
-                <button onclick="openAuthModal()" id="authNavBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3.5 py-1.5 rounded-lg text-sm font-medium border border-slate-700 transition">
-                    <i class="fa-solid fa-user mr-1"></i> Login / Register
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 py-6">
-
-        <!-- HOME TAB -->
-        <section id="tab-home" class="space-y-8">
-            <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
-                <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Stunning Stock Images & Digital Assets</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v13.8 - Advanced Contributor & Admin Marketplace</p>
-                
-                <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
-                    <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
-                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search assets..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
-                    <button onclick="filterProducts()" class="gold-btn text-slate-950 font-bold px-6 py-3 rounded-xl transition">Search</button>
-                </div>
-            </div>
-
-            <!-- Categories & Sorting -->
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pb-2">
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="filterCategory('All')" class="category-btn bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">All Assets</button>
-                    <button onclick="filterCategory('Photos')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">Photos</button>
-                    <button onclick="filterCategory('Vectors')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">Vectors</button>
-                    <button onclick="filterCategory('UI/UX')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">UI/UX Templates</button>
-                    <button onclick="filterCategory('3D')" class="category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition">3D Models</button>
-                </div>
-                <div>
-                    <select id="sortSelect" onchange="filterProducts()" class="bg-slate-900 border border-slate-800 text-slate-300 text-xs px-4 py-2 rounded-xl focus:outline-none">
-                        <option value="default">Sort by: Default</option>
-                        <option value="low-high">Price: Low to High</option>
-                        <option value="high-low">Price: High to Low</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <h2 class="text-xl font-bold mb-6 text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-fire"></i> Available Assets
-                </h2>
-                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-            </div>
-        </section>
-
-        <!-- MY DOWNLOADS TAB -->
-        <section id="tab-downloads" class="hidden space-y-6">
-            <h2 class="text-2xl font-bold border-b border-slate-800 pb-4">My Purchased Downloads (Permanent Access)</h2>
-            <div id="downloadGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-        </section>
-
-        <!-- CONTRIBUTOR PORTAL TAB -->
-        <section id="tab-contributor" class="hidden space-y-8 max-w-4xl mx-auto">
-            <div id="contributorGuestView" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl">
-                <h2 class="text-2xl font-bold gold-text">Contributor Portal Access</h2>
-                <p class="text-slate-400 text-sm">Please log in or register a Contributor account to upload products, top-up coins, and request payouts.</p>
-                <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register Account</button>
-            </div>
-
-            <div id="contributorDashboard" class="hidden space-y-8">
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center shadow-lg">
-                    <div>
-                        <h3 class="text-lg font-bold text-amber-400" id="conWelcomeName">Welcome Contributor</h3>
-                        <p class="text-xs text-slate-400">Status: <span id="conStatusBadge" class="text-emerald-400 font-bold">Approved</span></p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs text-slate-400 block">Total Earnings (80%):</span>
-                        <strong id="contributorEarningsDisplay" class="text-amber-400 text-xl">0 Coins</strong>
-                    </div>
-                </div>
-
-                <!-- Product Upload Form -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload New Product (Pending Admin Review)</h2>
-                    <form id="contributorForm" onsubmit="handleContributorUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-6 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Title</label>
-                            <input type="text" id="conTitle" required class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white" placeholder="e.g. Modern Dashboard UI">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Category</label>
-                            <select id="conCategory" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                                <option value="Photos">Photos</option>
-                                <option value="Vectors">Vectors</option>
-                                <option value="UI/UX">UI/UX Templates</option>
-                                <option value="3D">3D Models</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Price (Coins)</label>
-                            <input type="number" id="conCoins" required min="5" value="20" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Tags (Comma separated)</label>
-                            <input type="text" id="conTags" placeholder="design, ui, darkmode" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Preview Image URL</label>
-                            <input type="url" id="conImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Download Link (Google Drive / Secure URL)</label>
-                            <input type="url" id="conDownloadLink" required placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Description</label>
-                            <textarea id="conDesc" rows="3" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white" placeholder="Describe your asset features..."></textarea>
-                        </div>
-                        <div class="md:col-span-2">
-                            <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-3 rounded-lg text-sm shadow-md">Submit Product for Admin Review</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Contributor Sales History -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-4">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-chart-line mr-2"></i> My Sales History</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Product Title</th>
-                                    <th class="p-3">Buyer</th>
-                                    <th class="p-3">Price Paid</th>
-                                    <th class="p-3">Your Commission (80%)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="contributorSalesTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No sales recorded yet.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Coin Withdrawal Section -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (Payout Request)</h2>
-                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
-                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Payout via KBZPay / WavePay)</p>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Withdrawal Amount (Coins)</label>
-                            <input type="number" id="withdrawCoins" min="50" value="50" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <button onclick="requestWithdrawal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Request Payout</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CONTACT TAB (Updated with Viber & Location) -->
-        <section id="tab-contact" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-4 shadow-xl">
-            <h2 class="text-2xl font-bold gold-text border-b border-slate-800 pb-4"><i class="fa-solid fa-address-book mr-2"></i> Contact Us</h2>
-            <div class="space-y-3 text-sm text-slate-300">
-                <p><strong>Founder:</strong> Hein Yazar Soe</p>
-                <p><strong>Payment Number (KBZPay / WavePay):</strong> 09941117896</p>
-                <p class="flex items-center gap-2"><strong>Viber:</strong> <i class="fa-brands fa-viber text-purple-400"></i> <a href="viber://chat?number=%2B959941117896" class="text-amber-400 hover:underline">09941117896</a></p>
-                <p><strong>Email:</strong> veryacomputerclass@gmail.com</p>
-                <p><strong>Location:</strong> Min Ma, Pale, Sagaing, Myanmar</p>
-            </div>
-        </section>
-
-        <!-- ADMIN DASHBOARD TAB -->
-        <section id="tab-admin" class="hidden space-y-8 max-w-5xl mx-auto">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Master Control Panel</h2>
-                    <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Admin: veryacomputerclass@gmail.com</span>
-                </div>
-
-                <!-- Admin Analytics Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Total Contributors</span>
-                        <strong id="adminStatContributors" class="text-amber-400 text-xl">0</strong>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Published Products</span>
-                        <strong id="adminStatProducts" class="text-amber-400 text-xl">0</strong>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                        <span class="text-xs text-slate-400 block">Pending Reviews</span>
-                        <strong id="adminStatPending" class="text-amber-400 text-xl">0</strong>
-                    </div>
-                </div>
-
-                <!-- 1. Contributor Approvals -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Name</th>
-                                    <th class="p-3">Email</th>
-                                    <th class="p-3">Phone</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminContributorTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 2. Pending Product Approvals -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Image</th>
-                                    <th class="p-3">Title & Details</th>
-                                    <th class="p-3">Price</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminProductTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 3. Pending TopUp Approvals -->
-                <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay/WavePay 5-Digit Codes)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">User</th>
-                                    <th class="p-3">Payment Info</th>
-                                    <th class="p-3">Coins</th>
-                                    <th class="p-3">Last 5 Digits</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminTopupTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. Pending Withdrawal Requests -->
-                <div>
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
-                                    <th class="p-3">Contributor</th>
-                                    <th class="p-3">Phone</th>
-                                    <th class="p-3">Coins</th>
-                                    <th class="p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminWithdrawTable" class="divide-y divide-slate-800">
-                                <tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- AUTHENTICATION MODAL -->
-    <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="authModalTitle" class="text-xl font-bold text-amber-400">Account Login / Register</h3>
-            
-            <div class="flex border-b border-slate-800 pb-2 space-x-2">
-                <button onclick="switchAuthMode('login')" id="tabLoginBtn" class="flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg">Login</button>
-                <button onclick="switchAuthMode('register')" id="tabRegBtn" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg">Register Account</button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
-                    <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="veryacomputerclass@gmail.com">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
-                    <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="Admin or User Password">
-                </div>
-                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Login Now</button>
-            </form>
-
-            <!-- Register Form -->
-            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 hidden">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="regFullName" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="John Doe">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Email Address</label>
-                    <input type="email" id="regEmail" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
-                    <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number (For Payouts)</label>
-                    <input type="text" id="regPhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white" placeholder="09xxxxxxxxx">
-                </div>
-                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Register as Contributor</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- PREVIEW MODAL -->
-    <div id="previewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 relative shadow-2xl">
-            <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="modalTitle" class="text-lg font-bold"></h3>
-            <div class="relative rounded-xl overflow-hidden bg-black flex justify-center">
-                <img id="modalImage" class="max-h-[220px] object-contain w-full">
-                <div class="watermark">Verya Stock Secure</div>
-            </div>
-            <p id="modalDesc" class="text-xs text-slate-300"></p>
-            <div class="flex justify-between items-center pt-2">
-                <span id="modalPrice" class="text-amber-400 font-extrabold text-lg"></span>
-                <div id="modalActionContainer"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CART MODAL -->
-    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
-            <button onclick="closeCartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-xl font-bold">Shopping Cart</h3>
-            <div id="cartList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
-            <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-sm">
-                <span>Total: <strong id="cartTotal" class="text-amber-400 text-lg">0 Coins</strong></span>
-                <button onclick="checkoutCart()" class="gold-btn text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Checkout</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- TOP-UP MODAL -->
-    <div id="topUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
-            <button onclick="closeTopUpModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-lg font-bold text-amber-400">Top Up Coins (KBZPay / WavePay)</h3>
-            
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
-                <p><strong>Receiver Name:</strong> Hein Yazar Soe</p>
-                <p><strong>Phone Number:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
-                <p class="text-slate-400 pt-1">Transfer money and enter the <strong>last 5 digits</strong> of your transaction code below.</p>
-            </div>
-
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Coins Amount</label>
-                    <input type="number" id="topupCoins" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Transaction Last 5 Digits</label>
-                    <input type="text" id="topupCode" maxlength="5" placeholder="e.g. 48962" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white tracking-widest font-bold">
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeTopUpModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs rounded-lg font-bold">Cancel</button>
-                <button onclick="submitTopUpRequest()" class="px-5 py-2 gold-btn text-slate-950 text-xs font-bold rounded-lg">Request Approval</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        const ADMIN_EMAIL = "veryacomputerclass@gmail.com";
-        const ADMIN_PASSWORD = "veryaadmin123";
-
-        let products = JSON.parse(localStorage.getItem('vs_v138_prod')) || [
-            { id: 1, title: "Abstract Neon Background", category: "Photos", coins: 20, image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80", downloadLink: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe", desc: "High resolution neon background.", contributor: "System Admin" },
-            { id: 2, title: "Modern Business Workspace", category: "UI/UX", coins: 35, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80", downloadLink: "https://images.unsplash.com/photo-1498050108023-c5249f4df085", desc: "Clean workspace template.", contributor: "System Admin" }
-        ];
-
-        let pendingProducts = JSON.parse(localStorage.getItem('vs_v138_pending_prod')) || [];
-        let topupRequests = JSON.parse(localStorage.getItem('vs_v138_topups')) || [];
-        let withdrawRequests = JSON.parse(localStorage.getItem('vs_v138_withdraws')) || [];
-        let registeredUsers = JSON.parse(localStorage.getItem('vs_v138_users')) || [];
-        let salesHistory = JSON.parse(localStorage.getItem('vs_v138_sales')) || [];
-        
-        let currentUser = JSON.parse(localStorage.getItem('vs_v138_session')) || null;
-        let downloads = JSON.parse(localStorage.getItem('vs_v138_down')) || [];
-        let cart = [];
-        let currentCategory = 'All';
-
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
-
-        function switchTab(tab) {
-            if(tab === 'admin' && (!currentUser || currentUser.email !== ADMIN_EMAIL)) {
-                alert('Access Denied: Admin only area.');
-                return;
-            }
-            ['home', 'downloads', 'contributor', 'contact', 'admin'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
-            });
-            if(tab === 'home') renderProducts(products);
-            if(tab === 'downloads') renderDownloads();
-            if(tab === 'contributor') renderContributorPortal();
-            if(tab === 'admin') renderAdminDashboard();
-        }
-
-        // Auth Modals
-        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
-        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
-
-        function switchAuthMode(mode) {
-            if(mode === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('registerForm').classList.add('hidden');
-                document.getElementById('tabLoginBtn').className = "flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg";
-                document.getElementById('tabRegBtn').className = "flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg";
-            } else {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('tabRegBtn').className = "flex-1 py-1.5 text-xs font-bold bg-amber-500 text-slate-950 rounded-lg";
-                document.getElementById('tabLoginBtn').className = "flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg";
-            }
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('regEmail').value.trim();
-            if(emailInput === ADMIN_EMAIL) {
-                alert('This email is reserved for Admin.');
-                return;
-            }
-            const newUser = {
-                id: Date.now(),
-                name: document.getElementById('regFullName').value.trim(),
-                email: emailInput,
-                password: document.getElementById('regPassword').value,
-                phone: document.getElementById('regPhone').value.trim(),
-                coins: 100,
-                earnings: 0,
-                status: 'pending'
-            };
-            if(registeredUsers.some(u => u.email === newUser.email)) {
-                alert('Email already registered!');
-                return;
-            }
-            registeredUsers.push(newUser);
-            localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-            closeAuthModal();
-            alert('Contributor account registered successfully! Please wait for Admin approval to login.');
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPassword').value;
-            
-            if(email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
-                currentUser = { name: "System Admin", email: ADMIN_EMAIL, role: "admin", coins: 9999, earnings: 0, status: 'approved' };
-                localStorage.setItem('vs_v138_session', JSON.stringify(currentUser));
-                closeAuthModal();
-                updateUIAfterAuth();
-                alert('Admin Login successful!');
-                switchTab('admin');
-                return;
-            }
-
-            const found = registeredUsers.find(u => u.email === email && u.password === pass);
-            if(found) {
-                if(found.status !== 'approved') {
-                    alert('Your contributor account is still pending admin approval.');
-                    return;
-                }
-                currentUser = found;
-                currentUser.role = 'contributor';
-                localStorage.setItem('vs_v138_session', JSON.stringify(currentUser));
-                closeAuthModal();
-                updateUIAfterAuth();
-                alert('Login successful!');
-                switchTab('home');
-            } else {
-                alert('Invalid email, password, or account not approved! (Admin default pass: veryaadmin123)');
-            }
-        }
-
-        function updateUIAfterAuth() {
-            if(!currentUser) {
-                document.getElementById('userCoinBalance').innerText = "0";
-                document.getElementById('authNavBtn').innerHTML = `<i class="fa-solid fa-user mr-1"></i> Login / Register`;
-                document.getElementById('navAdminLink').classList.add('hidden');
-                return;
-            }
-            document.getElementById('userCoinBalance').innerText = currentUser.coins;
-            document.getElementById('authNavBtn').innerHTML = `<i class="fa-solid fa-user-check mr-1"></i> ${currentUser.name}`;
-            
-            const adminLink = document.getElementById('navAdminLink');
-            if(currentUser.email === ADMIN_EMAIL) {
-                adminLink.classList.remove('hidden');
-            } else {
-                adminLink.classList.add('hidden');
-            }
-            renderProducts(products);
-        }
-
-        function isAlreadyPurchased(id) {
-            return downloads.some(d => d.id === id);
-        }
-
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                if(btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) {
-                    btn.className = "category-btn bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition";
-                } else {
-                    btn.className = "category-btn bg-slate-900 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs border border-slate-800 transition";
-                }
-                <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
-                            <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <!-- အောက်ပါ စာကြောင်းသစ် ထည့်ပါ -->
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Confirm Password</label>
-                            <input type="password" id="regConfirmPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-            });
-            filterProducts();
-        }
-
-        function renderProducts(list) {
-            document.getElementById('productGrid').innerHTML = list.map(p => {
-                const purchased = isAlreadyPurchased(p.id);
-                return `
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg group">
-                        <div class="h-48 overflow-hidden bg-slate-950 cursor-pointer relative" onclick="openPreview(${p.id})">
-                            <img src="${p.image}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
-                            <span class="absolute top-2 left-2 bg-slate-950/80 text-amber-400 text-[10px] font-bold px-2 py-1 rounded">${p.category || 'Asset'}</span>
-                            <div class="watermark">Verya Stock</div>
-                        </div>
-                        <div class="p-4 space-y-2">
-                            <h3 class="font-bold text-sm truncate">${p.title}</h3>
-                            <p class="text-xs text-slate-400">By: ${p.contributor || 'Admin'}</p>
-                            <div class="flex justify-between items-center pt-1">
-                                <span class="text-amber-400 font-extrabold text-sm">${purchased ? 'Owned' : p.coins + ' Coins'}</span>
-                                <div class="space-x-1">
-                                    ${purchased ? 
-                                        `<a href="${p.downloadLink || p.image}" target="_blank" download class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold inline-block"><i class="fa-solid fa-download"></i> Download</a>` :
-                                        `<button onclick="addToCart(${p.id})" class="bg-slate-800 text-amber-400 p-2 rounded-lg text-xs border border-slate-700"><i class="fa-solid fa-cart-plus"></i></button>
-                                         <button onclick="openPreview(${p.id})" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold">Buy</button>`
-                                    }<form onsubmit="handleProfileUpdate(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="profileName" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">KBZPay / WavePay Phone Number</label>
-                    <input type="text" id="profilePhone" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <!-- Password အသစ်ပြောင်းရန် စာကြောင်းသစ်များ ထည့်ပါ -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">Current Password (စစ်ဆေးရန်)</label>
-                    <input type="password" id="profileCurrentPassword" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">New Password (ပြောင်းရန်)</label>
-                    <input type="password" id="profileNewPassword" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                </div>
-                <button type="submit" class="w-full gold-btn text-slate-950 font-bold py-2.5 rounded-lg text-sm">Save Changes</button>
-            </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterProducts() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const sortVal = document.getElementById('sortSelect').value;
-
-            let filtered = products.filter(p => {
-                const matchCat = currentCategory === 'All' || p.category === currentCategory;
-                const matchSearch = p.title.toLowerCase().includes(q) || (p.desc && p.desc.toLowerCase().includes(q));
-                return matchCat && matchSearch;
-            });
-
-            if(sortVal === 'low-high') {
-                filtered.sort((a, b) => a.coins - b.coins);
-            } else if(sortVal === 'high-low') {
-                filtered.sort((a, b) => b.coins - a.coins);
-            }
-
-            renderProducts(filtered);
-        }
-
-        function openPreview(id) {
-            const p = products.find(x => x.id === id);
-            const purchased = isAlreadyPurchased(p.id);
-            document.getElementById('modalTitle').innerText = p.title;
-            document.getElementById('modalImage').src = p.image;
-            document.getElementById('modalDesc').innerText = p.desc || "No description provided.";
-            document.getElementById('modalPrice').innerText = purchased ? "Already Purchased" : `${p.coins} Coins`;
-            
-            const actionContainer = document.getElementById('modalActionContainer');
-            if(purchased) {
-                actionContainer.innerHTML = `<a href="${p.downloadLink || p.image}" target="_blank" download class="bg-emerald-600 text-white px-6 py-2 rounded-xl text-sm font-bold inline-block"><i class="fa-solid fa-download mr-1"></i> Download File</a>`;
-            } else {
-                actionContainer.innerHTML = `<button onclick="buyNow(${p.id}); closePreviewModal();" class="gold-btn text-slate-950 px-6 py-2 rounded-xl text-sm font-bold">Buy Now</button>`;
-            }
-            document.getElementById('previewModal').classList.remove('hidden');
-        }
-        function closePreviewModal() { document.getElementById('previewModal').classList.add('hidden'); }
-
-        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Password</label>
-                            <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-                        <!-- အောက်ပါ စာကြောင်းသစ် ထည့်ပါ -->
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Confirm Password</label>
-                            <input type="password" id="regConfirmPassword" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-                        </div>
-        function addToCart(id) {
-            if(!currentUser) { alert('Please login first.'); openAuthModal(); return; }
-            const p = products.find(x => x.id === id);
-            if(isAlreadyPurchased(id)) {
-                alert('You already own this product!');
-                return;
-            }
-            if(!cart.some(x => x.id === id)) {
-                cart.push(p);
-                document.getElementById('cartCountBadge').innerText = cart.length;
-                alert('Added to cart successfully.');
-            } else {
-                alert('Item is already in your cart.');
-            }
-        }
-
-        function openCartModal() {
-            if(!currentUser) { alert('Please login first.'); openAuthModal(); return; }
-            cart = cart.filter(p => !isAlreadyPurchased(p.id));
-            document.getElementById('cartCountBadge').innerText = cart.length;
-
-            let total = cart.reduce((s, p) => s + p.coins, 0);
-            document.getElementById('cartList').innerHTML = cart.length === 0 ? `<p class="text-slate-500 text-center">Cart is empty.</p>` :
-            cart.map(p => `<div class="flex justify-between bg-slate-950 p-2 rounded border border-slate-800"><span>${p.title}</span><span class="text-amber-400">${p.coins} Coins</span></div>`).join('');
-            document.getElementById('cartTotal').innerText = `${total} Coins`;
-            document.getElementById('cartModal').classList.remove('hidden');
-        }
-        function closeCartModal() { document.getElementById('cartModal').classList.add('hidden'); }
-
-        function checkoutCart() {
-            let total = cart.reduce((s, p) => s + p.coins, 0);
-            if(cart.length === 0) return;
-            if(currentUser.coins >= total) {
-                currentUser.coins -= total;
-                document.getElementById('userCoinBalance').innerText = currentUser.coins;
-                cart.forEach(p => { 
-                    if(!downloads.some(d => d.id === p.id)) {
-                        downloads.push({ ...p, purchasedDate: new Date().toLocaleDateString() });
-                    }
-                    distributeContributorEarnings(p, currentUser.name);
-                });
-                cart = [];
-                document.getElementById('cartCountBadge').innerText = 0;
-                localStorage.setItem('vs_v138_down', JSON.stringify(downloads));
-                updateUserSession();
-                closeCartModal();
-                alert('Purchase successful! Added to My Downloads.');
-                switchTab('downloads');
-            } else {
-                alert('Insufficient coins! Please top up.');
-                openTopUpModal();
-            }
-        }
-
-        function buyNow(id) {
-            if(!currentUser) { alert('Please login first.'); openAuthModal(); return; }
-            const p = products.find(x => x.id === id);
-            if(isAlreadyPurchased(id)) {
-                alert('You already own this product!');
-                return;
-            }
-            if(currentUser.coins >= p.coins) {
-                currentUser.coins -= p.coins;
-                document.getElementById('userCoinBalance').innerText = currentUser.coins;
-                if(!downloads.some(d => d.id === id)) {
-                    downloads.push({ ...p, purchasedDate: new Date().toLocaleDateString() });
-                }
-                distributeContributorEarnings(p, currentUser.name);
-                localStorage.setItem('vs_v138_down', JSON.stringify(downloads));
-                updateUserSession();
-                alert('Purchased successfully! Added to My Downloads.');
-                switchTab('downloads');
-            } else {
-                alert('Insufficient coins! Please top up.');
-                openTopUpModal();
-            }
-        }
-
-        function distributeContributorEarnings(product, buyerName) {
-            if(!product.contributor || product.contributor === "System Admin") return;
-            let targetCon = registeredUsers.find(u => u.name === product.contributor);
-            if(targetCon) {
-                let commission = Math.floor(product.coins * 0.8);
-                targetCon.earnings = (targetCon.earnings || 0) + commission;
-                if(currentUser && currentUser.name === targetCon.name) currentUser.earnings = targetCon.earnings;
-                
-                salesHistory.push({
-                    title: product.title,
-                    buyer: buyerName,
-                    price: product.coins,
-                    commission: commission,
-                    contributor: product.contributor
-                });
-                localStorage.setItem('vs_v138_sales', JSON.stringify(salesHistory));
-                localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-            }
-        }
-
-        function updateUserSession() {
-            localStorage.setItem('vs_v138_session', JSON.stringify(currentUser));
-            let idx = registeredUsers.findIndex(u => u.email === currentUser.email);
-            if(idx !== -1) {
-                registeredUsers[idx] = currentUser;
-                localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-            }
-        }
-
-        function renderDownloads() {
-            if(!currentUser) { document.getElementById('downloadGrid').innerHTML = `<p class="col-span-full text-center text-slate-500 py-10">Please login to view your downloads.</p>`; return; }
-            document.getElementById('downloadGrid').innerHTML = downloads.length === 0 ? `<p class="col-span-full text-center text-slate-500 py-10">No downloads available.</p>` :
-            downloads.map(p => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
-                    <img src="${p.image}" class="w-full h-40 object-cover">
-                    <div class="p-4 space-y-2">
-                        <h3 class="font-bold text-sm truncate">${p.title}</h3>
-                        <p class="text-[10px] text-slate-400">Purchased on: ${p.purchasedDate || 'N/A'}</p>
-                        <a href="${p.downloadLink || p.image}" target="_blank" download class="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-xs transition">Download File</a>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Contributor Portal
-        function renderContributorPortal() {
-            if(!currentUser || currentUser.email === ADMIN_EMAIL) {
-                document.getElementById('contributorGuestView').classList.remove('hidden');
-                document.getElementById('contributorDashboard').classList.add('hidden');
-            } else {
-                document.getElementById('contributorGuestView').classList.add('hidden');
-                document.getElementById('contributorDashboard').classList.remove('hidden');
-                document.getElementById('conWelcomeName').innerText = `Welcome, ${currentUser.name}`;
-                document.getElementById('contributorEarningsDisplay').innerText = `${currentUser.earnings || 0} Coins`;
-
-                const conSales = salesHistory.filter(s => s.contributor === currentUser.name);
-                const salesTbody = document.getElementById('contributorSalesTable');
-                salesTbody.innerHTML = conSales.length === 0 ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">No sales recorded yet.</td></tr>` :
-                conSales.map(s => `
-                    <tr class="border-b border-slate-800">
-                        <td class="p-3 font-bold">${s.title}</td>
-                        <td class="p-3 text-xs text-slate-400">${s.buyer}</td>
-                        <td class="p-3 text-slate-300">${s.price} Coins</td>
-                        <td class="p-3 text-amber-400 font-bold">+${s.commission} Coins</td>
-                    </tr>function handleProfileUpdate(e) {
-            e.preventDefault();
-            const currentPwInput = document.getElementById('profileCurrentPassword').value;
-            const newPwInput = document.getElementById('profileNewPassword').value;
-
-            // Password ပြောင်းလိုမှ စစ်ဆေးခြင်း
-            if(newPwInput.trim() !== "") {
-                if(currentPwInput !== currentUser.password) {
-                    alert('လက်ရှိသုံးနေသော Current Password မှားယွင်းနေပါသည်။');
-                    return;
-                }
-                currentUser.password = newPwInput;
-            }
-
-            currentUser.name = document.getElementById('profileName').value.trim();
-            currentUser.phone = document.getElementById('profilePhone').value.trim();
-            updateUserSession();
-            // ... ကျန်သည့် code များ
-                `).join('');
-            }
-        }
-
-        function handleContributorUpload(e) {
-            e.preventDefault();
-            const newProduct = {
-                id: Date.now(),
-                title: document.getElementById('conTitle').value,
-                category: document.getElementById('conCategory').value,
-                coins: parseInt(document.getElementById('conCoins').value),
-                tags: document.getElementById('conTags').value,
-                image: document.getElementById('conImage').value,
-                downloadLink: document.getElementById('conDownloadLink').value,
-                desc: document.getElementById('conDesc').value,
-                contributor: currentUser.name
-            };
-            pendingProducts.push(newProduct);
-            localStorage.setItem('vs_v138_pending_prod', JSON.stringify(pendingProducts));
-            document.getElementById('contributorForm').reset();
-            alert('Product submitted for admin review successfully!');
-            switchTab('home');
-        }
-
-        function requestWithdrawal() {
-            const amount = parseInt(document.getElementById('withdrawCoins').value);
-            if(amount < 50) { alert('Minimum withdrawal amount is 50 Coins.'); return; }
-            if(amount > (currentUser.earnings || 0)) { alert('Amount exceeds earnings.'); return; }
-            withdrawRequests.push({
-                id: Date.now(),
-                contributor: currentUser.name,
-                phone: currentUser.phone || "No Phone",
-                coins: amount
-            });
-            currentUser.earnings -= amount;
-            updateUserSession();
-            localStorage.setItem('vs_v138_withdraws', JSON.stringify(withdrawRequests));
-            renderContributorPortal();
-            alert('Payout request submitted to Admin.');
-        }
-
-        function openTopUpModal() {
-            if(!currentUser) { alert('Please login first.'); openAuthModal(); return; }
-            document.getElementById('topUpModal').classList.remove('hidden');
-        }
-        function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
-
-        function submitTopUpRequest() {
-            const coins = parseInt(document.getElementById('topupCoins').value) || 0;
-            const code = document.getElementById('topupCode').value.trim();
-            if(code.length !== 5) { alert('Enter exact last 5 digits.'); return; }
-            topupRequests.push({ id: Date.now(), user: currentUser.name, coins, code });
-            localStorage.setItem('vs_v138_topups', JSON.stringify(topupRequests));
-            closeTopUpModal();
-            alert('Top-up request sent to Admin.');
-        }
-
-        // Admin Dashboard
-        function renderAdminDashboard() {
-            document.getElementById('adminStatContributors').innerText = registeredUsers.length;
-            document.getElementById('adminStatProducts').innerText = products.length;
-            document.getElementById('adminStatPending').innerText = pendingProducts.length + topupRequests.length + withdrawRequests.length;
-
-            const conTbody = document.getElementById('adminContributorTable');
-            conTbody.innerHTML = registeredUsers.length === 0 ? `<tr><td colspan="5" class="p-3 text-center text-slate-500">No contributor requests.</td></tr>` :
-            registeredUsers.map(u => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3 font-bold">${u.name}</td>
-                    <td class="p-3 text-xs text-slate-400">${u.email}</td>
-                    <td class="p-3 text-xs text-slate-400">${u.phone}</td>
-                    <td class="p-3"><span class="px-2 py-1 rounded text-[10px] font-bold ${u.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${u.status}</span></td>
-                    <td class="p-3 space-x-2">
-                        ${u.status !== 'approved' ? `<button onclick="approveContributor(${u.id})" class="bg-green-600 text-white px-2.5 py-1 rounded text-xs">Approve</button>` : ''}
-                        <button onclick="rejectContributor(${u.id})" class="bg-red-600 text-white px-2.5 py-1 rounded text-xs">Remove</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            const prodTbody = document.getElementById('adminProductTable');
-            prodTbody.innerHTML = pendingProducts.length === 0 ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">No pending products.</td></tr>` :
-            pendingProducts.map(p => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg"></td>
-                    <td class="p-3 font-bold">${p.title} <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded">${p.category}</span><br><span class="text-xs text-slate-400">By: ${p.contributor}</span></td>
-                    <td class="p-3 text-amber-400">${p.coins} Coins</td>
-                    <td class="p-3 space-x-2">
-                        <button onclick="approveProduct(${p.id})" class="bg-green-600 text-white px-3 py-1 rounded text-xs">Approve</button>
-                        <button onclick="rejectProduct(${p.id})" class="bg-red-600 text-white px-3 py-1 rounded text-xs">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            const topupTbody = document.getElementById('adminTopupTable');
-            topupTbody.innerHTML = topupRequests.length === 0 ? `<tr><td colspan="5" class="p-3 text-center text-slate-500">No top-up requests.</td></tr>` :
-            topupRequests.map(r => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3">${r.user}</td>
-                    <td class="p-3 text-xs text-slate-400">KBZPay / WavePay (09941117896)</td>
-                    <td class="p-3 text-amber-400 font-bold">+${r.coins} Coins</td>
-                    <td class="p-3 tracking-widest font-extrabold text-white">${r.code}</td>
-                    <td class="p-3 space-x-2">
-                        <button onclick="approveTopup(${r.id})" class="bg-green-600 text-white px-3 py-1 rounded text-xs">Approve</button>
-                        <button onclick="rejectTopup(${r.id})" class="bg-red-600 text-white px-3 py-1 rounded text-xs">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            const withdrawTbody = document.getElementById('adminWithdrawTable');
-            withdrawTbody.innerHTML = withdrawRequests.length === 0 ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>` :
-            withdrawRequests.map(w => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3 font-bold">${w.contributor}</td>
-                    <td class="p-3 text-xs text-slate-400">Phone: ${w.phone}</td>
-                    <td class="p-3 text-amber-400 font-bold">${w.coins} Coins</td>
-                    <td class="p-3 space-x-2">
-                        <button onclick="approveWithdraw(${w.id})" class="bg-green-600 text-white px-3 py-1 rounded text-xs">Approve</button>
-                        <button onclick="rejectWithdraw(${w.id})" class="bg-red-600 text-white px-3 py-1 rounded text-xs">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function approveContributor(id) {
-            let u = registeredUsers.find(x => x.id === id);
-            if(u) {
-                u.status = 'approved';
-                localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-                renderAdminDashboard();
-                alert('Contributor approved.');
-            }
-        }
-
-        function rejectContributor(id) {
-            registeredUsers = registeredUsers.filter(x => x.id !== id);
-            localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-            renderAdminDashboard();
-            alert('Contributor removed.');
-        }
-
-        function approveProduct(id) {
-            const prod = pendingProducts.find(x => x.id === id);
-            if(prod) {
-                products.unshift(prod);
-                pendingProducts = pendingProducts.filter(x => x.id !== id);
-                localStorage.setItem('vs_v138_prod', JSON.stringify(products));
-                localStorage.setItem('vs_v138_pending_prod', JSON.stringify(pendingProducts));
-                renderAdminDashboard();
-                alert('Product published.');
-            }
-        }
-
-        function rejectProduct(id) {
-            pendingProducts = pendingProducts.filter(x => x.id !== id);
-            localStorage.setItem('vs_v138_pending_prod', JSON.stringify(pendingProducts));
-            renderAdminDashboard();
-            alert('Product rejected.');
-        }
-
-        function approveTopup(id) {
-            const req = topupRequests.find(x => x.id === id);
-            if(req) {
-                let targetUser = registeredUsers.find(u => u.name === req.user);
-                if(targetUser) {
-                    targetUser.coins += req.coins;
-                    if(currentUser && currentUser.name === targetUser.name) {
-                        currentUser.coins = targetUser.coins;
-                        document.getElementById('userCoinBalance').innerText = currentUser.coins;
-                    }
-                    localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-                }
-                topupRequests = topupRequests.filter(x => x.id !== id);
-                localStorage.setItem('vs_v138_topups', JSON.stringify(topupRequests));
-                renderAdminDashboard();
-                alert('Top-up approved.');
-            }
-        }
-
-        function rejectTopup(id) {
-            topupRequests = topupRequests.filter(x => x.id !== id);
-            localStorage.setItem('vs_v138_topups', JSON.stringify(topupRequests));
-            renderAdminDashboard();
-            alert('Top-up rejected.');
-        }
-
-        function approveWithdraw(id) {
-            withdrawRequests = withdrawRequests.filter(x => x.id !== id);
-            localStorage.setItem('vs_v138_withdraws', JSON.stringify(withdrawRequests));
-            renderAdminDashboard();
-            alert('Payout approved.');
-        }
-
-        function rejectWithdraw(id) {
-            const req = withdrawRequests.find(x => x.id === id);
-            if(req) {
-                let targetCon = registeredUsers.find(u => u.name === req.contributor);
-                if(targetCon) {
-                    targetCon.earnings = (targetCon.earnings || 0) + req.coins;
-                    if(currentUser && currentUser.name === targetCon.name) currentUser.earnings = targetCon.earnings;
-                    localStorage.setItem('vs_v138_users', JSON.stringify(registeredUsers));
-                }
-                withdrawRequests = withdrawRequests.filter(x => x.id !== id);
-                localStorage.setItem('vs_v138_withdraws', JSON.stringify(withdrawRequests));
-                renderAdminDashboard();
-                alert('Withdrawal rejected and coins refunded to contributor.');
-            }
-        }
-
-        updateUIAfterAuth();
-        renderProducts(products);
-    </script>
-</body>
-</html>
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'ဤအီးမေးလ်ဖြင့် အကောင့်ရှိနှင့်ပြီးသား ဖြစ်ပါသည်။' });
+    }
+
+    const newContributor = await prisma.user.create({
+      data: {
+        email,
+        password, // Production တွင် Hash ပြုလုပ်ရန်
+        name: name || 'Contributor',
+        role: 'CONTRIBUTOR',
+        accountStatus: 'PENDING' // Admin အတည်ပြုချက်စောင့်ဆိုင်းရန် (ရောင်းချခွင့်မရသေးပါ)
+      }
+    });
+
+    res.status(201).json({
+      message: 'Contributor အကောင့်ဖွင့်လှစ်ပြီးပါပြီ။ Admin (veryacomputerclass@gmail.com) ၏ အတည်ပြုချက်ရမှသာ Product တင်ခွင့်/ရောင်းချခွင့် ရရှိပါမည်။',
+      newContributor
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ADMIN: Contributor အကောင့်ကို ရောင်းချခွင့်ပြုရန် (APPROVED / REJECTED)
+app.patch('/api/admin/contributor/:id/review', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { adminEmail, accountStatus } = req.body; // 'APPROVED' သို့မဟုတ် 'REJECTED'
+
+    if (adminEmail !== 'veryacomputerclass@gmail.com') {
+      return res.status(403).json({ error: 'ခွင့်ပြုချက်မရှိပါ (Admin သီးသန့်ဖြစ်သည်)။' });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { accountStatus }
+    });
+
+    res.json({ message: `Contributor အကောင့်အား ${accountStatus} ပြုလုပ်ပြီးပါပြီ။`, updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// 5. PRODUCT SUBMISSION & ADMIN APPROVAL
+// ==========================================
+
+// Contributor မှ Product တင်ရန် တောင်းဆိုခြင်း (Account Status နှင့် Link များကို စစ်ဆေးခြင်း)
+app.post('/api/products/submit', async (req, res) => {
+  try {
+    const { title, description, priceInCoins, imageJpgUrl, catboxLink, contributorId } = req.body;
+
+    // 1. Contributor ၏ အကောင့်အခြေအနေကို စစ်ဆေးခြင်း (Admin ခွင့်ပြုချက် ရ/မရ)
+    const contributor = await prisma.user.findUnique({ where: { id: contributorId } });
+    if (!contributor || contributor.accountStatus !== 'APPROVED') {
+      return res.status(403).json({ error: 'အမှား - သင့်အကောင့်မှာ Admin ၏ ရောင်းချခွင့် အတည်ပြုချက် (Approval) မရသေးပါ။' });
+    }
+
+    // 2. JPG ပုံစံ ဟုတ်မဟုတ် စစ်ဆေးခြင်း
+    if (!imageJpgUrl || (!imageJpgUrl.toLowerCase().endsWith('.jpg') && !imageJpgUrl.toLowerCase().endsWith('.jpeg'))) {
+      return res.status(400).json({ error: 'အမှား - တင်မည့်ပုံသည် .jpg သို့မဟုတ် .jpeg ပုံစံ ဖြစ်ရပါမည်။' });
+    }
+
+    // 3. Catbox Link ဟုတ်မဟုတ် စစ်ဆေးခြင်း
+    if (!catboxLink || !catboxLink.includes('catbox.moe')) {
+      return res.status(400).json({ error: 'အမှား - ဖိုင်လင့်ခ်သည် Catbox Link (catbox.moe) ဖြစ်ရပါမည်။' });
+    }
+
+    const newProduct = await prisma.product.create({
+      data: {
+        title,
+        description,
+        priceInCoins: parseFloat(priceInCoins),
+        imageJpgUrl,
+        catboxLink,
+        contributorId,
+        status: 'PENDING' // Product ကို Admin အတည်ပြုချက်တောင်းရန်
+      }
+    });
+
+    res.status(201).json({
+      message: 'Product တင်ခြင်းအောင်မြင်ပါသည်။ Admin ၏ Product တင်ခွင့် အတည်ပြုချက်ကို စောင့်ဆိုင်းနေပါသည်။',
+      newProduct
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ADMIN: Product ကို စစ်ဆေးပြီး ရောင်းချခွင့် အတည်ပြုခြင်း
+app.patch('/api/admin/products/:id/review', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { adminEmail, status } = req.body; // 'APPROVED' သို့မဟုတ် 'REJECTED'
+
+    if (adminEmail !== 'veryacomputerclass@gmail.com') {
+      return res.status(403).json({ error: 'Admin သီးသန့် လုပ်ဆောင်ချက်ဖြစ်ပါသည်။' });
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: { status }
+    });
+
+    res.json({ message: `Product အား ${status} ပြုလုပ်ပြီး Store တွင် ဖော်ပြလိုက်ပါပြီ။`, updatedProduct });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// 6. COIN SYSTEM (BUY & WITHDRAW REQUESTS)
+// ==========================================
+
+// Coin ဝယ်ယူရန် သို့မဟုတ် ထုတ်ယူရန် တောင်းဆိုခြင်း
+app.post('/api/coins/request', async (req, res) => {
+  try {
+    const { userId, amount, type } = req.body; // type: 'BUY' သို့မဟုတ် 'WITHDRAW'
+
+    if (!['BUY', 'WITHDRAW'].includes(type)) {
+      return res.status(400).json({ error: 'တောင်းဆိုမှု အမျိုးအစား မမှန်ကန်ပါ။' });
+    }
+
+    const coinRequest = await prisma.coinRequest.create({
+      data: {
+        userId,
+        amount: parseFloat(amount),
+        type,
+        status: 'PENDING'
+      }
+    });
+
+    res.status(201).json({
+      message: `Coin ${type === 'BUY' ? 'ဝယ်ယူရန်' : 'ငွေထုတ်ယူရန်'} တောင်းဆိုမှု Admin ထံသို့ ပေးပို့ပြီးပါပြီ။`,
+      coinRequest
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ADMIN: Coin တောင်းဆိုမှုကို အတည်ပြုခြင်းနှင့် လက်ကျန်ငွေ ချိန်ညှိခြင်း
+app.patch('/api/admin/coins/request/:id/review', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { adminEmail, status } = req.body; // 'APPROVED' သို့မဟုတ် 'REJECTED'
+
+    if (adminEmail !== 'veryacomputerclass@gmail.com') {
+      return res.status(403).json({ error: 'Admin သီးသန့် လုပ်ဆောင်ချက်ဖြစ်ပါသည်။' });
+    }
+
+    const request = await prisma.coinRequest.findUnique({ where: { id } });
+    if (!request) return res.status(404).json({ error: 'တောင်းဆိုမှုကို ရှာမတွေ့ပါ။' });
+
+    if (status === 'APPROVED') {
+      const modifier = request.type === 'BUY' ? 1 : -1;
+      await prisma.user.update({
+        where: { id: request.userId },
+        data: { coins: { increment: request.amount * modifier } }
+      });
+    }
+
+    const updatedRequest = await prisma.coinRequest.update({
+      where: { id },
+      data: { status }
+    });
+
+    res.json({ message: `Coin တောင်းဆိုမှုမှာ ${status} ဖြစ်သွားပါပြီ။`, updatedRequest });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// 7. SERVER START
+// ==========================================
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, async () => {
+  await initVerstockSystem();
+  console.log(`Verstock Premium Server is running on port ${PORT}`);
+});
