@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Ultimate Digital Asset Store v8.0</title>
+    <title>Verya Stock - Ultimate Digital Asset Store v9.0</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,7 +43,6 @@
                 <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-lg border border-slate-700 transition">
                     <i id="themeIcon" class="fa-solid fa-sun"></i>
                 </button>
-                <!-- Coin Balance -->
                 <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold text-amber-400 flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-coins"></i>
                     <span id="userCoinBalance">300</span>
@@ -51,7 +50,6 @@
                 <button onclick="openTopUpModal()" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-95 transition">
                     ငွေဖြည့်ရန်
                 </button>
-                <!-- Cart Button -->
                 <button onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 transition">
                     <i class="fa-solid fa-cart-shopping text-amber-400"></i>
                     <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
@@ -70,7 +68,7 @@
         <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
                 <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v8.0 - Secure Payment & Approval Edition</p>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v9.0 - Product Approval & Secure Payment Edition</p>
                 
                 <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
                     <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
@@ -111,7 +109,7 @@
                         <input type="url" id="conImage" required placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                     </div>
                     <div class="md:col-span-2">
-                        <button type="submit" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">ဖိုင်တင်မည်</button>
+                        <button type="submit" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">စစ်ဆေးရန် တင်မည် (Submit for Review)</button>
                     </div>
                 </form>
             </div>
@@ -126,13 +124,33 @@
         </section>
 
         <!-- ADMIN TAB -->
-        <section id="tab-admin" class="hidden space-y-6">
+        <section id="tab-admin" class="hidden space-y-8">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                <h2 class="text-2xl font-bold gold-text">Admin Dashboard & Coin Approval</h2>
+                <h2 class="text-2xl font-bold gold-text">Admin Dashboard & Approvals</h2>
                 
-                <!-- Pending TopUp Requests -->
+                <!-- Pending Product Approvals -->
+                <div class="border-b border-slate-800 pb-6">
+                    <h3 class="font-bold text-sm text-amber-400 mb-3">တင်ထားသော ပစ္စည်းအသစ်များ (Product Approval Requests)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">ပုံ</th>
+                                    <th class="p-3">ခေါင်းစဉ်</th>
+                                    <th class="p-3">ဈေးနှုန်း</th>
+                                    <th class="p-3">လုပ်ဆောင်ချက်</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProductTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="4" class="p-3 text-center text-slate-500">စစ်ဆေးရန် ပစ္စည်း မရှိသေးပါ။</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pending TopUp Approvals -->
                 <div>
-                    <h3 class="font-bold text-sm text-amber-400 mb-3">Coin ဖြည့်ရန် တောင်းဆိုထားသူများ (Approval Requests)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3">Coin ဖြည့်ရန် တောင်းဆိုထားသူများ (TopUp Approval Requests)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -140,7 +158,7 @@
                                     <th class="p-3">အသုံးပြုသူ</th>
                                     <th class="p-3">ငွေပေးချေမှု</th>
                                     <th class="p-3">တောင်းဆိုသည့် Coins</th>
-                                    <th class="p-3">နောက်ဆုံး ကုဒ် ၅ လုံး</th>
+                                    <th class="p-3">ကုဒ် ၅ လုံး</th>
                                     <th class="p-3">လုပ်ဆောင်ချက်</th>
                                 </tr>
                             </thead>
@@ -184,7 +202,7 @@
         </div>
     </div>
 
-    <!-- TOP-UP MODAL WITH PAYMENT INFO & 5 DIGIT CODE -->
+    <!-- TOP-UP MODAL -->
     <div id="topUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
             <button onclick="closeTopUpModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
@@ -193,7 +211,7 @@
             <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
                 <p><strong>ငွေလက်ခံမည့်သူ:</strong> Hein Yazar Soe</p>
                 <p><strong>ဖုန်းနံပါတ်:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
-                <p class="text-slate-400 pt-1">အထက်ပါ နံပါတ်သို့ ငွေလွဲပြီးပါက ရရှိလာသော ငွေလွဲအမှတ်စဉ်၏ <strong>နောက်ဆုံးကုဒ် ၅ လုံး</strong> ကို အောက်တွင် ဖြည့်သွင်း၍ Admin ခွင့်ပြုချက် တောင်းခံပါ။</p>
+                <p class="text-slate-400 pt-1">ငွေလွဲပြီးပါက ရရှိလာသော ငွေလွဲအမှတ်စဉ်၏ <strong>နောက်ဆုံးကုဒ် ၅ လုံး</strong> ကို အောက်တွင် ဖြည့်သွင်းပါ။</p>
             </div>
 
             <div class="space-y-3">
@@ -202,7 +220,7 @@
                     <input type="number" id="topupCoins" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">ငွေလွဲကုဒ် နောက်ဆုံး ၅ လုံး (Transaction Last 5 Digits)</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">ငွေလွဲကုဒ် နောက်ဆုံး ၅ လုံး</label>
                     <input type="text" id="topupCode" maxlength="5" placeholder="ဥပမာ - 48962" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white tracking-widest font-bold">
                 </div>
             </div>
@@ -216,15 +234,19 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        let products = JSON.parse(localStorage.getItem('vs_v8_prod')) || [
+        // အများပြည်သူမြင်ရမည့် Approved ဖြစ်ပြီးသား ပစ္စည်းများ
+        let products = JSON.parse(localStorage.getItem('vs_v9_prod')) || [
             { id: 1, title: "Abstract Neon Background", coins: 20, image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" },
             { id: 2, title: "Modern Business Workspace", coins: 35, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" }
         ];
 
+        // Admin ခွင့်ပြုချက်စောင့်ဆိုင်းနေသော ပစ္စည်းများ (Pending Products)
+        let pendingProducts = JSON.parse(localStorage.getItem('vs_v9_pending_prod')) || [];
+
         let currentUser = { name: "Hein User", coins: 300 };
-        let downloads = JSON.parse(localStorage.getItem('vs_v8_down')) || [];
+        let downloads = JSON.parse(localStorage.getItem('vs_v9_down')) || [];
         let cart = [];
-        let topupRequests = JSON.parse(localStorage.getItem('vs_v8_topups')) || [];
+        let topupRequests = JSON.parse(localStorage.getItem('vs_v9_topups')) || [];
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
@@ -300,7 +322,7 @@
                 cart.forEach(p => { if(!downloads.some(d => d.id === p.id)) downloads.push(p); });
                 cart = [];
                 document.getElementById('cartCountBadge').innerText = 0;
-                localStorage.setItem('vs_v8_down', JSON.stringify(downloads));
+                localStorage.setItem('vs_v9_down', JSON.stringify(downloads));
                 closeCartModal();
                 alert('ဝယ်ယူမှု အောင်မြင်ပါသည်။');
                 switchTab('downloads');
@@ -316,7 +338,7 @@
                 currentUser.coins -= p.coins;
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 if(!downloads.some(d => d.id === id)) downloads.push(p);
-                localStorage.setItem('vs_v8_down', JSON.stringify(downloads));
+                localStorage.setItem('vs_v9_down', JSON.stringify(downloads));
                 alert('အောင်မြင်စွာ ဝယ်ယူပြီးပါပြီ။');
                 switchTab('downloads');
             } else {
@@ -338,17 +360,19 @@
             `).join('');
         }
 
+        // 1. CONTRIBUTOR တင်သည့်အခါ Pending ထဲသို့ ပို့ခြင်း
         function handleContributorUpload(e) {
             e.preventDefault();
-            products.unshift({
+            const newProduct = {
                 id: Date.now(),
                 title: document.getElementById('conTitle').value,
                 coins: parseInt(document.getElementById('conCoins').value),
                 image: document.getElementById('conImage').value
-            });
-            localStorage.setItem('vs_v8_prod', JSON.stringify(products));
+            };
+            pendingProducts.push(newProduct);
+            localStorage.setItem('vs_v9_pending_prod', JSON.stringify(pendingProducts));
             document.getElementById('contributorForm').reset();
-            alert('ဖိုင်တင်ခြင်း အောင်မြင်ပါသည်။');
+            alert('ဖိုင်တင်ခြင်း အောင်မြင်ပါသည်။ Admin ခွင့်ပြုချက်ရမှသာ Website တွင် ပြသမည် ဖြစ်ပါသည်။');
             switchTab('home');
         }
 
@@ -363,28 +387,69 @@
                 return;
             }
             topupRequests.push({ id: Date.now(), user: currentUser.name, coins, code });
-            localStorage.setItem('vs_v8_topups', JSON.stringify(topupRequests));
+            localStorage.setItem('vs_v9_topups', JSON.stringify(topupRequests));
             closeTopUpModal();
-            alert('Admin ထံသို့ ခွင့်ပြုချက်တောင်းဆိုမှု ပို့ပြီးပါပြီ။ Admin အတည်ပြုပြီးပါက Coin များ ဝင်ရောက်လာမည် ဖြစ်ပါသည်။');
+            alert('Admin ထံသို့ ခွင့်ပြုချက်တောင်းဆိုမှု ပို့ပြီးပါပြီ။');
         }
 
+        // 2. ADMIN PANEL တွင် Approval ဇယားများပြသခြင်း
         function renderAdmin() {
-            const tbody = document.getElementById('adminTopupTable');
-            if(topupRequests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">တောင်းဆိုမှု မရှိသေးပါ။</td></tr>`;
-                return;
+            // Product Approvals Rendering
+            const prodTbody = document.getElementById('adminProductTable');
+            if(pendingProducts.length === 0) {
+                prodTbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">စစ်ဆေးရန် ပစ္စည်း မရှိသေးပါ။</td></tr>`;
+            } else {
+                prodTbody.innerHTML = pendingProducts.map(p => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg"></td>
+                        <td class="p-3 font-bold">${p.title}</td>
+                        <td class="p-3 text-amber-400">${p.coins} Coins</td>
+                        <td class="p-3 space-x-2">
+                            <button onclick="approveProduct(${p.id})" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">ခွင့်ပြုမည် (Approve)</button>
+                            <button onclick="rejectProduct(${p.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">ပယ်ချမည်</button>
+                        </td>
+                    </tr>
+                `).join('');
             }
-            tbody.innerHTML = topupRequests.map(r => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3">${r.user}</td>
-                    <td class="p-3 text-xs text-slate-400">KBZPay / WavePay (09941117896)</td>
-                    <td class="p-3 text-amber-400 font-bold">+${r.coins} Coins</td>
-                    <td class="p-3 tracking-widest font-extrabold text-white">${r.code}</td>
-                    <td class="p-3">
-                        <button onclick="approveTopup(${r.id})" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">အတည်ပြုမည်</button>
-                    </td>
-                </tr>
-            `).join('');
+
+            // TopUp Approvals Rendering
+            const topupTbody = document.getElementById('adminTopupTable');
+            if(topupRequests.length === 0) {
+                topupTbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">တောင်းဆိုမှု မရှိသေးပါ။</td></tr>`;
+            } else {
+                topupTbody.innerHTML = topupRequests.map(r => `
+                    <tr class="border-b border-slate-800">
+                        <td class="p-3">${r.user}</td>
+                        <td class="p-3 text-xs text-slate-400">KBZPay / WavePay (09941117896)</td>
+                        <td class="p-3 text-amber-400 font-bold">+${r.coins} Coins</td>
+                        <td class="p-3 tracking-widest font-extrabold text-white">${r.code}</td>
+                        <td class="p-3">
+                            <button onclick="approveTopup(${r.id})" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">အတည်ပြုမည်</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // 3. ADMIN မှ Product ကို Approve လုပ်သည့် လုပ်ဆောင်ချက်
+        function approveProduct(id) {
+            const prod = pendingProducts.find(x => x.id === id);
+            if(prod) {
+                products.unshift(prod); // ပင်မစာမျက်နှာ ပြသရန် ပစ္စည်းစာရင်းထဲသို့ ထည့်မည်
+                pendingProducts = pendingProducts.filter(x => x.id !== id); // Pending စာရင်းမှ ဖယ်မည်
+                localStorage.setItem('vs_v9_prod', JSON.stringify(products));
+                localStorage.setItem('vs_v9_pending_prod', JSON.stringify(pendingProducts));
+                renderAdmin();
+                alert('ပစ္စည်းကို အောင်မြင်စွာ ခွင့်ပြုပေးလိုက်ပါပြီ။ ယခုအခါ Website ပေါ်တွင် ရောင်းချနေပြီ ဖြစ်ပါသည်။');
+            }
+        }
+
+        // 4. ADMIN မှ Product ကို Reject လုပ်သည့် လုပ်ဆောင်ချက်
+        function rejectProduct(id) {
+            pendingProducts = pendingProducts.filter(x => x.id !== id);
+            localStorage.setItem('vs_v9_pending_prod', JSON.stringify(pendingProducts));
+            renderAdmin();
+            alert('ပစ္စည်းတင်ခြင်းကို ပယ်ချလိုက်ပါပြီ။');
         }
 
         function approveTopup(id) {
@@ -393,9 +458,9 @@
                 currentUser.coins += req.coins;
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 topupRequests = topupRequests.filter(x => x.id !== id);
-                localStorage.setItem('vs_v8_topups', JSON.stringify(topupRequests));
+                localStorage.setItem('vs_v9_topups', JSON.stringify(topupRequests));
                 renderAdmin();
-                alert('Coin ဖြည့်သွင်းမှုကို အောင်မြင်စွာ အတည်ပြုပေးလိုက်ပါပြီ။');
+                alert('Coin ဖြည့်သွင်းမှုကို အတည်ပြုပြီးပါပြီ။');
             }
         }
 
