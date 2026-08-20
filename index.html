@@ -442,13 +442,10 @@
         let pendingProducts = JSON.parse(localStorage.getItem('verya_pendingProducts')) || [];
         
         let allUsers = JSON.parse(localStorage.getItem('verya_allUsers')) || [
-            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin' },
-            { name: 'Default Contributor', email: 'contributor@verya.com', phone: '09941117896', role: 'Contributor' }
+            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin' }
         ];
 
-        let contributors = JSON.parse(localStorage.getItem('verya_contributors')) || [
-            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', status: 'Approved', earnings: 0 }
-        ];
+        let contributors = JSON.parse(localStorage.getItem('verya_contributors')) || [];
         let pendingContributors = JSON.parse(localStorage.getItem('verya_pendingContributors')) || [];
         let topupRequests = JSON.parse(localStorage.getItem('verya_topupRequests')) || [];
         let withdrawalRequests = JSON.parse(localStorage.getItem('verya_withdrawalRequests')) || [];
@@ -530,20 +527,27 @@
 
         function handleRegister(event) {
             event.preventDefault();
-            const name = document.getElementById('regFullName').value;
+            const name = document.getElementById('regFullName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value;
+            const phone = document.getElementById('regPhone').value.trim();
             
             if(email === 'veryacomputerclass@gmail.com') {
                 alert('This email is reserved for System Admin.');
                 return;
             }
 
-            if(!allUsers.some(u => u.email === email)) {
-                allUsers.push({ name, email, phone, role: 'Contributor (Pending)' });
+            // Check if user already exists
+            if(allUsers.some(u => u.email === email)) {
+                alert('This email is already registered!');
+                return;
             }
 
+            // Add to all users list immediately
+            allUsers.push({ name, email, phone, role: 'Contributor (Pending)' });
+            
+            // Add to pending contributor approvals
             pendingContributors.push({ name, email, phone, status: 'Pending' });
+            
             saveToLocalStorage();
             alert('Registration submitted! Awaiting Admin Approval.');
             closeAuthModal();
@@ -733,7 +737,7 @@
 
         // --- Admin Dashboard & Action Logic ---
         function updateAdminDashboard() {
-            document.getElementById('adminStatContributors').innerText = contributors.length;
+            document.getElementById('adminStatContributors').innerText = contributors.length + allUsers.filter(u => u.role.includes('Contributor')).length;
             document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
             
             const totalPendingCount = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
@@ -852,7 +856,9 @@
             contributors.push(approved);
             
             let targetUser = allUsers.find(u => u.email === approved.email);
-            if(targetUser) targetUser.role = 'Approved Contributor';
+            if(targetUser) {
+                targetUser.role = 'Approved Contributor';
+            }
 
             saveToLocalStorage();
             alert(`Contributor ${approved.name} has been approved!`);
@@ -860,7 +866,11 @@
         }
 
         function rejectContributor(index) {
-            pendingContributors.splice(index, 1);
+            const rejected = pendingContributors.splice(index, 1)[0];
+            let targetUserIndex = allUsers.findIndex(u => u.email === rejected.email);
+            if(targetUserIndex !== -1) {
+                allUsers.splice(targetUserIndex, 1);
+            }
             saveToLocalStorage();
             alert('Contributor application rejected.');
             updateAdminDashboard();
@@ -914,6 +924,9 @@
         // Initialize App UI
         updateUserUI();
         renderProducts();
+        if(currentUser && currentUser.email === 'veryacomputerclass@gmail.com') {
+            updateAdminDashboard();
+        }
     </script>
 </body>
 </html>
