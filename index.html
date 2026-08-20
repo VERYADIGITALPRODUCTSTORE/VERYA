@@ -1,53 +1,68 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="my" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Premium Stock Photos & Digital Assets</title>
-    
-    <!-- SEO & Open Graph Meta Tags -->
-    <meta name="description" content="Verya Stock is the premier digital product and stock photo store in Myanmar founded by Hein Yazarsoe. Explore high-quality assets using our secure coin system.">
-    <meta name="keywords" content="Verya Stock, Stock Photos, Digital Products Myanmar, Hein Yazarsoe, Coin System, Sagaing, Pale">
-    <meta name="author" content="Hein Yazarsoe">
+    <title>Verya Stock - Ultimate Digital Asset Store v7.0</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: {} }
+        }
+    </script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { background-color: #0f172a; color: #f8fafc; }
-        .premium-card { background: #1e293b; border: 1px solid #334155; }
         .gold-text { color: #fbbf24; }
         .gold-btn { background: linear-gradient(135deg, #fbbf24, #d97706); }
+        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fbbf24; font-size: 10px; padding: 2px 6px; border-radius: 4px; pointer-events: none; }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300">
 
     <!-- Header / Navbar -->
-    <header class="bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
+    <header class="bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-6">
-                <a href="#" onclick="switchTab('home')" class="text-2xl font-black text-white flex items-center gap-2">
+                <a href="#" onclick="switchTab('home')" class="text-2xl font-black flex items-center gap-2">
                     <i class="fa-solid fa-layer-group text-amber-500"></i> Verya Stock
                 </a>
-                <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-300">
-                    <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">ပင်မစာမျက်နှာ</a>
-                    <a href="#" onclick="switchTab('contact')" class="hover:text-amber-400 transition">ဆက်သွယ်ရန်</a>
+                <nav class="hidden md:flex space-x-5 text-sm font-medium text-slate-300">
+                    <a href="#" onclick="switchTab('home')" class="nav-home hover:text-amber-400 transition">ပင်မစာမျက်နှာ</a>
+                    <a href="#" onclick="switchTab('downloads')" class="nav-downloads hover:text-amber-400 transition">ဒေါင်းလုဒ်များ</a>
+                    <a href="#" onclick="switchTab('contributor')" class="nav-contributor hover:text-amber-400 transition">Contributor</a>
+                    <a href="#" onclick="switchTab('contact')" class="nav-contact hover:text-amber-400 transition">ဆက်သွယ်ရန်</a>
                 </nav>
             </div>
             
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3">
+                <!-- Language Toggle -->
+                <button onclick="toggleLanguage()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-lg border border-slate-700 text-xs font-bold transition">
+                    <span id="langLabel">EN</span>
+                </button>
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-lg border border-slate-700 transition">
+                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                </button>
                 <!-- Coin Balance -->
                 <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-sm font-bold text-amber-400 flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-coins"></i>
-                    <span id="userCoinBalance">300</span> Coins
+                    <span id="userCoinBalance">300</span>
                 </div>
-                <button onclick="openTopUpModal()" class="gold-btn text-slate-900 px-3.5 py-1.5 rounded-lg text-sm font-bold hover:opacity-95 transition">
-                    Coin ဖြည့်ရန်
+                <button onclick="openTopUpModal()" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-95 transition">
+                    ငွေဖြည့်ရန်
+                </button>
+                <!-- Cart Button -->
+                <button onclick="openCartModal()" class="relative bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 transition">
+                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
+                    <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
                 </button>
                 <button onclick="switchTab('admin')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-lg text-sm font-medium border border-slate-700 transition">
-                    <i class="fa-solid fa-lock mr-1"></i> Admin Panel
+                    <i class="fa-solid fa-lock mr-1"></i> Admin
                 </button>
             </div>
         </div>
@@ -56,317 +71,318 @@
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 py-6">
 
-        <!-- HOME / SHUTTERSTOCK EXPLORE TAB -->
+        <!-- HOME TAB -->
         <section id="tab-home" class="space-y-8">
-            <!-- Hero Search Section (Shutterstock Style) -->
-            <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-red-950 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
-                <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock တွင် သင့်လုပ်ငန်း၊ ဒီဇိုင်းနှင့် ဖန်တီးမှုများအတွက် အရည်အသွေးအမြင့်ဆုံး ပုံများကို ရှာဖွေဝယ်ယူပါ။</p>
+            <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
+                <h1 id="heroTitle" class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ</h1>
+                <p id="heroSubtitle" class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v7.0 - Enterprise Edition ဖြင့် ပိုမိုလုံခြုံမြန်ဆန်စွာ အသုံးပြုနိုင်ပါပြီ။</p>
                 
-                <!-- Search Box -->
                 <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
                     <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
-                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ပုံများကို ရှာဖွေပါ (ဥပမာ - Background, Business, 3D)..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
-                    <button onclick="filterProducts()" class="gold-btn text-slate-900 font-bold px-6 py-3 rounded-xl transition">ရှာမည်</button>
-                </div>
-
-                <!-- Categories Quick Tags -->
-                <div class="flex flex-wrap justify-center gap-2 mt-6 text-xs">
-                    <button onclick="setCategory('all')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 transition">အားလုံး</button>
-                    <button onclick="setCategory('Background')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 transition">Backgrounds</button>
-                    <button onclick="setCategory('Business')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 transition">Business</button>
-                    <button onclick="setCategory('3D Art')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 transition">3D Art</button>
+                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ပုံများကို ရှာဖွေပါ..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
+                    <button onclick="filterProducts()" class="gold-btn text-slate-950 font-bold px-6 py-3 rounded-xl transition">ရှာမည်</button>
                 </div>
             </div>
 
-            <!-- Products Grid (Shutterstock Style Results) -->
             <div>
                 <h2 class="text-xl font-bold mb-6 text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-fire"></i> လူကြိုက်များသော စတော့ပုံများ
+                    <i class="fa-solid fa-fire"></i> ရရှိနိုင်သော ပစ္စည်းများ
                 </h2>
-                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <!-- Dynamic Injected by JS -->
-                </div>
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
             </div>
         </section>
 
-        <!-- CONTACT US TAB -->
-        <section id="tab-contact" class="hidden max-w-2xl mx-auto premium-card rounded-2xl p-8 space-y-6 shadow-xl">
-            <h2 class="text-2xl font-bold gold-text border-b border-slate-700 pb-4">ဆက်သွယ်ရန် (Contact Us)</h2>
-            <div class="space-y-4 text-slate-300">
-                <p class="flex items-start gap-3">
-                    <i class="fa-solid fa-location-dot text-amber-500 mt-1 text-lg"></i>
-                    <span><strong>တည်နေရာ:</strong> West Min Ma, Pale, Sagaing, Myanmar</span>
-                </p>
-                <p class="flex items-center gap-3">
-                    <i class="fa-solid fa-phone text-amber-500 text-lg"></i>
-                    <span><strong>ဖုန်းနံပါတ်များ:</strong> (+95) 941117896, (+95) 429515474</span>
-                </p>
-                <p class="flex items-center gap-3">
-                    <i class="fa-solid fa-envelope text-amber-500 text-lg"></i>
-                    <span><strong>အီးမေးလ်:</strong> veryacomputerclass@gmail.com</span>
-                </p>
-                <div class="pt-4 border-t border-slate-700 flex items-center gap-3">
-                    <i class="fa-solid fa-user-shield text-amber-500 text-2xl"></i>
-                    <div>
-                        <p class="text-sm text-slate-400">တည်ထောင်သူ (Founder)</p>
-                        <p class="font-bold text-white">Hein Yazarsoe</p>
-                    </div>
-                </div>
-            </div>
+        <!-- MY DOWNLOADS TAB -->
+        <section id="tab-downloads" class="hidden space-y-6">
+            <h2 class="text-2xl font-bold border-b border-slate-800 pb-4">ဝယ်ယူပြီးသား ဖိုင်များနှင့် ဒေါင်းလုဒ်များ</h2>
+            <div id="downloadGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
         </section>
 
-        <!-- ADMIN PANEL TAB -->
-        <section id="tab-admin" class="hidden space-y-6">
-            <div class="premium-card rounded-2xl p-8 shadow-xl">
-                <h2 class="text-2xl font-bold mb-2 gold-text">Admin Dashboard - Asset & Commission Control</h2>
-                <p class="text-sm text-slate-400 mb-6">ပုံအသစ်များတင်ခြင်းနှင့် ကော်မရှင် (Commission %) သတ်မှတ်ခြင်းစနစ်</p>
-                
-                <!-- Add Product Form -->
-                <form id="addProductForm" onsubmit="handleAddNewProduct(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-slate-900 p-6 rounded-xl border border-slate-700">
+        <!-- CONTRIBUTOR TAB -->
+        <section id="tab-contributor" class="hidden space-y-6 max-w-4xl mx-auto">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
+                <h2 class="text-2xl font-bold gold-text">Contributor Portal</h2>
+                <form id="contributorForm" onsubmit="handleContributorUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-6 rounded-xl border border-slate-800">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">ပုံခေါင်းစဉ် (Title)</label>
-                        <input type="text" id="adminTitle" required class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">အမျိုးအစား (Category)</label>
-                        <select id="adminCategory" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500">
-                            <option value="Background">Background</option>
-                            <option value="Business">Business</option>
-                            <option value="3D Art">3D Art</option>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-400 mb-1">ဖိုင်ခေါင်းစဉ်</label>
+                        <input type="text" id="conTitle" required class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-400 mb-1">ဈေးနှုန်း (Coins)</label>
-                        <input type="number" id="adminCoins" required min="1" value="25" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-1">Admin ကော်မရှင် (%)</label>
-                        <input type="number" id="adminComm" required min="0" max="100" value="15" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500">
+                        <input type="number" id="conCoins" required min="5" value="20" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-bold text-slate-400 mb-1">ပုံ URL (Image Link)</label>
-                        <input type="url" id="adminImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-amber-500">
+                        <label class="block text-xs font-bold text-slate-400 mb-1">ပုံ URL</label>
+                        <input type="url" id="conImage" required placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                     </div>
                     <div class="md:col-span-2">
-                        <button type="submit" class="gold-btn text-slate-900 font-bold px-6 py-2.5 rounded-lg text-sm hover:opacity-90 transition">
-                            <i class="fa-solid fa-plus mr-1"></i> ပုံအသစ်တင်မည်
-                        </button>
+                        <button type="submit" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">ဖိုင်တင်မည်</button>
                     </div>
                 </form>
+            </div>
+        </section>
 
-                <!-- Admin Products Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-700">
-                                <th class="p-3">ပုံ</th>
-                                <th class="p-3">ခေါင်းစဉ်</th>
-                                <th class="p-3">Category</th>
-                                <th class="p-3">တန်ဖိုး</th>
-                                <th class="p-3">Commission %</th>
-                                <th class="p-3">လုပ်ဆောင်ချက်</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody" class="text-sm divide-y divide-slate-800">
-                            <!-- Injected by JS -->
-                        </tbody>
-                    </table>
+        <!-- CONTACT TAB -->
+        <section id="tab-contact" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-4 shadow-xl">
+            <h2 class="text-2xl font-bold gold-text border-b border-slate-800 pb-4">ဆက်သွယ်ရန်</h2>
+            <p class="text-slate-300 text-sm"><strong>တည်နေရာ:</strong> Pale, Sagaing, Myanmar</p>
+            <p class="text-slate-300 text-sm"><strong>ဖုန်းနံပါတ်:</strong> (+95) 941117896</p>
+            <p class="text-slate-300 text-sm"><strong>အီးမေးလ်:</strong> veryacomputerclass@gmail.com</p>
+        </section>
+
+        <!-- ADMIN TAB -->
+        <section id="tab-admin" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
+                <h2 class="text-2xl font-bold gold-text">Admin Dashboard & Analytics</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">စုစုပေါင်း ရောင်းအား</p>
+                        <p class="text-xl font-bold text-amber-400" id="adminTotalSales">0 နှုံး</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">စုစုပေါင်း ဝင်ငွေ</p>
+                        <p class="text-xl font-bold text-amber-400" id="adminTotalRevenue">0 Coins</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400">ပစ္စည်းအရေအတွက်</p>
+                        <p class="text-xl font-bold" id="adminTotalItems">0</p>
+                    </div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- IMAGE PREVIEW / DOWNLOAD MODAL (Shutterstock Style) -->
+    <!-- PREVIEW MODAL -->
     <div id="previewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative">
-            <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full w-10 h-10 flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div class="p-6 space-y-4">
-                <h3 id="modalTitle" class="text-xl font-bold text-white"></h3>
-                <div class="overflow-hidden rounded-xl border border-slate-800 max-h-[350px] flex justify-center bg-black/50">
-                    <img id="modalImage" src="" class="object-contain max-h-[350px] w-full">
-                </div>
-                <div class="flex justify-between items-center pt-2">
-                    <div>
-                        <p class="text-xs text-slate-400">သတ်မှတ်ထားသော တန်ဖိုး:</p>
-                        <p id="modalPrice" class="text-amber-400 font-extrabold text-lg flex items-center gap-1"></p>
-                    </div>
-                    <button id="modalBuyBtn" onclick="" class="gold-btn text-slate-900 font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
-                        Coin ဖြင့် ဝယ်ယူမည်
-                    </button>
-                </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 relative shadow-2xl">
+            <button onclick="closePreviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modalTitle" class="text-lg font-bold"></h3>
+            <div class="relative rounded-xl overflow-hidden bg-black flex justify-center">
+                <img id="modalImage" class="max-h-[250px] object-contain w-full">
+                <div class="watermark">Verya Stock Secure</div>
+            </div>
+            <div class="flex justify-between items-center pt-2">
+                <span id="modalPrice" class="text-amber-400 font-extrabold text-lg"></span>
+                <button id="modalBuyBtn" class="gold-btn text-slate-950 px-6 py-2 rounded-xl text-sm font-bold">ဝယ်ယူမည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART MODAL WITH COUPON -->
+    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
+            <button onclick="closeCartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-bold">ခြင်းတောင်း</h3>
+            <div id="cartList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
+            
+            <div class="flex gap-2 pt-2">
+                <input type="text" id="couponInput" placeholder="Promo Code (ဥပမာ- VERYA2026)" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-lg text-xs text-white">
+                <button onclick="applyCoupon()" class="bg-slate-800 text-amber-400 px-4 py-2 rounded-lg text-xs font-bold border border-slate-700">ထည့်မည်</button>
+            </div>
+
+            <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-sm">
+                <span>စုစုပေါင်း: <strong id="cartTotal" class="text-amber-400 text-lg">0 Coins</strong></span>
+                <button onclick="checkoutCart()" class="gold-btn text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">ဝယ်မည်</button>
             </div>
         </div>
     </div>
 
     <!-- TOP-UP MODAL -->
     <div id="topUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-sm space-y-4 shadow-xl">
-            <h3 class="text-lg font-bold text-white">Coin ဖြည့်သွင်းရန် (Top Up)</h3>
-            <p class="text-xs text-slate-400">KBZPay / WavePay ဖြင့် ငွေလွှဲပြီး သင့်အကောင့်သို့ Coin ဖြည့်ပါ။</p>
-            <div>
-                <label class="block text-xs font-bold text-slate-400 mb-1">ဖြည့်မည့်ပမာဏ (Coins)</label>
-                <input type="number" id="topupAmount" value="100" class="w-full bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-sm text-white focus:outline-none">
-            </div>
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeTopUpModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-bold">ပိတ်မည်</button>
-                <button onclick="confirmTopUp()" class="px-4 py-2 gold-btn text-slate-900 rounded-lg text-xs font-bold">အတည်ပြုမည်</button>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm space-y-4">
+            <h3 class="text-lg font-bold">ငွေဖြည့်ရန်</h3>
+            <input type="number" id="topupVal" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeTopUpModal()" class="px-4 py-2 bg-slate-800 text-xs rounded-lg">ပိတ်ရန်</button>
+                <button onclick="confirmTopUp()" class="px-4 py-2 gold-btn text-slate-950 text-xs font-bold rounded-lg">အတည်ပြု</button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT -->
     <script>
-        // Mock Products Data (Shutterstock Style)
-        let products = [
-            { id: 1, title: "Abstract Neon Digital Background", category: "Background", coins: 20, comm: 10, image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" },
-            { id: 2, title: "Modern Business Workspace Vector", category: "Business", coins: 35, comm: 15, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" },
-            { id: 3, title: "Creative 3D Rendering Art Design", category: "3D Art", coins: 50, comm: 20, image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80" },
-            { id: 4, title: "Cinematic Nature Landscape Photo", category: "Background", coins: 15, comm: 10, image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=600&q=80" }
-        ];
-        
-        let userCoins = 300;
-        let currentCategory = 'all';
+        let currentLang = 'my';
+        let translations = {
+            my: { heroTitle: "ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ", heroSub: "Verya Stock v7.0 - Enterprise Edition ဖြင့် ပိုမိုလုံခြုံမြန်ဆန်စွာ အသုံးပြုနိုင်ပါပြီ။" },
+            en: { heroTitle: "Stunning Stock Photos & Digital Assets", heroSub: "Experience secure and fast digital downloads with Verya Stock v7.0 Enterprise Edition." }
+        };
 
-        // Tab Switching Logic
-        function switchTab(tabName) {
-            document.getElementById('tab-home').classList.toggle('hidden', tabName !== 'home');
-            document.getElementById('tab-contact').classList.toggle('hidden', tabName !== 'contact');
-            document.getElementById('tab-admin').classList.toggle('hidden', tabName !== 'admin');
-            
-            if(tabName === 'home') renderProducts(products);
-            if(tabName === 'admin') renderAdminTable();
+        let products = JSON.parse(localStorage.getItem('vs_v7_prod')) || [
+            { id: 1, title: "Abstract Neon Background", coins: 20, image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, title: "Modern Business Workspace", coins: 35, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let currentUser = { coins: 300 };
+        let downloads = JSON.parse(localStorage.getItem('vs_v7_down')) || [];
+        let cart = [];
+        let discountPercent = 0;
+        let totalSalesCount = 0;
+        let totalRevenueEarned = 0;
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'my' ? 'en' : 'my';
+            document.getElementById('langLabel').innerText = currentLang.toUpperCase();
+            document.getElementById('heroTitle').innerText = translations[currentLang].heroTitle;
+            document.getElementById('heroSubtitle').innerText = translations[currentLang].heroSub;
         }
 
-        // Render Products Grid
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function switchTab(tab) {
+            ['home', 'downloads', 'contributor', 'contact', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
+            });
+            if(tab === 'home') renderProducts(products);
+            if(tab === 'downloads') renderDownloads();
+            if(tab === 'admin') renderAdmin();
+        }
+
         function renderProducts(list) {
-            const grid = document.getElementById('productGrid');
-            if(list.length === 0) {
-                grid.innerHTML = `<p class="col-span-full text-center text-slate-500 py-10">ရှာမတွေ့ပါ။ အခြားစကားလုံးဖြင့် ရှာကြည့်ပါ။</p>`;
-                return;
-            }
-            grid.innerHTML = list.map(p => `
-                <div class="premium-card rounded-2xl overflow-hidden hover:scale-[1.02] transition shadow-lg group">
-                    <div class="relative overflow-hidden h-48 bg-slate-900 cursor-pointer" onclick="openPreviewModal(${p.id})">
-                        <img src="${p.image}" alt="${p.title}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
-                        <span class="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-[10px] text-amber-400 px-2 py-1 rounded-md font-bold">${p.category}</span>
+            document.getElementById('productGrid').innerHTML = list.map(p => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg group">
+                    <div class="h-48 overflow-hidden bg-slate-950 cursor-pointer relative" onclick="openPreview(${p.id})">
+                        <img src="${p.image}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
+                        <div class="watermark">Verya Stock</div>
                     </div>
                     <div class="p-4 space-y-2">
-                        <h3 class="font-bold text-sm text-white truncate">${p.title}</h3>
-                        <div class="flex justify-between items-center pt-2">
-                            <span class="text-amber-400 font-extrabold text-sm flex items-center gap-1">
-                                <i class="fa-solid fa-coins"></i> ${p.coins} Coins
-                            </span>
-                            <button onclick="openPreviewModal(${p.id})" class="gold-btn text-slate-900 px-3 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition">
-                                ကြည့်ရန် / ဝယ်ရန်
-                            </button>
+                        <h3 class="font-bold text-sm truncate">${p.title}</h3>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-amber-400 font-extrabold text-sm">${p.coins} Coins</span>
+                            <div class="space-x-1">
+                                <button onclick="addToCart(${p.id})" class="bg-slate-800 text-amber-400 p-2 rounded-lg text-xs border border-slate-700"><i class="fa-solid fa-cart-plus"></i></button>
+                                <button onclick="openPreview(${p.id})" class="gold-btn text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold">ဝယ်ရန်</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Filter / Search Logic
         function filterProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = products.filter(p => {
-                const matchQuery = p.title.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
-                const matchCat = currentCategory === 'all' || p.category === currentCategory;
-                return matchQuery && matchCat;
-            });
-            renderProducts(filtered);
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderProducts(products.filter(p => p.title.toLowerCase().includes(q)));
         }
 
-        function setCategory(cat) {
-            currentCategory = cat;
-            filterProducts();
-        }
-
-        // Preview Modal Logic
-        function openPreviewModal(id) {
+        function openPreview(id) {
             const p = products.find(x => x.id === id);
             document.getElementById('modalTitle').innerText = p.title;
             document.getElementById('modalImage').src = p.image;
-            document.getElementById('modalPrice').innerHTML = `<i class="fa-solid fa-coins"></i> ${p.coins} Coins <span class="text-xs text-slate-400 font-normal ml-2">(Admin Comm: ${p.comm}%)</span>`;
-            document.getElementById('modalBuyBtn').setAttribute('onclick', `buyProduct(${p.id})`);
+            document.getElementById('modalPrice').innerText = `${p.coins} Coins`;
+            document.getElementById('modalBuyBtn').setAttribute('onclick', `buyNow(${p.id}); closePreviewModal();`);
             document.getElementById('previewModal').classList.remove('hidden');
         }
+        function closePreviewModal() { document.getElementById('previewModal').classList.add('hidden'); }
 
-        function closePreviewModal() {
-            document.getElementById('previewModal').classList.add('hidden');
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            if(!cart.some(x => x.id === id)) cart.push(p);
+            document.getElementById('cartCountBadge').innerText = cart.length;
+            alert('ခြင်းတောင်းထဲသို့ ထည့်ပြီးပါပြီ။');
         }
 
-        // Buy Product Logic
-        function buyProduct(id) {
-            const p = products.find(x => x.id === id);
-            const adminCommission = (p.coins * p.comm) / 100;
-            
-            if(userCoins >= p.coins) {
-                userCoins -= p.coins;
-                document.getElementById('userCoinBalance').innerText = userCoins;
-                closePreviewModal();
-                alert(`အောင်မြင်ပါသည်! "${p.title}" ကို Coin ဖြင့် ဝယ်ယူပြီးပါပြီ။ (Admin ကော်မရှင် ${adminCommission} Coins ရရှိပါသည်) ဖိုင်ကို ဒေါင်းလုဒ်လုပ်နိုင်ပါပြီ။`);
+        function openCartModal() {
+            let total = cart.reduce((s, p) => s + p.coins, 0);
+            total = total - (total * discountPercent / 100);
+            document.getElementById('cartList').innerHTML = cart.length === 0 ? `<p class="text-slate-500 text-center">ခြင်းတောင်း خਾਲီဖြစ်နေပါသည်။</p>` :
+            cart.map(p => `<div class="flex justify-between bg-slate-950 p-2 rounded border border-slate-800"><span>${p.title}</span><span class="text-amber-400">${p.coins} Coins</span></div>`).join('');
+            document.getElementById('cartTotal').innerText = `${total} Coins`;
+            document.getElementById('cartModal').classList.remove('hidden');
+        }
+        function closeCartModal() { document.getElementById('cartModal').classList.add('hidden'); }
+
+        function applyCoupon() {
+            const code = document.getElementById('couponInput').value.trim();
+            if(code === 'VERYA2026') {
+                discountPercent = 20;
+                alert('20% လျှော့ဈေး ကုဒ် အောင်မြင်စွာ အသုံးပြုပြီးပါပြီ။');
+                openCartModal();
             } else {
-                alert('Coin လက်ကျန် မလုံလောက်ပါ။ ကျေးဇူးပြု၍ Coin ထပ်ဖြည့်ပါ။');
-                closePreviewModal();
-                openTopUpModal();
+                alert('ကုဒ် မှားယွင်းနေပါသည်။');
             }
         }
 
-        // Top Up Modal
-        function openTopUpModal() { document.getElementById('topUpModal').classList.remove('hidden'); }
-        function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
-        function confirmTopUp() {
-            const amt = parseInt(document.getElementById('topupAmount').value) || 0;
-            userCoins += amt;
-            document.getElementById('userCoinBalance').innerText = userCoins;
-            closeTopUpModal();
-            alert(`Coin ${amt} အောင်မြင်စွာ ဖြည့်သွင်းပြီးပါပြီ။`);
+        function checkoutCart() {
+            let total = cart.reduce((s, p) => s + p.coins, 0);
+            total = total - (total * discountPercent / 100);
+            if(cart.length === 0) return;
+            if(currentUser.coins >= total) {
+                currentUser.coins -= total;
+                document.getElementById('userCoinBalance').innerText = currentUser.coins;
+                cart.forEach(p => { if(!downloads.some(d => d.id === p.id)) downloads.push(p); });
+                totalSalesCount += cart.length;
+                totalRevenueEarned += total;
+                cart = [];
+                document.getElementById('cartCountBadge').innerText = 0;
+                localStorage.setItem('vs_v7_down', JSON.stringify(downloads));
+                closeCartModal();
+                alert('ဝယ်ယူမှု အောင်မြင်ပါသည်။');
+                switchTab('downloads');
+            } else {
+                alert('Coin မလုံလောက်ပါ။');
+            }
         }
 
-        // Admin Management
-        function handleAddNewProduct(e) {
-            e.preventDefault();
-            const newP = {
-                id: Date.now(),
-                title: document.getElementById('adminTitle').value,
-                category: document.getElementById('adminCategory').value,
-                coins: parseInt(document.getElementById('adminCoins').value),
-                comm: parseInt(document.getElementById('adminComm').value),
-                image: document.getElementById('adminImage').value
-            };
-            products.unshift(newP);
-            document.getElementById('addProductForm').reset();
-            renderAdminTable();
-            alert('ပစ္စည်းအသစ် တင်ခြင်း အောင်မြင်ပါသည်။');
+        function buyNow(id) {
+            const p = products.find(x => x.id === id);
+            if(currentUser.coins >= p.coins) {
+                currentUser.coins -= p.coins;
+                document.getElementById('userCoinBalance').innerText = currentUser.coins;
+                if(!downloads.some(d => d.id === id)) downloads.push(p);
+                totalSalesCount++;
+                totalRevenueEarned += p.coins;
+                localStorage.setItem('vs_v7_down', JSON.stringify(downloads));
+                alert('အောင်မြင်စွာ ဝယ်ယူပြီးပါပြီ။');
+                switchTab('downloads');
+            } else {
+                alert('Coin မလုံလောက်ပါ။');
+            }
         }
 
-        function renderAdminTable() {
-            document.getElementById('adminTableBody').innerHTML = products.map(p => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-3"><img src="${p.image}" class="w-10 h-10 object-cover rounded-lg"></td>
-                    <td class="p-3 font-medium text-white">${p.title}</td>
-                    <td class="p-3 text-slate-400">${p.category}</td>
-                    <td class="p-3 text-amber-400 font-bold">${p.coins} Coins</td>
-                    <td class="p-3 text-red-400 font-bold">${p.comm}%</td>
-                    <td class="p-3">
-                        <button onclick="deleteProduct(${p.id})" class="text-red-500 hover:text-red-400 text-xs font-bold">
-                            <i class="fa-solid fa-trash"></i> ဖျက်မည်
-                        </button>
-                    </td>
-                </tr>
+        function renderDownloads() {
+            document.getElementById('downloadGrid').innerHTML = downloads.length === 0 ? `<p class="col-span-full text-center text-slate-500 py-10">ဒေါင်းလုဒ်ဆွဲရန် မရှိသေးပါ။</p>` :
+            downloads.map(p => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                    <img src="${p.image}" class="w-full h-40 object-cover">
+                    <div class="p-4 space-y-2">
+                        <h3 class="font-bold text-sm truncate">${p.title}</h3>
+                        <a href="${p.image}" target="_blank" download class="block text-center gold-btn text-slate-950 font-bold py-2 rounded-lg text-xs">ဒေါင်းလုဒ်ဆွဲမည်</a>
+                    </div>
+                </div>
             `).join('');
         }
 
-        function deleteProduct(id) {
-            products = products.filter(x => x.id !== id);
-            renderAdminTable();
+        function handleContributorUpload(e) {
+            e.preventDefault();
+            products.unshift({
+                id: Date.now(),
+                title: document.getElementById('conTitle').value,
+                coins: parseInt(document.getElementById('conCoins').value),
+                image: document.getElementById('conImage').value
+            });
+            localStorage.setItem('vs_v7_prod', JSON.stringify(products));
+            document.getElementById('contributorForm').reset();
+            alert('ဖိုင်တင်ခြင်း အောင်မြင်ပါသည်။');
+            switchTab('home');
         }
 
-        // Initial Load
+        function renderAdmin() {
+            document.getElementById('adminTotalSales').innerText = `${totalSalesCount} နှုံး`;
+            document.getElementById('adminTotalRevenue').innerText = `${totalRevenueEarned} Coins`;
+            document.getElementById('adminTotalItems').innerText = products.length;
+        }
+
+        function openTopUpModal() { document.getElementById('topUpModal').classList.remove('hidden'); }
+        function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
+        function confirmTopUp() {
+            currentUser.coins += parseInt(document.getElementById('topupVal').value) || 0;
+            document.getElementById('userCoinBalance').innerText = currentUser.coins;
+            closeTopUpModal();
+            alert('ငွေဖြည့်သွင်းခြင်း အောင်မြင်ပါသည်။');
+        }
+
         renderProducts(products);
     </script>
 </body>
