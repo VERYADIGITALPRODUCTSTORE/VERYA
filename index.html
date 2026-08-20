@@ -6,6 +6,11 @@
     <title>VeryaStock - Premium Stock Media Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK (Compat Version for easy HTML usage) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <style>
         .glass-panel { background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(20px); border: 1px solid rgba(217, 119, 6, 0.2); }
         .premium-gradient { background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #78350f 100%); }
@@ -51,17 +56,8 @@
                 <p class="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">Discover high-resolution royalty-free digital assets with verified preview & download links.</p>
                 
                 <div class="max-w-2xl mx-auto flex gap-2 bg-slate-900 border border-amber-500/30 p-2 rounded-2xl shadow-2xl">
-                    <input type="text" id="searchInput" oninput="filterAssets()" placeholder="Search assets (e.g., background, tech, nature)..." class="w-full bg-transparent px-4 text-xs text-white focus:outline-none">
+                    <input type="text" id="searchInput" oninput="filterAssets()" placeholder="Search assets..." class="w-full bg-transparent px-4 text-xs text-white focus:outline-none">
                     <button class="premium-gradient text-slate-950 px-6 py-3 rounded-xl font-black text-xs shadow-lg"><i class="fa-solid fa-search"></i></button>
-                </div>
-                
-                <!-- Quick Tags -->
-                <div class="flex flex-wrap justify-center gap-2 pt-2 text-[11px]">
-                    <span class="text-slate-400 font-bold self-center">Trending:</span>
-                    <button onclick="quickSearch('Background')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Background</button>
-                    <button onclick="quickSearch('Technology')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Technology</button>
-                    <button onclick="quickSearch('Nature')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Nature</button>
-                    <button onclick="quickSearch('Abstract')" class="bg-slate-900 border border-amber-500/20 px-3 py-1 rounded-lg hover:border-amber-400">Abstract</button>
                 </div>
             </section>
 
@@ -80,12 +76,12 @@
             <section class="glass-panel p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
                 <div class="space-y-2">
                     <h3 class="font-black text-xl text-white">Upload File Studio</h3>
-                    <p class="text-xs text-slate-400">Contribute your stock media with a JPG preview image and download link (Requires Admin approval).</p>
+                    <p class="text-xs text-slate-400">Contribute your stock media (Requires Master Admin approval).</p>
                 </div>
                 <form onsubmit="handleAssetUpload(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Asset Title</label>
-                        <input type="text" id="uploadTitle" placeholder="e.g., Luxury gold abstract background" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
+                        <input type="text" id="uploadTitle" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -94,7 +90,6 @@
                                 <option value="Photos">Photos</option>
                                 <option value="Vectors">Vectors</option>
                                 <option value="Videos">Videos</option>
-                                <option value="3D">3D Assets</option>
                             </select>
                         </div>
                         <div>
@@ -103,12 +98,12 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Preview Image URL (.jpg / .png)</label>
-                        <input type="url" id="uploadPreviewUrl" placeholder="https://images.unsplash.com/... (For display preview)" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Preview Image URL</label>
+                        <input type="url" id="uploadPreviewUrl" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Original Download File URL (Drive / Zip link)</label>
-                        <input type="url" id="uploadDownloadUrl" placeholder="https://drive.google.com/... (File to download after purchase)" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Original Download File URL</label>
+                        <input type="url" id="uploadDownloadUrl" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <button type="submit" class="w-full premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Submit File for Admin Approval</button>
                 </form>
@@ -120,7 +115,7 @@
             <section class="glass-panel p-8 rounded-3xl max-w-xl mx-auto space-y-6 shadow-2xl">
                 <div class="space-y-2 text-center">
                     <h3 class="font-black text-xl text-white">Wallet Top-up Gateway</h3>
-                    <p class="text-xs text-slate-400">Top-up coins via KPay or WavePay (Requires Admin approval).</p>
+                    <p class="text-xs text-slate-400">Top-up coins via KPay or WavePay (Requires Master Admin approval).</p>
                 </div>
                 <form onsubmit="handleTopupSubmit(event)" class="space-y-4">
                     <div>
@@ -132,11 +127,11 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Coins Amount</label>
-                        <input type="number" id="topupCoins" placeholder="1000" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
+                        <input type="number" id="topupCoins" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Transaction Ref / Slip ID</label>
-                        <input type="text" id="topupRef" placeholder="TRX-123456" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
+                        <input type="text" id="topupRef" required class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white">
                     </div>
                     <button type="submit" class="w-full premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Submit Slip for Admin Approval</button>
                 </form>
@@ -145,60 +140,33 @@
 
         <!-- Contact Us Tab -->
         <div id="tab-contact" class="space-y-6 hidden">
-            <section class="glass-panel p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl">
-                <div class="space-y-2 text-center">
-                    <h3 class="font-black text-2xl text-white">Contact VeryaStock Support</h3>
-                    <p class="text-xs text-slate-400">Get in touch with our team for inquiries, assistance, or account support.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
-                        <strong class="text-amber-400 block"><i class="fa-solid fa-user-tie"></i> Founder</strong>
-                        <span class="text-slate-300">heinyazarsoe</span>
-                    </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
-                        <strong class="text-amber-400 block"><i class="fa-solid fa-location-dot"></i> Location</strong>
-                        <span class="text-slate-300">West Minma, Pale, Sagaing, Myanmar</span>
-                    </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
-                        <strong class="text-amber-400 block"><i class="fa-solid fa-phone"></i> Phone Numbers</strong>
-                        <span class="text-slate-300 block">09941117896</span>
-                        <span class="text-slate-300 block">09429515474</span>
-                    </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
-                        <strong class="text-amber-400 block"><i class="fa-solid fa-envelope"></i> Email Address</strong>
-                        <span class="text-slate-300">veryacomputerclass@gmail.com</span>
-                    </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
-                        <strong class="text-amber-400 block"><i class="fa-brands fa-viber"></i> Viber Support</strong>
-                        <span class="text-slate-300">09941117896</span>
-                    </div>
-                    <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 space-y-2">
-                        <strong class="text-amber-400 block"><i class="fa-brands fa-telegram"></i> Telegram Support</strong>
-                        <span class="text-slate-300">09941117896</span>
-                    </div>
+            <section class="glass-panel p-8 rounded-3xl max-w-2xl mx-auto space-y-6 shadow-2xl text-xs space-y-4">
+                <h3 class="font-black text-2xl text-white text-center">Contact VeryaStock Support</h3>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20">
+                    <strong class="text-amber-400 block">Founder / Admin:</strong> heinyazarsoe <br>
+                    <strong>Email:</strong> veryacomputerclass@gmail.com <br>
+                    <strong>Phone:</strong> 09941117896, 09429515474
                 </div>
             </section>
         </div>
 
-        <!-- Admin Control Panel Tab (Master Admin Only) -->
+        <!-- Admin Control Panel Tab -->
         <div id="tab-admin" class="space-y-6 hidden">
             <section class="glass-panel border border-amber-500/40 p-8 rounded-3xl space-y-6 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-amber-500/20 pb-4">
                     <h3 class="font-black gold-text text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved"></i> Master Admin Control Panel
+                        <i class="fa-solid fa-shield-halved"></i> Master Admin Control Panel (Firebase Realtime)
                     </h3>
-                    <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full font-black border border-amber-500/30">Admin: veryacomputerclass@gmail.com</span>
+                    <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full font-black border border-amber-500/30">veryacomputerclass@gmail.com</span>
                 </div>
-                
                 <div class="space-y-6">
                     <div>
-                        <h4 class="font-bold text-xs text-amber-300 mb-3"><i class="fa-solid fa-wallet"></i> Pending Coin Top-up Slips (KPay / WavePay):</h4>
-                        <div id="adminTopupContainer" class="space-y-3"></div>
+                        <h4 class="font-bold text-xs text-amber-300 mb-3"><i class="fa-solid fa-wallet"></i> Pending Coin Top-up Slips:</h4>
+                        <div id="adminTopupContainer" class="space-y-3"><p class="text-xs text-slate-500">Loading...</p></div>
                     </div>
-
                     <div class="border-t border-amber-500/20 pt-4">
                         <h4 class="font-bold text-xs text-amber-300 mb-3"><i class="fa-solid fa-cloud-arrow-up"></i> Pending File Uploads (Products):</h4>
-                        <div id="adminUploadContainer" class="space-y-3"></div>
+                        <div id="adminUploadContainer" class="space-y-3"><p class="text-xs text-slate-500">Loading...</p></div>
                     </div>
                 </div>
             </section>
@@ -220,62 +188,44 @@
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center space-y-2">
                 <h3 class="font-black text-xl text-white">VeryaStock Account</h3>
-                <p class="text-xs text-slate-400">Login or Register (Regular users cannot access Admin features)</p>
             </div>
             <div class="space-y-4">
                 <input type="text" id="authUsername" placeholder="Email or Username" class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white font-bold">
                 <input type="password" id="authPassword" placeholder="Password" class="w-full bg-slate-900 border border-amber-500/30 rounded-xl p-3 text-xs text-white font-bold">
                 <div class="flex gap-3 pt-2">
-                    <button onclick="handleAuthAction(false)" class="flex-1 premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Login</button>
-                    <button onclick="handleAuthAction(true)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs border border-slate-700">Register</button>
+                    <button onclick="handleAuthAction(false)" class="flex-1 premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs">Login</button>
+                    <button onclick="handleAuthAction(true)" class="flex-1 bg-slate-800 text-white font-black py-3 rounded-xl text-xs">Register</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Application Core -->
+    <!-- Firebase Script & Logic -->
     <script>
-        let users = JSON.parse(localStorage.getItem('veryastock_users')) || [
-            { username: 'veryacomputerclass@gmail.com', password: 'admin123', role: 'Admin', coins: 99999 }
-        ];
-        let pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
-        let pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
-        let currentUser = JSON.parse(localStorage.getItem('veryastock_current_user')) || null;
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbfLbcQQq2f_WNLTi3ewFiYMT6M82SVYc",
+            authDomain: "veryastock.firebaseapp.com",
+            projectId: "veryastock",
+            storageBucket: "veryastock.firebasestorage.app",
+            messagingSenderId: "995434346777",
+            appId: "1:995434346777:web:fa6fbed8fb94e00da82d88",
+            measurementId: "G-VZFD6GF8DF"
+        };
 
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let currentUser = JSON.parse(localStorage.getItem('veryastock_current_user')) || null;
         let assets = JSON.parse(localStorage.getItem('veryastock_assets')) || [
-            { id: 1, title: 'Abstract Gold Digital Wave Background', category: 'Vectors', price: 40, previewUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', downloadUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', author: 'veryacomputerclass@gmail.com' },
-            { id: 2, title: 'Luxury Minimalist Office Workspace', category: 'Photos', price: 25, previewUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', downloadUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800', author: 'veryacomputerclass@gmail.com' },
-            { id: 3, title: 'Futuristic Gold Tech Circuit', category: 'Photos', price: 60, previewUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', downloadUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', author: 'veryacomputerclass@gmail.com' },
-            { id: 4, title: 'Golden Nature Mountain Landscape', category: 'Photos', price: 30, previewUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', downloadUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800', author: 'veryacomputerclass@gmail.com' }
+            { id: 1, title: 'Abstract Gold Digital Wave Background', category: 'Vectors', price: 40, previewUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', downloadUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', author: 'veryacomputerclass@gmail.com' }
         ];
 
         window.onload = function() {
-            if(currentUser && currentUser.username !== 'veryacomputerclass@gmail.com') {
-                currentUser.role = 'User';
-            }
             renderAssets(assets);
             updateNavbarState();
         };
-
-        // Listen for live data changes across storage sync
-        window.addEventListener('storage', function(e) {
-            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
-            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
-            users = JSON.parse(localStorage.getItem('veryastock_users')) || users;
-            assets = JSON.parse(localStorage.getItem('veryastock_assets')) || assets;
-            
-            const currentTab = document.getElementById('tab-admin');
-            if(currentTab && !currentTab.classList.contains('hidden')) {
-                renderAdminDashboard();
-            }
-            if(currentUser) {
-                const latestMe = users.find(u => u.username === currentUser.username);
-                if(latestMe) {
-                    currentUser.coins = latestMe.coins;
-                    updateNavbarState();
-                }
-            }
-        });
 
         function switchTab(tabName) {
             ['explore', 'upload', 'wallet', 'contact', 'admin'].forEach(t => {
@@ -288,7 +238,7 @@
             }
             const target = document.getElementById(`tab-${tabName}`);
             if(target) target.classList.remove('hidden');
-            if(tabName === 'admin') renderAdminDashboard();
+            if(tabName === 'admin') listenAdminRealtime();
         }
 
         function toggleAuthModal() {
@@ -299,31 +249,23 @@
             const authBtn = document.getElementById('authBtn');
             const userBalance = document.getElementById('userBalance');
 
-            if (currentUser && currentUser.username === 'veryacomputerclass@gmail.com') {
-                currentUser.role = 'Admin';
-            } else if (currentUser) {
-                currentUser.role = 'User';
-            }
-
             if (currentUser) {
                 authBtn.textContent = `Logout (${currentUser.username})`;
-                authBtn.className = 'bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl shadow-lg font-black text-xs border border-slate-700';
-                userBalance.textContent = currentUser.coins;
+                authBtn.className = 'bg-slate-800 text-white px-4 py-2 rounded-xl text-xs';
+                userBalance.textContent = currentUser.coins || 150;
                 
-                if(currentUser.role === 'Admin') {
-                    if(!document.getElementById('adminNavBtn')) {
-                        const nav = document.querySelector('header nav');
-                        const adminBtn = document.createElement('button');
-                        adminBtn.id = 'adminNavBtn';
-                        adminBtn.className = 'hover:text-amber-400 transition text-amber-400 font-bold';
-                        adminBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Panel';
-                        adminBtn.onclick = () => switchTab('admin');
-                        nav.appendChild(adminBtn);
-                    }
+                if(currentUser.username === 'veryacomputerclass@gmail.com' && !document.getElementById('adminNavBtn')) {
+                    const nav = document.querySelector('header nav');
+                    const adminBtn = document.createElement('button');
+                    adminBtn.id = 'adminNavBtn';
+                    adminBtn.className = 'hover:text-amber-400 transition text-amber-400 font-bold';
+                    adminBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin Panel';
+                    adminBtn.onclick = () => switchTab('admin');
+                    nav.appendChild(adminBtn);
                 }
             } else {
                 authBtn.textContent = 'Login';
-                authBtn.className = 'premium-gradient text-slate-950 px-5 py-2 rounded-xl shadow-lg font-black text-xs border border-amber-300/40';
+                authBtn.className = 'premium-gradient text-slate-950 px-5 py-2 rounded-xl text-xs';
                 userBalance.textContent = '0';
                 const adminNavBtn = document.getElementById('adminNavBtn');
                 if(adminNavBtn) adminNavBtn.remove();
@@ -334,122 +276,43 @@
         function handleAuthAction(isRegister) {
             const username = document.getElementById('authUsername').value.trim();
             const password = document.getElementById('authPassword').value.trim();
+            if(!username || !password) { alert('Enter credentials'); return; }
 
-            if (!username || !password) {
-                alert('Please enter email/username and password.');
-                return;
-            }
-
-            if (isRegister) {
-                if (username === 'veryacomputerclass@gmail.com') {
-                    alert('This master admin email is pre-registered. Please login instead.');
-                    return;
-                }
-                if (users.some(u => u.username === username)) {
-                    alert('User already exists.');
-                    return;
-                }
-                users.push({ username, password, role: 'User', coins: 150 });
-                localStorage.setItem('veryastock_users', JSON.stringify(users));
-                alert('Account registered successfully! Received 150 bonus coins.');
-                toggleAuthModal();
+            if(isRegister) {
+                currentUser = { username, role: username === 'veryacomputerclass@gmail.com' ? 'Admin' : 'User', coins: 150 };
+                alert('Registered successfully!');
             } else {
-                const found = users.find(u => u.username === username && u.password === password);
-                if (found) {
-                    currentUser = found;
-                    if (currentUser.username === 'veryacomputerclass@gmail.com') {
-                        currentUser.role = 'Admin';
-                    } else {
-                        currentUser.role = 'User';
-                    }
-                    toggleAuthModal();
-                    updateNavbarState();
-                    alert(`Welcome back, ${currentUser.username}!`);
-                } else {
-                    alert('Invalid username or password.');
-                }
+                currentUser = { username, role: username === 'veryacomputerclass@gmail.com' ? 'Admin' : 'User', coins: 150 };
+                alert('Login successful!');
             }
+            toggleAuthModal();
+            updateNavbarState();
         }
 
-        function renderAssets(list) {
-            const grid = document.getElementById('assetGrid');
-            grid.innerHTML = '';
-            document.getElementById('assetCount').textContent = `${list.length} items`;
+        function handleTopupSubmit(e) {
+            e.preventDefault();
+            if(!currentUser) { alert('Please login first'); toggleAuthModal(); return; }
 
-            list.forEach(asset => {
-                const card = document.createElement('div');
-                card.className = 'glass-panel rounded-2xl overflow-hidden group shadow-xl flex flex-col justify-between border border-amber-500/20';
-                card.innerHTML = `
-                    <div class="relative overflow-hidden h-48 bg-slate-900 cursor-pointer" onclick="openAssetModal(${asset.id})">
-                        <img src="${asset.previewUrl}" alt="${asset.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <span class="absolute top-2 left-2 bg-slate-950/90 backdrop-blur text-[10px] text-amber-300 px-2.5 py-1 rounded-lg font-bold border border-amber-500/30">${asset.category}</span>
-                    </div>
-                    <div class="p-4 space-y-3">
-                        <h4 class="font-black text-white text-xs truncate">${asset.title}</h4>
-                        <div class="flex justify-between items-center">
-                            <span class="text-amber-400 font-black text-xs"><i class="fa-solid fa-coins"></i> ${asset.price} Coins</span>
-                            <button onclick="openAssetModal(${asset.id})" class="premium-gradient text-slate-950 px-3 py-1.5 rounded-xl text-[10px] font-black shadow border border-amber-300/40">License & Download</button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+            const gateway = document.getElementById('topupGateway').value;
+            const coins = parseInt(document.getElementById('topupCoins').value);
+            const ref = document.getElementById('topupRef').value.trim();
 
-        function filterAssets() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = assets.filter(a => a.title.toLowerCase().includes(query) || a.category.toLowerCase().includes(query));
-            renderAssets(filtered);
-        }
-
-        function filterByCategory(cat) {
-            switchTab('explore');
-            if(cat === 'All') {
-                renderAssets(assets);
-            } else {
-                const filtered = assets.filter(a => a.category === cat);
-                renderAssets(filtered);
-            }
-        }
-
-        function quickSearch(keyword) {
-            document.getElementById('searchInput').value = keyword;
-            filterAssets();
-        }
-
-        function openAssetModal(id) {
-            const asset = assets.find(a => a.id === id);
-            if(!asset) return;
-
-            document.getElementById('assetModal').classList.remove('hidden');
-            document.getElementById('modalContent').innerHTML = `
-                <div class="space-y-4">
-                    <div class="h-64 rounded-2xl overflow-hidden bg-slate-900 border border-amber-500/20">
-                        <img src="${asset.previewUrl}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="font-black text-white text-base">${asset.title}</h3>
-                            <p class="text-xs text-slate-400">Creator: @${asset.author} | Category: ${asset.category}</p>
-                        </div>
-                        <span class="text-amber-400 font-black text-sm"><i class="fa-solid fa-coins"></i> ${asset.price} Coins</span>
-                    </div>
-                    <button onclick="downloadAsset(${asset.id})" class="w-full premium-gradient text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg border border-amber-300/40">Confirm Download</button>
-                </div>
-            `;
-        }
-
-        function closeAssetModal() {
-            document.getElementById('assetModal').classList.add('hidden');
+            db.collection('topups').add({
+                username: currentUser.username,
+                gateway,
+                coins,
+                ref,
+                timestamp: new Date().toLocaleString()
+            }).then(() => {
+                alert('Top-up slip submitted to Firebase successfully! Admin will review.');
+                e.target.reset();
+                switchTab('explore');
+            }).catch(err => alert('Error: ' + err.message));
         }
 
         function handleAssetUpload(e) {
             e.preventDefault();
-            if (!currentUser) {
-                alert('Please login to upload files.');
-                toggleAuthModal();
-                return;
-            }
+            if(!currentUser) { alert('Please login first'); toggleAuthModal(); return; }
 
             const title = document.getElementById('uploadTitle').value.trim();
             const category = document.getElementById('uploadCategory').value;
@@ -457,174 +320,109 @@
             const previewUrl = document.getElementById('uploadPreviewUrl').value.trim();
             const downloadUrl = document.getElementById('uploadDownloadUrl').value.trim();
 
-            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
-            pendingUploads.push({ id: Date.now(), title, category, price, previewUrl, downloadUrl, author: currentUser.username, timestamp: new Date().toLocaleString() });
-            localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
-            
-            alert('File submitted successfully! Waiting for Master Admin approval.');
-            e.target.reset();
-            switchTab('explore');
+            db.collection('uploads').add({
+                title, category, price, previewUrl, downloadUrl,
+                author: currentUser.username,
+                timestamp: new Date().toLocaleString()
+            }).then(() => {
+                alert('Product submitted to Firebase successfully! Admin will review.');
+                e.target.reset();
+                switchTab('explore');
+            }).catch(err => alert('Error: ' + err.message));
         }
 
-        function downloadAsset(id) {
-            if (!currentUser) {
-                alert('Please login to download files.');
-                toggleAuthModal();
-                return;
-            }
-
-            const asset = assets.find(a => a.id === id);
-            if (!asset) return;
-
-            if (currentUser.coins < asset.price) {
-                alert('Insufficient coins! Please top-up your wallet via KPay or WavePay.');
-                closeAssetModal();
-                switchTab('wallet');
-                return;
-            }
-
-            currentUser.coins -= asset.price;
-            const uIdx = users.findIndex(u => u.username === currentUser.username);
-            if(uIdx !== -1) users[uIdx].coins = currentUser.coins;
-            localStorage.setItem('veryastock_users', JSON.stringify(users));
-            updateNavbarState();
-            closeAssetModal();
-
-            alert(`Download successful for "${asset.title}"! ${asset.price} coins deducted.`);
-            window.open(asset.downloadUrl, '_blank');
-        }
-
-        function handleTopupSubmit(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                alert('Please login first.');
-                toggleAuthModal();
-                return;
-            }
-
-            const gateway = document.getElementById('topupGateway').value;
-            const coins = parseInt(document.getElementById('topupCoins').value);
-            const ref = document.getElementById('topupRef').value.trim();
-
-            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
-            pendingTopups.push({ username: currentUser.username, gateway, coins, ref, timestamp: new Date().toLocaleString() });
-            localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
-            
-            alert('Top-up slip submitted successfully! Waiting for Master Admin approval.');
-            e.target.reset();
-            switchTab('explore');
-        }
-
-        function renderAdminDashboard() {
-            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
-            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
-
-            // Render Topup Slips
-            const topupContainer = document.getElementById('adminTopupContainer');
-            topupContainer.innerHTML = '';
-            if (pendingTopups.length === 0) {
-                topupContainer.innerHTML = `<p class="text-xs text-slate-500">No pending top-up slips.</p>`;
-            } else {
-                pendingTopups.forEach((topup, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'bg-slate-900 p-4 rounded-2xl border border-amber-500/20 flex justify-between items-center text-xs flex-wrap gap-3';
-                    div.innerHTML = `
-                        <div>
-                            <strong class="text-white block">User: ${topup.username}</strong>
-                            <span class="text-slate-400">Gateway: ${topup.gateway} | Coins: <strong class="text-amber-400">+${topup.coins}</strong></span>
-                            <span class="text-slate-500 block font-mono">Ref: ${topup.ref} (${topup.timestamp})</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="approveTopup(${index})" class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl hover:bg-amber-400">Approve</button>
-                            <button onclick="rejectTopup(${index})" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl hover:bg-red-500">Reject</button>
-                        </div>
-                    `;
-                    topupContainer.appendChild(div);
-                });
-            }
-
-            // Render Upload Files
-            const uploadContainer = document.getElementById('adminUploadContainer');
-            uploadContainer.innerHTML = '';
-            if (pendingUploads.length === 0) {
-                uploadContainer.innerHTML = `<p class="text-xs text-slate-500">No pending file uploads.</p>`;
-            } else {
-                pendingUploads.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'bg-slate-900 p-4 rounded-2xl border border-amber-500/20 flex justify-between items-center text-xs flex-wrap gap-3';
-                    div.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <img src="${item.previewUrl}" class="w-12 h-12 object-cover rounded-lg border border-amber-500/30">
+        // Realtime listener for Admin Panel
+        function listenAdminRealtime() {
+            // Topups Realtime
+            db.collection('topups').onSnapshot(snapshot => {
+                const container = document.getElementById('adminTopupContainer');
+                container.innerHTML = '';
+                if(snapshot.empty) {
+                    container.innerHTML = `<p class="text-xs text-slate-500">No pending top-up slips.</p>`;
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    container.innerHTML += `
+                        <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 flex justify-between items-center text-xs">
                             <div>
-                                <strong class="text-white block">${item.title}</strong>
-                                <span class="text-slate-400">Author: @${item.author} | Category: ${item.category} | Price: <strong class="text-amber-400">${item.price} Coins</strong></span>
-                                <span class="text-slate-500 block font-mono">Submitted: ${item.timestamp}</span>
+                                <strong class="text-white block">User: ${data.username}</strong>
+                                <span class="text-slate-400">Gateway: ${data.gateway} | Coins: <strong class="text-amber-400">+${data.coins}</strong> (Ref: ${data.ref})</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="approveItem('topups', '${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})" class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl">Approve</button>
+                                <button onclick="deleteItem('topups', '${id}')" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl">Reject</button>
+                            </div>
+                        </div>`;
+                });
+            });
+
+            // Uploads Realtime
+            db.collection('uploads').onSnapshot(snapshot => {
+                const container = document.getElementById('adminUploadContainer');
+                container.innerHTML = '';
+                if(snapshot.empty) {
+                    container.innerHTML = `<p class="text-xs text-slate-500">No pending file uploads.</p>`;
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    container.innerHTML += `
+                        <div class="bg-slate-900 p-4 rounded-2xl border border-amber-500/20 flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-3">
+                                <img src="${data.previewUrl}" class="w-12 h-12 object-cover rounded-lg">
+                                <div>
+                                    <strong class="text-white block">${data.title}</strong>
+                                    <span class="text-slate-400">Author: @${data.author} | Price: ${data.price} Coins</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="approveUploadItem('${id}', ${JSON.stringify(data).replace(/"/g, '&quot;')})" class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl">Approve</button>
+                                <button onclick="deleteItem('uploads', '${id}')" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl">Reject</button>
+                            </div>
+                        </div>`;
+                });
+            });
+        }
+
+        function deleteItem(collection, id) {
+            db.collection(collection).doc(id).delete().then(() => alert('Rejected & Removed.'));
+        }
+
+        function approveItem(collection, id, data) {
+            db.collection(collection).doc(id).delete().then(() => {
+                alert(`Approved +${data.coins} coins for ${data.username}!`);
+            });
+        }
+
+        function approveUploadItem(id, data) {
+            assets.unshift(data);
+            localStorage.setItem('veryastock_assets', JSON.stringify(assets));
+            db.collection('uploads').doc(id).delete().then(() => {
+                renderAssets(assets);
+                alert(`Approved and published "${data.title}" successfully!`);
+            });
+        }
+
+        function renderAssets(list) {
+            const grid = document.getElementById('assetGrid');
+            grid.innerHTML = '';
+            document.getElementById('assetCount').textContent = `${list.length} items`;
+            list.forEach(asset => {
+                grid.innerHTML += `
+                    <div class="glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between border border-amber-500/20">
+                        <div class="h-48 bg-slate-900"><img src="${asset.previewUrl}" class="w-full h-full object-cover"></div>
+                        <div class="p-4 space-y-3">
+                            <h4 class="font-black text-white text-xs truncate">${asset.title}</h4>
+                            <div class="flex justify-between items-center">
+                                <span class="text-amber-400 font-black text-xs">${asset.price} Coins</span>
+                                <a href="${asset.downloadUrl}" target="_blank" class="premium-gradient text-slate-950 px-3 py-1.5 rounded-xl text-[10px] font-black">Download</a>
                             </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="approveUpload(${index})" class="bg-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl hover:bg-amber-400">Approve</button>
-                            <button onclick="rejectUpload(${index})" class="bg-red-600 text-white font-black px-3 py-1.5 rounded-xl hover:bg-red-500">Reject</button>
-                        </div>
-                    `;
-                    uploadContainer.appendChild(div);
-                });
-            }
-        }
-
-        function approveTopup(index) {
-            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
-            const topup = pendingTopups[index];
-            users = JSON.parse(localStorage.getItem('veryastock_users')) || users;
-            const targetUser = users.find(u => u.username === topup.username);
-            if (targetUser) {
-                targetUser.coins += parseInt(topup.coins);
-                localStorage.setItem('veryastock_users', JSON.stringify(users));
-                if (currentUser && currentUser.username === targetUser.username) {
-                    currentUser.coins = targetUser.coins;
-                }
-                alert(`Approved ${topup.coins} coins for ${topup.username}!`);
-            }
-            pendingTopups.splice(index, 1);
-            localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
-            renderAdminDashboard();
-            updateNavbarState();
-        }
-
-        function rejectTopup(index) {
-            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
-            pendingTopups.splice(index, 1);
-            localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
-            renderAdminDashboard();
-            alert('Top-up slip rejected.');
-        }
-
-        function approveUpload(index) {
-            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
-            const item = pendingUploads[index];
-            assets = JSON.parse(localStorage.getItem('veryastock_assets')) || assets;
-            assets.unshift({
-                id: item.id,
-                title: item.title,
-                category: item.category,
-                price: item.price,
-                previewUrl: item.previewUrl,
-                downloadUrl: item.downloadUrl,
-                author: item.author
+                    </div>`;
             });
-            localStorage.setItem('veryastock_assets', JSON.stringify(assets));
-            pendingUploads.splice(index, 1);
-            localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
-            renderAdminDashboard();
-            renderAssets(assets);
-            alert(`Approved and published "${item.title}" successfully!`);
-        }
-
-        function rejectUpload(index) {
-            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
-            pendingUploads.splice(index, 1);
-            localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
-            renderAdminDashboard();
-            alert('File upload rejected.');
         }
     </script>
 </body>
