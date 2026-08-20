@@ -1,9 +1,13 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs'); // Password လုံခြုံရေးအတွက်
+const jwt = require('jsonwebtoken'); // Login Token စနစ်အတွက်
 const app = express();
 const prisma = new PrismaClient();
 
 app.use(express.json());
+
+const JWT_SECRET = 'verstock_secret_key_2026';
 
 // ==========================================
 // 1. DATABASE SCHEMA REFERENCE (Prisma)
@@ -19,29 +23,34 @@ generator client {
 }
 
 model User {
-  id                 String        @id @default(uuid())
-  email              String        @unique
-  password           String
-  name               String        @default("Mg Hein Yazar Soe")
-  role               String        @default("CONTRIBUTOR") // ADMIN or CONTRIBUTOR
-  accountStatus      String        @default("PENDING")     // PENDING, APPROVED, REJECTED (Contributor ရောင်းချခွင့်အတွက်)
-  coins              Float         @default(0.0)
-  products           Product[]
-  coinRequests       CoinRequest[]
-  createdAt          DateTime      @default(now())
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String
+  name          String        @default("Mg Hein Yazar Soe")
+  role          String        @default("CONTRIBUTOR") // ADMIN or CONTRIBUTOR
+  accountStatus String        @default("PENDING")     // PENDING, APPROVED, REJECTED (Contributor ရောင်းချခွင့်)
+  coins         Float         @default(0.0)
+  products      Product[]
+  coinRequests  CoinRequest[]
+  purchases     Purchase[]
+  reviews       Review[]
+  notifications Notification[]
+  createdAt     DateTime      @default(now())
 }
 
 model Product {
-  id            String   @id @default(uuid())
+  id            String     @id @default(uuid())
   title         String
   description   String
   priceInCoins  Float
-  imageJpgUrl   String   // JPG ပုံလင့်ခ် (.jpg / .jpeg)
-  catboxLink    String   // Catbox Link
-  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED (Product တင်ခွင့်အတွက်)
+  imageJpgUrl   String     // .jpg သို့မဟုတ် .jpeg ပုံလင့်ခ်
+  catboxLink    String     // Catbox ဖိုင်လင့်ခ်
+  status        String     @default("PENDING") // PENDING, APPROVED, REJECTED (Product တင်ခွင့်)
   contributorId String
-  contributor   User     @relation(fields: [contributorId], references: [id])
-  createdAt     DateTime @default(now())
+  contributor   User       @relation(fields: [contributorId], references: [id])
+  purchases     Purchase[]
+  reviews       Review[]
+  createdAt     DateTime   @default(now())
 }
 
 model CoinRequest {
@@ -51,6 +60,34 @@ model CoinRequest {
   amount    Float
   type      String   // "BUY" (ဝယ်ရန်) or "WITHDRAW" (ထုတ်ရန်)
   status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+}
+
+model Purchase {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int      // 1 to 5
+  comment   String
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  message   String
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 */
@@ -64,10 +101,11 @@ async function initVerstockSystem() {
     const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 
     if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash('AdminSecurePassword123!', 10);
       await prisma.user.create({
         data: {
           email: adminEmail,
-          password: 'AdminSecurePassword123!',
+          password: hashedPassword,
           name: 'Mg Hein Yazar Soe (Founder)',
           role: 'ADMIN',
           accountStatus: 'APPROVED',
@@ -91,36 +129,36 @@ app.get('/api/store/info', (req, res) => {
     email: 'veryacomputerclass@gmail.com',
     contacts: ['+95941117896', '+959429515474'],
     location: 'Min Ma, Pale, Sagaing, Myanmar',
+    featuresTotal: 20,
     status: 'System Fully Secure & Operational'
   });
 });
 
 // ==========================================
-// 4. CONTRIBUTOR REGISTRATION & ACCOUNT APPROVAL
+// 4. AUTHENTICATION (Register & Login)
 // ==========================================
-
-// Contributor အသစ်စာရင်းပေးသွင်းခြင်း
-app.post('/api/contributor/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
-    
     const existingUser = await prisma.user.findUnique({ where: { email } });
+    
     if (existingUser) {
-      return res.status(400).json({ error: 'ဤအီးမေးလ်ဖြင့် အကောင့်ရှိနှင့်ပြီးသား ဖြစ်ပါသည်။' });
+      return res.status(400).json({ error: 'ဤအီးမေးလ်ဖြင့် အကောင့်ရှိပြီးသား ဖြစ်ပါသည်။' });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newContributor = await prisma.user.create({
       data: {
         email,
-        password, // Production တွင် Hash ပြုလုပ်ရန်
+        password: hashedPassword,
         name: name || 'Contributor',
         role: 'CONTRIBUTOR',
-        accountStatus: 'PENDING' // Admin အတည်ပြုချက်စောင့်ဆိုင်းရန် (ရောင်းချခွင့်မရသေးပါ)
+        accountStatus: 'PENDING' // Admin အတည်ပြုချက်စောင့်ဆိုင်းရန်
       }
     });
 
     res.status(201).json({
-      message: 'Contributor အကောင့်ဖွင့်လှစ်ပြီးပါပြီ။ Admin (veryacomputerclass@gmail.com) ၏ အတည်ပြုချက်ရမှသာ Product တင်ခွင့်/ရောင်းချခွင့် ရရှိပါမည်။',
+      message: 'Contributor အကောင့်ဖွင့်လှစ်ပြီးပါပြီ။ Admin ၏ ရောင်းချခွင့် အတည်ပြုချက်ကို စောင့်ဆိုင်းပါ။',
       newContributor
     });
   } catch (error) {
@@ -128,7 +166,25 @@ app.post('/api/contributor/register', async (req, res) => {
   }
 });
 
-// ADMIN: Contributor အကောင့်ကို ရောင်းချခွင့်ပြုရန် (APPROVED / REJECTED)
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { email } });
+    
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: 'အီးမေးလ် သို့မဟုတ် လျှို့ဝှက်နံပါတ် မှားယွင်းနေပါသည်။' });
+    }
+
+    const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+    res.json({ message: 'အကောင့်ဝင်ရောက်မှု အောင်မြင်ပါသည်။', token, user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// 5. ADMIN: CONTRIBUTOR ACCOUNT APPROVAL
+// ==========================================
 app.patch('/api/admin/contributor/:id/review', async (req, res) => {
   try {
     const { id } = req.params;
@@ -150,18 +206,18 @@ app.patch('/api/admin/contributor/:id/review', async (req, res) => {
 });
 
 // ==========================================
-// 5. PRODUCT SUBMISSION & ADMIN APPROVAL
+// 6. PRODUCT SUBMISSION & SEARCH SYSTEM
 // ==========================================
 
-// Contributor မှ Product တင်ရန် တောင်းဆိုခြင်း (Account Status နှင့် Link များကို စစ်ဆေးခြင်း)
+// Contributor မှ Product တင်ရန် တောင်းဆိုခြင်း (JPG နှင့် Catbox Link နှစ်ထပ်စစ်ဆေးခြင်း)
 app.post('/api/products/submit', async (req, res) => {
   try {
     const { title, description, priceInCoins, imageJpgUrl, catboxLink, contributorId } = req.body;
 
-    // 1. Contributor ၏ အကောင့်အခြေအနေကို စစ်ဆေးခြင်း (Admin ခွင့်ပြုချက် ရ/မရ)
+    // 1. Contributor တွင် ရောင်းချခွင့် အတည်ပြုချက်ရှိမရှိ စစ်ဆေးခြင်း
     const contributor = await prisma.user.findUnique({ where: { id: contributorId } });
     if (!contributor || contributor.accountStatus !== 'APPROVED') {
-      return res.status(403).json({ error: 'အမှား - သင့်အကောင့်မှာ Admin ၏ ရောင်းချခွင့် အတည်ပြုချက် (Approval) မရသေးပါ။' });
+      return res.status(403).json({ error: 'အမှား - သင့်အကောင့်မှာ Admin ၏ ရောင်းချခွင့် အတည်ပြုချက် မရသေးပါ။' });
     }
 
     // 2. JPG ပုံစံ ဟုတ်မဟုတ် စစ်ဆေးခြင်း
@@ -182,7 +238,7 @@ app.post('/api/products/submit', async (req, res) => {
         imageJpgUrl,
         catboxLink,
         contributorId,
-        status: 'PENDING' // Product ကို Admin အတည်ပြုချက်တောင်းရန်
+        status: 'PENDING'
       }
     });
 
@@ -195,7 +251,58 @@ app.post('/api/products/submit', async (req, res) => {
   }
 });
 
-// ADMIN: Product ကို စစ်ဆေးပြီး ရောင်းချခွင့် အတည်ပြုခြင်း
+// Product ရှာဖွေရန် (Search & Filter)
+app.get('/api/products/search', async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const products = await prisma.product.findMany({
+      where: {
+        status: 'APPROVED',
+        title: { contains: keyword || '', mode: 'insensitive' }
+      }
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Coin ဖြင့် Product ဝယ်ယူခြင်း နှင့် Catbox Download Link ရယူခြင်း
+app.post('/api/products/buy', async (req, res) => {
+  try {
+    const { userId, productId } = req.body;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const product = await prisma.product.findUnique({ where: { id: productId } });
+
+    if (!user || !product) {
+      return res.status(404).json({ error: 'အသုံးပြုသူ သို့မဟုတ် ပစ္စည်းကို ရှမတွေ့ပါ။' });
+    }
+
+    if (user.coins < product.priceInCoins) {
+      return res.status(400).json({ error: 'ဒင်္ဂါးပြား (Coins) လက်ကျန် မလုံလောက်ပါ။' });
+    }
+
+    // Coin ဖြတ်တောက်ခြင်း နှင့် ဝယ်ယူမှု မှတ်တမ်းတင်ခြင်း
+    await prisma.user.update({
+      where: { id: userId },
+      data: { coins: { decrement: product.priceInCoins } }
+    });
+
+    const purchase = await prisma.purchase.create({
+      data: { userId, productId }
+    });
+
+    res.json({
+      message: 'Product ဝယ်ယူမှု အောင်မြင်ပါသည်။',
+      downloadLink: product.catboxLink,
+      purchase
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ADMIN: Product ကို စစ်ဆေးအတည်ပြုခြင်း
 app.patch('/api/admin/products/:id/review', async (req, res) => {
   try {
     const { id } = req.params;
@@ -210,20 +317,18 @@ app.patch('/api/admin/products/:id/review', async (req, res) => {
       data: { status }
     });
 
-    res.json({ message: `Product အား ${status} ပြုလုပ်ပြီး Store တွင် ဖော်ပြလိုက်ပါပြီ။`, updatedProduct });
+    res.json({ message: `Product အား ${status} ပြုလုပ်ပြီးပါပြီ။`, updatedProduct });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // ==========================================
-// 6. COIN SYSTEM (BUY & WITHDRAW REQUESTS)
+// 7. COIN SYSTEM (BUY & WITHDRAW REQUESTS)
 // ==========================================
-
-// Coin ဝယ်ယူရန် သို့မဟုတ် ထုတ်ယူရန် တောင်းဆိုခြင်း
 app.post('/api/coins/request', async (req, res) => {
   try {
-    const { userId, amount, type } = req.body; // type: 'BUY' သို့မဟုတ် 'WITHDRAW'
+    const { userId, amount, type } = req.body; // 'BUY' သို့မဟုတ် 'WITHDRAW'
 
     if (!['BUY', 'WITHDRAW'].includes(type)) {
       return res.status(400).json({ error: 'တောင်းဆိုမှု အမျိုးအစား မမှန်ကန်ပါ။' });
@@ -247,7 +352,6 @@ app.post('/api/coins/request', async (req, res) => {
   }
 });
 
-// ADMIN: Coin တောင်းဆိုမှုကို အတည်ပြုခြင်းနှင့် လက်ကျန်ငွေ ချိန်ညှိခြင်း
 app.patch('/api/admin/coins/request/:id/review', async (req, res) => {
   try {
     const { id } = req.params;
@@ -280,10 +384,36 @@ app.patch('/api/admin/coins/request/:id/review', async (req, res) => {
 });
 
 // ==========================================
-// 7. SERVER START
+// 8. ADDITIONAL FEATURES (Reviews & Notifications)
+// ==========================================
+app.post('/api/products/review', async (req, res) => {
+  try {
+    const { userId, productId, rating, comment } = req.body;
+    const review = await prisma.review.create({
+      data: { userId, productId, rating: parseInt(rating), comment }
+    });
+    res.status(201).json({ message: 'သုံးသပ်ချက် (Review) တင်ခြင်း အောင်မြင်ပါသည်။', review });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/notifications/:userId', async (req, res) => {
+  try {
+    const notifications = await prisma.notification.findMany({
+      where: { userId: req.params.userId }
+    });
+    res.json(notifications);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// 9. SERVER START
 // ==========================================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
   await initVerstockSystem();
-  console.log(`Verstock Premium Server is running on port ${PORT}`);
+  console.log(`Verstock Premium 20-Features Server is running smoothly on port ${PORT}`);
 });
