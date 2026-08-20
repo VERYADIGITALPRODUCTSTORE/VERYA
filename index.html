@@ -11,7 +11,7 @@
     <meta name="author" content="Hein Yazar Soe">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph / Social Media Meta Tags (Facebook, Viber, Telegram Sharing) -->
+    <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:title" content="Verya Stock - Digital Assets Marketplace">
     <meta property="og:description" content="Explore high-quality stock photos, vectors, UI/UX templates and 3D models. Fast and secure transactions via KBZPay and WavePay.">
     <meta property="og:type" content="website">
@@ -442,7 +442,7 @@
         </div>
     </div>
 
-    <!-- Combined JavaScript Application Logic -->
+    <!-- JavaScript Application Logic -->
     <script>
         let currentUser = null;
         let currentCategory = 'All';
@@ -536,7 +536,7 @@
             pendingContributors.push({ name, email, phone, status: 'Pending' });
             alert('Registration submitted! Awaiting Admin Approval.');
             closeAuthModal();
-            updateAdminDashboard(); // Real-time update for admin
+            updateAdminDashboard();
         }
 
         function updateUserUI() {
@@ -670,7 +670,7 @@
             topupRequests.push({ user: currentUser ? currentUser.email : 'Guest', coins, code, phone });
             closeTopUpModal();
             alert('Top-up request submitted for admin review!');
-            updateAdminDashboard(); // Real-time update for admin
+            updateAdminDashboard(); // ချက်ချင်း Update လုပ်ရန်
         }
 
         // --- Contributor Portal ---
@@ -701,14 +701,14 @@
             pendingProducts.push(newProd);
             alert('Product submitted for admin review!');
             document.getElementById('contributorForm').reset();
-            updateAdminDashboard(); // Real-time update for admin
+            updateAdminDashboard(); // ချက်ချင်း Update လုပ်ရန်
         }
 
         function requestWithdrawal() {
             const amt = document.getElementById('withdrawCoins').value;
             withdrawalRequests.push({ contributor: currentUser ? currentUser.name : 'Unknown', phone: currentUser ? currentUser.phone : 'N/A', coins: amt });
             alert('Withdrawal request sent to admin.');
-            updateAdminDashboard(); // Real-time update for admin
+            updateAdminDashboard(); // ချက်ချင်း Update လုပ်ရန်
         }
 
         // --- Admin Dashboard & Action Logic ---
@@ -784,7 +784,7 @@
             if (withdrawalRequests.length === 0) {
                 withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
             } else {
-                withdrawalTable.innerHTML = withdrawalRequests.map((w, index) => `
+                withdrawTable.innerHTML = withdrawalRequests.map((w, index) => `
                     <tr class="border-b border-slate-800">
                         <td class="p-3 text-white font-medium">${w.contributor}</td>
                         <td class="p-3 text-slate-300">${w.phone}</td>
