@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="my" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERYA STOCK | Digital Product Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brand: { 500: '#6366f1', 600: '#4f46e5' } } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-rose-500 selection:text-white flex flex-col justify-between">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <div>
+        <!-- Navigation -->
+        <nav class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="router('home')">
+                    <div class="bg-rose-600 text-white p-2 rounded-xl font-bold"><i class="fa-solid fa-store"></i></div>
+                    <span class="text-xl font-black tracking-wider text-white">VERYA STOCK</span>
+                </div>
+                <div id="nav-auth" class="flex items-center gap-4"></div>
+            </div>
+        </nav>
+
+        <!-- Main App Container -->
+        <main id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"></main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white text-slate-900 mt-20 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 justify-between">
+            <div>
+                <h2 class="text-xl font-black tracking-wider text-rose-600 mb-1">VERYASTOCK</h2>
+                <p class="text-xs font-semibold text-slate-600 mb-4">DIGITAL PRODUCT BUY & SELLER</p>
+                <p class="text-sm text-slate-700 mb-2">West Minma, Pale, Sagaing, Myanmar</p>
+                <p class="text-sm text-slate-700 mb-1">veryacomputerclass@gmail.com</p>
+                <p class="text-sm text-slate-700 mb-1">09-429515474 - 09941117896</p>
+                <p class="text-sm text-slate-700 mb-1">Viber: 09941117896</p>
+                <p class="text-sm text-slate-700 mb-4">Facebook</p>
+                <p class="text-xs text-slate-500">© 2026 VERYASTOCK. All rights reserved.</p>
+            </div>
+            <div class="flex justify-start md:justify-end gap-16 text-sm">
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-900">Explore</p>
+                    <p class="text-slate-600 cursor-pointer hover:underline" onclick="router('home')">About</p>
+                    <p class="text-slate-600 cursor-pointer hover:underline">Terms</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-900">Buy Coins</p>
+                    <p class="text-slate-600 cursor-pointer hover:underline">FAQ</p>
+                    <p class="text-slate-600 cursor-pointer hover:underline">Privacy</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-900">Start Selling</p>
+                    <p class="text-slate-600 cursor-pointer hover:underline">Contact</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-emerald-600' : (type === 'error' ? 'bg-rose-600' : 'bg-indigo-600');
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transform translate-x-full transition-all duration-300 font-medium text-sm`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        let currentUser = JSON.parse(localStorage.getItem('verya_user') || 'null');
+
+        function router(view, param = null) {
+            const app = document.getElementById('app');
+            updateNav();
+            if (view === 'home') renderHome(app);
+            else if (view === 'login') renderLogin(app);
+            else if (view === 'admin') renderAdmin(app);
+            else if (view === 'product') renderProduct(app, param);
+        }
+
+        function updateNav() {
+            const navAuth = document.getElementById('nav-auth');
+            if (currentUser) {
+                navAuth.innerHTML = `
+                    <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full">
+                        <span class="text-xs text-rose-400 font-bold"><i class="fa-solid fa-coins"></i> ${currentUser.coins || 0} Coins</span>
+                        <span class="text-sm font-semibold">${currentUser.username}</span>
+                    </div>
+                    ${currentUser.isAdmin ? '<button onclick="router('admin')" class="bg-rose-600 hover:bg-rose-500 px-3 py-1.5 rounded-lg text-sm font-medium transition text-white">Admin</button>' : ''}
+                    <button onclick="logout()" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-right-from-bracket"></i></button>
+                `;
+            } else {
+                navAuth.innerHTML = `<button onclick="router('login')" class="bg-rose-600 hover:bg-rose-500 px-4 py-2 rounded-xl text-sm font-semibold text-white transition">Login / Register</button>`;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('verya_user');
+            currentUser = null;
+            showToast('အောင်မြင်စွာ ထွက်ခွာလိုက်ပါပြီ', 'info');
+            router('home');
+        }
+
+        function getProducts() {
+            return JSON.parse(localStorage.getItem('verya_products') || '[]');
+        }
+
+        function saveProducts(products) {
+            localStorage.setItem('verya_products', JSON.stringify(products));
+        }
+
+        function renderHome(container) {
+            container.innerHTML = `
+                <!-- Red Hero Banner -->
+                <div class="bg-rose-600 rounded-3xl p-8 sm:p-12 text-center text-white my-6 shadow-2xl">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">VERYA STOCK DIGITAL PRODUCT STORE</h1>
+                    <p class="text-rose-100 max-w-2xl mx-auto mb-8 text-sm sm:text-base leading-relaxed">
+                        Upload your digital assets, set a price in Coins, and earn 80% on every sale. Withdraw your earnings straight to KPay, WavePay, AYA Pay or bank.
+                    </p>
+                    <button onclick="checkAdminAndUpload()" class="bg-white text-rose-600 hover:bg-rose-50 px-6 py-3 rounded-full font-bold shadow-lg transition inline-flex items-center gap-2 text-sm">
+                        Upload your first product <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="mb-8 mt-12">
+                    <h2 class="text-2xl font-bold mb-6">Available Products</h2>
+                    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </div>
+            `;
+            const products = getProducts();
+            const grid = document.getElementById('product-grid');
+            if (products.length === 0) {
+                grid.innerHTML = '<div class="text-center col-span-full py-12 text-slate-500">ပစ္စည်းမရှိသေးပါ။ အက်ဒမင်ကတ်မှ အသစ်တင်ပေးပါ။</div>';
+                return;
+            }
+            grid.innerHTML = products.map(p => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition flex flex-col">
+                    <img src="${p.img}" alt="${p.name}" class="w-full h-48 object-cover">
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold mb-2">${p.name}</h3>
+                        <p class="text-rose-400 font-bold mb-4">${p.price} Coins</p>
+                        <button onclick="router('product', '${p.id}')" class="mt-auto w-full bg-slate-800 hover:bg-rose-600 py-2.5 rounded-xl font-medium transition text-center">ကြည့်မည် / ဝယ်မည်</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function checkAdminAndUpload() {
+            if (!currentUser) {
+                showToast('ကျေးဇူးပြု၍ အရင် Login ဝင်ပါ။', 'error');
+                router('login');
+                return;
+            }
+            if (!currentUser.isAdmin) {
+                showToast('Admin များသာ ပစ္စည်းတင်ခွင့်ရှိသည်။', 'error');
+                return;
+            }
+            router('admin');
+        }
+
+        function renderProduct(container, id) {
+            const products = getProducts();
+            const p = products.find(item => item.id === id);
+            if (!p) {
+                container.innerHTML = '<div class="text-center py-12">ပစ္စည်း ရှမတွေ့ပါ။</div>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-8 my-8">
+                    <img src="${p.img}" class="w-full h-72 object-cover rounded-2xl mb-6">
+                    <h1 class="text-3xl font-bold mb-3">${p.name}</h1>
+                    <p class="text-2xl font-black text-rose-400 mb-6">${p.price} Coins</p>
+                    <p class="text-slate-300 mb-8">${p.desc || 'အသေးစိတ်ဖော်ပြချက် မရှိပါ။'}</p>
+                    <button onclick="buyProduct('${p.id}')" class="w-full bg-rose-600 hover:bg-rose-500 py-3.5 rounded-xl font-bold transition text-white">ချက်ချင်းဝယ်ယူမည်</button>
+                </div>
+            `;
+        }
+
+        function buyProduct(id) {
+            if (!currentUser) {
+                showToast('ကျေးဇူးပြု၍ အရင် Login ဝင်ပါ။', 'error');
+                router('login');
+                return;
+            }
+            const products = getProducts();
+            const p = products.find(item => item.id === id);
+            if (currentUser.coins < p.price) {
+                showToast('Coins မလုံလောက်ပါ။', 'error');
+                return;
+            }
+            currentUser.coins -= p.price;
+            localStorage.setItem('verya_user', JSON.stringify(currentUser));
+            showToast('ပစ္စည်းဝယ်ယူမှု အောင်မြင်ပါသည်။');
+            updateNav();
+            router('home');
+        }
+
+        function renderLogin(container) {
+            container.innerHTML = `
+                <div class="max-w-md mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-8 my-12">
+                    <h2 class="text-2xl font-bold mb-6 text-center">Login / Register</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Username</label>
+                            <input type="text" id="username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Password</label>
+                            <input type="password" id="password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:border-rose-500">
+                        </div>
+                        <button onclick="handleAuth()" class="w-full bg-rose-600 hover:bg-rose-500 py-3 rounded-xl font-bold transition text-white">ဝင်မည် / အကောင့်ဖွင့်မည်</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleAuth() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            if (!username || !password) {
+                showToast('အချက်အလက်များ အပြည့်အစုံထည့်ပါ။', 'error');
+                return;
+            }
+            currentUser = {
+                id: Date.now().toString(),
+                username: username,
+                coins: 500,
+                isAdmin: username === 'admin'
+            };
+            localStorage.setItem('verya_user', JSON.stringify(currentUser));
+            showToast('အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ');
+            router('home');
+        }
+
+        function renderAdmin(container) {
+            if (!currentUser || !currentUser.isAdmin) {
+                container.innerHTML = '<div class="text-center py-12 text-rose-500 font-bold">ခွင့်ပြုချက်မရှိပါ။ (Admin အကောင့်ဖြင့် ဝင်ပါ)</div>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-8 my-8">
+                    <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+                        <h3 class="text-xl font-bold mb-4">ပစ္စည်းအသစ်ထည့်ရန်</h3>
+                        <div class="space-y-4">
+                            <input type="text" id="p-name" placeholder="ပစ္စည်းအမည်" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3">
+                            <input type="number" id="p-price" placeholder="ဈေးနှုန်း (Coins)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3">
+                            <input type="text" id="p-img" placeholder="ပုံလင့်ခ် (Image URL)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3">
+                            <textarea id="p-desc" placeholder="အသေးစိတ်ဖော်ပြချက်" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3"></textarea>
+                            <button onclick="createProduct()" class="bg-rose-600 hover:bg-rose-500 px-6 py-3 rounded-xl font-bold text-white">တင်မည်</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createProduct() {
+            const name = document.getElementById('p-name').value.trim();
+            const price = Number(document.getElementById('p-price').value);
+            const img = document.getElementById('p-img').value.trim();
+            const desc = document.getElementById('p-desc').value.trim();
+
+            if (!name || !price || !img) {
+                showToast('ကျေးဇူးပြု၍ အချက်အလက်များကို အပြည့်အစုံထည့်ပါ။', 'error');
+                return;
+            }
+
+            const products = getProducts();
+            const newProduct = {
+                id: Date.now().toString(),
+                name,
+                price,
+                img,
+                desc
+            };
+
+            products.push(newProduct);
+            saveProducts(products);
+            showToast('ပစ္စည်းအသစ် တင်ပြီးပါပြီ။');
+            router('home');
+        }
+
+        // Initialize App
+        router('home');
+    </script>
+</body>
+</html>
