@@ -3,47 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Optimization Meta Tags -->
-    <title>Verya Stock - Professional Digital Assets, Stock Images & Contributor Marketplace</title>
-    <meta name="description" content="Verya Stock is Myanmar's leading digital marketplace for stunning stock images, vectors, UI/UX templates, and 3D models. Join as a contributor, buy assets, and manage secure payouts.">
-    <meta name="keywords" content="Verya Stock, Myanmar Stock Images, Vector graphics, UI/UX templates, Digital assets marketplace, KBZPay topup, Hein Yazar Soe">
-    <meta name="author" content="Hein Yazar Soe">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="Verya Stock - Digital Assets Marketplace">
-    <meta property="og:description" content="Explore high-quality stock photos, vectors, UI/UX templates and 3D models. Fast and secure transactions via KBZPay and WavePay.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200">
-    <meta property="og:url" content="https://veryastock.com">
-
-    <!-- Structured Data (Schema.org for SEO) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Verya Stock",
-      "url": "https://veryastock.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://veryastock.com/?search={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-
-    <!-- Tailwind CSS -->
+    <title>Verya Stock - Professional Digital Assets & Admin Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: {} }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: {} } }
     </script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         .gold-text { color: #fbbf24; }
         .gold-btn { background: linear-gradient(135deg, #fbbf24, #d97706); }
@@ -442,25 +407,36 @@
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Application Logic with LocalStorage Integration -->
     <script>
-        let currentUser = null;
+        let currentUser = JSON.parse(localStorage.getItem('verya_currentUser')) || null;
         let currentCategory = 'All';
         let cart = [];
         
-        let products = [
+        let products = JSON.parse(localStorage.getItem('verya_products')) || [
             { id: 1, title: 'Abstract Golden Wave', category: 'Vectors', price: 25, image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500', downloadLink: '#', desc: 'High-res vector wave background.', status: 'approved', contributor: 'Hein Yazar Soe' },
             { id: 2, title: 'Dark SaaS Dashboard UI', category: 'UI/UX', price: 40, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500', downloadLink: '#', desc: 'Figma UI kit for modern SaaS.', status: 'approved', contributor: 'Hein Yazar Soe' }
         ];
         
-        let pendingProducts = [];
-        let contributors = [
+        let pendingProducts = JSON.parse(localStorage.getItem('verya_pendingProducts')) || [];
+        let contributors = JSON.parse(localStorage.getItem('verya_contributors')) || [
             { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', status: 'Approved', earnings: 0 }
         ];
-        let pendingContributors = [];
-        let topupRequests = [];
-        let withdrawalRequests = [];
-        let userDownloads = [];
+        let pendingContributors = JSON.parse(localStorage.getItem('verya_pendingContributors')) || [];
+        let topupRequests = JSON.parse(localStorage.getItem('verya_topupRequests')) || [];
+        let withdrawalRequests = JSON.parse(localStorage.getItem('verya_withdrawalRequests')) || [];
+        let userDownloads = JSON.parse(localStorage.getItem('verya_userDownloads')) || [];
+
+        function saveToLocalStorage() {
+            localStorage.setItem('verya_products', JSON.stringify(products));
+            localStorage.setItem('verya_pendingProducts', JSON.stringify(pendingProducts));
+            localStorage.setItem('verya_contributors', JSON.stringify(contributors));
+            localStorage.setItem('verya_pendingContributors', JSON.stringify(pendingContributors));
+            localStorage.setItem('verya_topupRequests', JSON.stringify(topupRequests));
+            localStorage.setItem('verya_withdrawalRequests', JSON.stringify(withdrawalRequests));
+            localStorage.setItem('verya_userDownloads', JSON.stringify(userDownloads));
+            localStorage.setItem('verya_currentUser', JSON.stringify(currentUser));
+        }
 
         // --- Navigation & Access Control ---
         function switchTab(tabId) {
@@ -518,6 +494,7 @@
                 alert('Successfully Logged In!');
             }
             
+            saveToLocalStorage();
             updateUserUI();
             closeAuthModal();
         }
@@ -534,6 +511,7 @@
             }
 
             pendingContributors.push({ name, email, phone, status: 'Pending' });
+            saveToLocalStorage();
             alert('Registration submitted! Awaiting Admin Approval.');
             closeAuthModal();
             updateAdminDashboard();
@@ -543,6 +521,9 @@
             if(currentUser) {
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 document.getElementById('authNavBtn').innerHTML = `<i class="fa-solid fa-user-check mr-1"></i> ${currentUser.name}`;
+                if(currentUser.email === 'veryacomputerclass@gmail.com') {
+                    document.getElementById('navAdminLink').classList.remove('hidden');
+                }
             }
         }
 
@@ -640,10 +621,11 @@
             if(currentUser.coins < total) { alert('Insufficient coins! Please top up.'); return; }
             
             currentUser.coins -= total;
-            updateUserUI();
             userDownloads.push(...cart);
             cart = [];
             document.getElementById('cartCountBadge').innerText = '0';
+            saveToLocalStorage();
+            updateUserUI();
             closeCartModal();
             alert('Checkout successful! Assets added to My Downloads.');
         }
@@ -663,14 +645,16 @@
         function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
         
         function submitTopUp() {
+            if(!currentUser) { alert('Please login first.'); return; }
             const coins = document.getElementById('topupCoins').value;
             const code = document.getElementById('topupCode').value;
             const phone = document.getElementById('topupPhone').value;
             
-            topupRequests.push({ user: currentUser ? currentUser.email : 'Guest', coins, code, phone });
+            topupRequests.push({ user: currentUser.email, coins, code, phone });
+            saveToLocalStorage();
             closeTopUpModal();
             alert('Top-up request submitted for admin review!');
-            updateAdminDashboard(); // ချက်ချင်း Update လုပ်ရန်
+            updateAdminDashboard();
         }
 
         // --- Contributor Portal ---
@@ -688,7 +672,7 @@
         function handleContributorUpload(e) {
             e.preventDefault();
             const newProd = {
-                id: products.length + 1,
+                id: products.length + pendingProducts.length + 1,
                 title: document.getElementById('conTitle').value,
                 category: document.getElementById('conCategory').value,
                 price: Number(document.getElementById('conCoins').value),
@@ -699,16 +683,19 @@
                 contributor: currentUser ? currentUser.name : 'Unknown'
             };
             pendingProducts.push(newProd);
+            saveToLocalStorage();
             alert('Product submitted for admin review!');
             document.getElementById('contributorForm').reset();
-            updateAdminDashboard(); // ချက်ချင်း Update လုပ်ရန်
+            updateAdminDashboard();
         }
 
         function requestWithdrawal() {
+            if(!currentUser) { alert('Please login first.'); return; }
             const amt = document.getElementById('withdrawCoins').value;
-            withdrawalRequests.push({ contributor: currentUser ? currentUser.name : 'Unknown', phone: currentUser ? currentUser.phone : 'N/A', coins: amt });
+            withdrawalRequests.push({ contributor: currentUser.name, phone: currentUser.phone || '09941117896', coins: amt });
+            saveToLocalStorage();
             alert('Withdrawal request sent to admin.');
-            updateAdminDashboard(); // ချက်ချင်း Update လုပ်ရန်
+            updateAdminDashboard();
         }
 
         // --- Admin Dashboard & Action Logic ---
@@ -803,12 +790,14 @@
             const approved = pendingContributors.splice(index, 1)[0];
             approved.status = 'Approved';
             contributors.push(approved);
+            saveToLocalStorage();
             alert(`Contributor ${approved.name} has been approved!`);
             updateAdminDashboard();
         }
 
         function rejectContributor(index) {
             pendingContributors.splice(index, 1);
+            saveToLocalStorage();
             alert('Contributor application rejected.');
             updateAdminDashboard();
         }
@@ -817,6 +806,7 @@
             const prod = pendingProducts.splice(index, 1)[0];
             prod.status = 'approved';
             products.push(prod);
+            saveToLocalStorage();
             alert(`Product "${prod.title}" approved and published to marketplace!`);
             updateAdminDashboard();
             renderProducts();
@@ -824,35 +814,41 @@
 
         function rejectProduct(index) {
             pendingProducts.splice(index, 1);
+            saveToLocalStorage();
             alert('Product upload rejected.');
             updateAdminDashboard();
         }
 
         function approveTopup(index) {
-            const req = topupRequests.splice(index, 1)[0];
-            alert(`Approved ${req.coins} coins top-up for ${req.user}!`);
+            topupRequests.splice(index, 1);
+            saveToLocalStorage();
+            alert('Top-up request approved successfully!');
             updateAdminDashboard();
         }
 
         function rejectTopup(index) {
             topupRequests.splice(index, 1);
+            saveToLocalStorage();
             alert('Top-up request rejected.');
             updateAdminDashboard();
         }
 
         function approveWithdrawal(index) {
             withdrawalRequests.splice(index, 1);
+            saveToLocalStorage();
             alert('Withdrawal request approved successfully!');
             updateAdminDashboard();
         }
 
         function rejectWithdrawal(index) {
             withdrawalRequests.splice(index, 1);
+            saveToLocalStorage();
             alert('Withdrawal request rejected.');
             updateAdminDashboard();
         }
 
-        // Initialize default view
+        // Initialize App UI
+        updateUserUI();
         renderProducts();
     </script>
 </body>
