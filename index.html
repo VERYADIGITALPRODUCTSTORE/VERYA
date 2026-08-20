@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="my" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Contributor & Admin Control System v15.0</title>
     
+    <!-- SEO Optimization Meta Tags -->
+    <title>Verya Stock - Professional Digital Assets, Stock Images & Contributor Marketplace</title>
+    <meta name="description" content="Verya Stock is Myanmar's leading digital marketplace for stunning stock images, vectors, UI/UX templates, and 3D models. Join as a contributor, buy assets, and manage secure payouts.">
+    <meta name="keywords" content="Verya Stock, Myanmar Stock Images, Vector graphics, UI/UX templates, Digital assets marketplace, KBZPay topup, Hein Yazar Soe">
+    <meta name="author" content="Hein Yazar Soe">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media Meta Tags (Facebook, Viber, Telegram Sharing) -->
+    <meta property="og:title" content="Verya Stock - Digital Assets Marketplace">
+    <meta property="og:description" content="Explore high-quality stock photos, vectors, UI/UX templates and 3D models. Fast and secure transactions via KBZPay and WavePay.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200">
+    <meta property="og:url" content="https://veryastock.com">
+
+    <!-- Structured Data (Schema.org for SEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Verya Stock",
+      "url": "https://veryastock.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://veryastock.com/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -284,7 +312,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Pending Withdrawal Requests (Approve / Reject Enabled) -->
+                <!-- 4. Pending Withdrawal Requests -->
                 <div>
                     <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
                     <div class="overflow-x-auto">
@@ -508,6 +536,7 @@
             pendingContributors.push({ name, email, phone, status: 'Pending' });
             alert('Registration submitted! Awaiting Admin Approval.');
             closeAuthModal();
+            updateAdminDashboard(); // Real-time update for admin
         }
 
         function updateUserUI() {
@@ -529,6 +558,10 @@
             renderProducts();
         }
 
+        function filterProducts() {
+            renderProducts();
+        }
+
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             const search = document.getElementById('searchInput').value.toLowerCase();
@@ -547,7 +580,7 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between group">
                     <div>
                         <div class="relative h-40 overflow-hidden bg-black">
-                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${p.title}">
                             <span class="absolute top-2 left-2 bg-slate-950/80 text-amber-400 text-[10px] px-2 py-0.5 rounded-md font-bold">${p.category}</span>
                         </div>
                         <div class="p-4 space-y-1">
@@ -619,7 +652,7 @@
             const grid = document.getElementById('downloadGrid');
             grid.innerHTML = userDownloads.map(p => `
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-                    <img src="${p.image}" class="w-full h-32 object-cover rounded-xl">
+                    <img src="${p.image}" class="w-full h-32 object-cover rounded-xl" alt="${p.title}">
                     <h3 class="font-bold text-sm">${p.title}</h3>
                     <a href="${p.downloadLink}" target="_blank" class="block text-center gold-btn text-slate-950 font-bold py-2 rounded-xl text-xs">Download Secure File</a>
                 </div>
@@ -637,6 +670,7 @@
             topupRequests.push({ user: currentUser ? currentUser.email : 'Guest', coins, code, phone });
             closeTopUpModal();
             alert('Top-up request submitted for admin review!');
+            updateAdminDashboard(); // Real-time update for admin
         }
 
         // --- Contributor Portal ---
@@ -667,24 +701,24 @@
             pendingProducts.push(newProd);
             alert('Product submitted for admin review!');
             document.getElementById('contributorForm').reset();
+            updateAdminDashboard(); // Real-time update for admin
         }
 
         function requestWithdrawal() {
             const amt = document.getElementById('withdrawCoins').value;
             withdrawalRequests.push({ contributor: currentUser ? currentUser.name : 'Unknown', phone: currentUser ? currentUser.phone : 'N/A', coins: amt });
             alert('Withdrawal request sent to admin.');
+            updateAdminDashboard(); // Real-time update for admin
         }
 
         // --- Admin Dashboard & Action Logic ---
         function updateAdminDashboard() {
-            if (!currentUser || currentUser.email !== 'veryacomputerclass@gmail.com') {
-                return;
-            }
-
             document.getElementById('adminStatContributors').innerText = contributors.length;
             document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
-            document.getElementById('adminStatPending').innerText = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
-            document.getElementById('adminBadgeCount').innerText = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
+            
+            const totalPendingCount = pendingProducts.length + pendingContributors.length + topupRequests.length + withdrawalRequests.length;
+            document.getElementById('adminStatPending').innerText = totalPendingCount;
+            document.getElementById('adminBadgeCount').innerText = totalPendingCount;
 
             // 1. Contributor Table
             const conTable = document.getElementById('adminContributorTable');
@@ -712,7 +746,7 @@
             } else {
                 prodTable.innerHTML = pendingProducts.map((p, index) => `
                     <tr class="border-b border-slate-800">
-                        <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg"></td>
+                        <td class="p-3"><img src="${p.image}" class="w-12 h-12 object-cover rounded-lg" alt="${p.title}"></td>
                         <td class="p-3">
                             <strong class="text-white block">${p.title}</strong>
                             <span class="text-xs text-slate-400">By ${p.contributor} | Category: ${p.category}</span>
@@ -745,12 +779,12 @@
                 `).join('');
             }
 
-            // 4. Withdrawal Table (Fully functional with Approve and Reject)
+            // 4. Withdrawal Table
             const withdrawTable = document.getElementById('adminWithdrawTable');
             if (withdrawalRequests.length === 0) {
                 withdrawTable.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">No withdrawal requests.</td></tr>`;
             } else {
-                withdrawTable.innerHTML = withdrawalRequests.map((w, index) => `
+                withdrawalTable.innerHTML = withdrawalRequests.map((w, index) => `
                     <tr class="border-b border-slate-800">
                         <td class="p-3 text-white font-medium">${w.contributor}</td>
                         <td class="p-3 text-slate-300">${w.phone}</td>
@@ -785,6 +819,7 @@
             products.push(prod);
             alert(`Product "${prod.title}" approved and published to marketplace!`);
             updateAdminDashboard();
+            renderProducts();
         }
 
         function rejectProduct(index) {
