@@ -250,13 +250,32 @@
         ];
 
         window.onload = function() {
-            // Strict enforce master admin role
             if(currentUser && currentUser.username !== 'veryacomputerclass@gmail.com') {
                 currentUser.role = 'User';
             }
             renderAssets(assets);
             updateNavbarState();
         };
+
+        // Listen for live data changes across storage sync
+        window.addEventListener('storage', function(e) {
+            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
+            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
+            users = JSON.parse(localStorage.getItem('veryastock_users')) || users;
+            assets = JSON.parse(localStorage.getItem('veryastock_assets')) || assets;
+            
+            const currentTab = document.getElementById('tab-admin');
+            if(currentTab && !currentTab.classList.contains('hidden')) {
+                renderAdminDashboard();
+            }
+            if(currentUser) {
+                const latestMe = users.find(u => u.username === currentUser.username);
+                if(latestMe) {
+                    currentUser.coins = latestMe.coins;
+                    updateNavbarState();
+                }
+            }
+        });
 
         function switchTab(tabName) {
             ['explore', 'upload', 'wallet', 'contact', 'admin'].forEach(t => {
@@ -280,7 +299,6 @@
             const authBtn = document.getElementById('authBtn');
             const userBalance = document.getElementById('userBalance');
 
-            // Force security check on current user
             if (currentUser && currentUser.username === 'veryacomputerclass@gmail.com') {
                 currentUser.role = 'Admin';
             } else if (currentUser) {
@@ -339,7 +357,6 @@
                 const found = users.find(u => u.username === username && u.password === password);
                 if (found) {
                     currentUser = found;
-                    // Enforce strict admin check
                     if (currentUser.username === 'veryacomputerclass@gmail.com') {
                         currentUser.role = 'Admin';
                     } else {
@@ -440,6 +457,7 @@
             const previewUrl = document.getElementById('uploadPreviewUrl').value.trim();
             const downloadUrl = document.getElementById('uploadDownloadUrl').value.trim();
 
+            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
             pendingUploads.push({ id: Date.now(), title, category, price, previewUrl, downloadUrl, author: currentUser.username, timestamp: new Date().toLocaleString() });
             localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
             
@@ -488,6 +506,7 @@
             const coins = parseInt(document.getElementById('topupCoins').value);
             const ref = document.getElementById('topupRef').value.trim();
 
+            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
             pendingTopups.push({ username: currentUser.username, gateway, coins, ref, timestamp: new Date().toLocaleString() });
             localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
             
@@ -497,6 +516,9 @@
         }
 
         function renderAdminDashboard() {
+            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
+            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
+
             // Render Topup Slips
             const topupContainer = document.getElementById('adminTopupContainer');
             topupContainer.innerHTML = '';
@@ -550,7 +572,9 @@
         }
 
         function approveTopup(index) {
+            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
             const topup = pendingTopups[index];
+            users = JSON.parse(localStorage.getItem('veryastock_users')) || users;
             const targetUser = users.find(u => u.username === topup.username);
             if (targetUser) {
                 targetUser.coins += parseInt(topup.coins);
@@ -567,6 +591,7 @@
         }
 
         function rejectTopup(index) {
+            pendingTopups = JSON.parse(localStorage.getItem('veryastock_pending_topups')) || [];
             pendingTopups.splice(index, 1);
             localStorage.setItem('veryastock_pending_topups', JSON.stringify(pendingTopups));
             renderAdminDashboard();
@@ -574,7 +599,9 @@
         }
 
         function approveUpload(index) {
+            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
             const item = pendingUploads[index];
+            assets = JSON.parse(localStorage.getItem('veryastock_assets')) || assets;
             assets.unshift({
                 id: item.id,
                 title: item.title,
@@ -593,6 +620,7 @@
         }
 
         function rejectUpload(index) {
+            pendingUploads = JSON.parse(localStorage.getItem('veryastock_pending_uploads')) || [];
             pendingUploads.splice(index, 1);
             localStorage.setItem('veryastock_pending_uploads', JSON.stringify(pendingUploads));
             renderAdminDashboard();
