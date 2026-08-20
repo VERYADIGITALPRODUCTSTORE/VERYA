@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Professional Digital Assets & Admin Marketplace</title>
+    <title>Verya Stock - Ultimate Digital Assets & Contributor Marketplace System (30+ Features)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: {} } }
@@ -12,13 +12,13 @@
     <style>
         .gold-text { color: #fbbf24; }
         .gold-btn { background: linear-gradient(135deg, #fbbf24, #d97706); }
-        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fbbf24; font-size: 10px; padding: 2px 6px; border-radius: 4px; pointer-events: none; }
+        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #fbbf24; font-size: 10px; padding: 3px 8px; border-radius: 4px; pointer-events: none; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300">
 
     <!-- Header / Navbar -->
-    <header class="bg-slate-900/85 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
+    <header class="bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-6">
                 <a href="#" onclick="switchTab('home')" class="text-2xl font-black flex items-center gap-2">
@@ -64,11 +64,11 @@
         <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
                 <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Stunning Stock Images & Digital Assets</h1>
-                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock - Advanced Contributor & Admin Marketplace</p>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock - Advanced Contributor & Admin Marketplace System (30+ Features)</p>
                 
                 <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
                     <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
-                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search assets..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
+                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search assets, photos, UI templates..." class="w-full bg-transparent px-4 py-2 text-white focus:outline-none text-sm md:text-base">
                     <button onclick="filterProducts()" class="gold-btn text-slate-950 font-bold px-6 py-3 rounded-xl transition">Search</button>
                 </div>
             </div>
@@ -93,7 +93,7 @@
 
             <div>
                 <h2 class="text-xl font-bold mb-6 text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-fire"></i> Available Assets
+                    <i class="fa-solid fa-fire"></i> Available Marketplace Assets
                 </h2>
                 <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
             </div>
@@ -109,15 +109,35 @@
         <section id="tab-contributor" class="hidden space-y-8 max-w-4xl mx-auto">
             <div id="contributorGuestView" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4 shadow-xl">
                 <h2 class="text-2xl font-bold gold-text">Contributor Portal Access</h2>
-                <p class="text-slate-400 text-sm">Please log in or register an account to upload products and request payouts.</p>
+                <p class="text-slate-400 text-sm">Please log in or register an account to upload products and request cash payouts.</p>
                 <button onclick="openAuthModal()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm">Login / Register Account</button>
             </div>
 
             <div id="contributorDashboard" class="hidden space-y-8">
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center shadow-lg">
+                <!-- Announcement Banner -->
+                <div id="contributorAnnouncementBox" class="bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-xl text-sm flex items-center gap-3 hidden">
+                    <i class="fa-solid fa-bullhorn text-lg"></i>
+                    <div>
+                        <strong class="block text-amber-400">Admin Announcement:</strong>
+                        <span id="announcementTextContent">No announcements yet.</span>
+                    </div>
+                </div>
+
+                <!-- Welcome & Analytics Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4 shadow-lg">
                     <div>
                         <h3 class="text-lg font-bold text-amber-400" id="conWelcomeName">Welcome Contributor</h3>
-                        <p class="text-xs text-slate-400">Status: <span id="conStatusBadge" class="text-emerald-400 font-bold">Approved</span></p>
+                        <p class="text-xs text-slate-400">Account Status: <span id="conStatusBadge" class="text-emerald-400 font-bold">Approved</span> | Commission Share: <strong class="text-white">80%</strong></p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center">
+                            <span class="text-[10px] text-slate-400 block">Total Uploads</span>
+                            <strong id="conStatUploads" class="text-amber-400 text-base">0</strong>
+                        </div>
+                        <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 text-center">
+                            <span class="text-[10px] text-slate-400 block">Current Balance</span>
+                            <strong id="conStatEarnings" class="text-amber-400 text-base">0 Coins</strong>
+                        </div>
                     </div>
                 </div>
 
@@ -151,7 +171,7 @@
                             <input type="url" id="conImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Download Link</label>
+                            <label class="block text-xs font-bold text-slate-400 mb-1">Asset Download Link (Google Drive / Mega)</label>
                             <input type="url" id="conDownloadLink" required placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
                         </div>
                         <div class="md:col-span-2">
@@ -168,7 +188,7 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
                     <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-wallet mr-2"></i> Coin Withdrawal (KBZPay / WavePay Payout Request)</h2>
                     <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
-                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Admin will send money to your registered phone number via KBZPay / WavePay)</p>
+                        <p class="text-sm text-slate-300">Minimum withdrawal amount: <strong>50 Coins</strong> (Admin will transfer cash to your registered phone number via KBZPay / WavePay)</p>
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-1">Withdrawal Amount (Coins)</label>
                             <input type="number" id="withdrawCoins" min="50" value="50" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
@@ -195,12 +215,12 @@
         <section id="tab-admin" class="hidden space-y-8 max-w-5xl mx-auto">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-8">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Master Control Panel</h2>
+                    <h2 class="text-2xl font-bold gold-text"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Master Control Panel (30+ Features)</h2>
                     <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Admin: veryacomputerclass@gmail.com</span>
                 </div>
 
                 <!-- Admin Analytics Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
                         <span class="text-xs text-slate-400 block">Total Users / Accounts</span>
                         <strong id="adminStatContributors" class="text-amber-400 text-xl">0</strong>
@@ -210,14 +230,27 @@
                         <strong id="adminStatProducts" class="text-amber-400 text-xl">0</strong>
                     </div>
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                        <span class="text-xs text-slate-400 block">Platform Revenue</span>
+                        <strong id="adminStatRevenue" class="text-amber-400 text-xl">0 Coins</strong>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
                         <span class="text-xs text-slate-400 block">Pending Reviews</span>
                         <strong id="adminStatPending" class="text-amber-400 text-xl">0</strong>
                     </div>
                 </div>
 
-                <!-- 0. Manage All Registered Users -->
+                <!-- Broadcast Announcement Feature -->
+                <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-3">
+                    <h3 class="font-bold text-sm text-amber-400"><i class="fa-solid fa-bullhorn mr-1"></i> Send Broadcast Announcement to All Contributors</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="adminAnnouncementInput" placeholder="Type notification or system announcement here..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-sm text-white">
+                        <button onclick="sendAnnouncement()" class="gold-btn text-slate-950 font-bold px-6 py-2.5 rounded-lg text-sm whitespace-nowrap">Broadcast</button>
+                    </div>
+                </div>
+
+                <!-- 0. Manage All Registered Users & Roles -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-address-book mr-1"></i> Manage All Registered Users & Accounts</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-address-book mr-1"></i> Manage All Registered Users & Roles</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -236,9 +269,9 @@
                     </div>
                 </div>
 
-                <!-- 1. Account / Contributor Approvals (အဟောင်းရော အသစ်ပါ အားလုံးပြသရန်) -->
+                <!-- 1. Contributor Account Applications -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications (All Old & New Accounts)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-users mr-1"></i> Contributor Account Applications</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -259,7 +292,7 @@
 
                 <!-- 2. Pending Product Approvals -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals (Admin Control)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-box-archive mr-1"></i> Pending Product Approvals</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -279,7 +312,7 @@
 
                 <!-- 3. Pending TopUp Approvals -->
                 <div class="border-b border-slate-800 pb-6">
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay/WavePay Codes)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-coins mr-1"></i> Pending Top-Up Approvals (KBZPay / WavePay)</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
@@ -298,15 +331,15 @@
                     </div>
                 </div>
 
-                <!-- 4. Pending Withdrawal Requests (KBZPay/WavePay Payouts) -->
+                <!-- 4. Pending Withdrawal Requests -->
                 <div>
-                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests (Admin Pays via KPay/Wave)</h3>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fa-solid fa-wallet mr-1"></i> Pending Payout / Withdrawal Requests</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
                                     <th class="p-3">Contributor</th>
-                                    <th class="p-3">KBZPay/Wave Phone</th>
+                                    <th class="p-3">KBZPay / Wave Phone</th>
                                     <th class="p-3">Coins</th>
                                     <th class="p-3">Action (Admin Transfer)</th>
                                 </tr>
@@ -441,15 +474,15 @@
         
         let pendingProducts = JSON.parse(localStorage.getItem('verya_pendingProducts')) || [];
         
-        // အကောင့်အဟောင်းများနှင့် အသစ်များအားလုံးကို သိမ်းဆည်းရန် (အစပိုင်းတွင် အကောင့်အဟောင်းများ ရှိပြီးသားဖြစ်စေရန် sample users များကို ထည့်သွင်းပေးထားပါသည်)
         let allUsers = JSON.parse(localStorage.getItem('verya_allUsers')) || [
-            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin', status: 'Approved' }
+            { name: 'Hein Yazar Soe', email: 'veryacomputerclass@gmail.com', phone: '09941117896', role: 'Admin', status: 'Approved', coins: 99999 }
         ];
 
-        // အရင်အကောင့်ဟောင်းများနှင့် အသစ်များအားလုံးထဲမှ status 'Pending' ဖြစ်နေသမျှကို Contributor Account Applications တွင် အလိုအလျောက် ပေါ်လာစေရန် စုစည်းခြင်း
         let topupRequests = JSON.parse(localStorage.getItem('verya_topupRequests')) || [];
         let withdrawalRequests = JSON.parse(localStorage.getItem('verya_withdrawalRequests')) || [];
         let userDownloads = JSON.parse(localStorage.getItem('verya_userDownloads')) || [];
+        let platformRevenue = Number(localStorage.getItem('verya_platformRevenue')) || 0;
+        let systemAnnouncement = localStorage.getItem('verya_announcement') || "Welcome to Verya Stock Marketplace!";
 
         function saveToLocalStorage() {
             localStorage.setItem('verya_products', JSON.stringify(products));
@@ -459,6 +492,8 @@
             localStorage.setItem('verya_withdrawalRequests', JSON.stringify(withdrawalRequests));
             localStorage.setItem('verya_userDownloads', JSON.stringify(userDownloads));
             localStorage.setItem('verya_currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('verya_platformRevenue', platformRevenue);
+            localStorage.setItem('verya_announcement', systemAnnouncement);
         }
 
         // --- Navigation & Access Control ---
@@ -528,8 +563,12 @@
                 return;
             }
 
-            currentUser = { name: foundUser.name, email: foundUser.email, role: foundUser.role, coins: 150, phone: foundUser.phone, status: foundUser.status };
-            document.getElementById('navAdminLink').classList.add('hidden');
+            currentUser = { name: foundUser.name, email: foundUser.email, role: foundUser.role, coins: foundUser.coins || 150, phone: foundUser.phone, status: foundUser.status };
+            if(currentUser.role === 'Admin' || currentUser.email === 'veryacomputerclass@gmail.com') {
+                document.getElementById('navAdminLink').classList.remove('hidden');
+            } else {
+                document.getElementById('navAdminLink').classList.add('hidden');
+            }
             alert('Successfully Logged In!');
             
             saveToLocalStorage();
@@ -553,8 +592,7 @@
                 return;
             }
 
-            // အကောင့်အသစ် (သို့) အဟောင်းဖြစ်စေ allUsers ထဲသို့ status 'Pending' ဖြင့် ထည့်သွင်းခြင်း (Admin မှ approve လုပ်ရန်)
-            const newUserObj = { name, email, phone, role: 'Contributor', status: 'Pending' };
+            const newUserObj = { name, email, phone, role: 'Contributor', status: 'Pending', coins: 150 };
             allUsers.push(newUserObj);
             
             saveToLocalStorage();
@@ -568,7 +606,7 @@
             if(currentUser) {
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 document.getElementById('authNavBtn').innerHTML = `<i class="fa-solid fa-user-check mr-1"></i> ${currentUser.name}`;
-                if(currentUser.email === 'veryacomputerclass@gmail.com') {
+                if(currentUser.email === 'veryacomputerclass@gmail.com' || currentUser.role === 'Admin') {
                     document.getElementById('navAdminLink').classList.remove('hidden');
                 }
             }
@@ -586,9 +624,7 @@
             renderProducts();
         }
 
-        function filterProducts() {
-            renderProducts();
-        }
+        function filterProducts() { renderProducts(); }
 
         function renderProducts() {
             const grid = document.getElementById('productGrid');
@@ -668,13 +704,24 @@
             if(currentUser.coins < total) { alert('Insufficient coins! Please top up.'); return; }
             
             currentUser.coins -= total;
+            platformRevenue += total;
+
+            // Distribute 80% commission to contributors
+            cart.forEach(item => {
+                let conUser = allUsers.find(u => u.name === item.contributor);
+                if(conUser) {
+                    let commission = Math.floor(item.price * 0.8);
+                    conUser.coins = (conUser.coins || 150) + commission;
+                }
+            });
+
             userDownloads.push(...cart);
             cart = [];
             document.getElementById('cartCountBadge').innerText = '0';
             saveToLocalStorage();
             updateUserUI();
             closeCartModal();
-            alert('Checkout successful! Assets added to My Downloads.');
+            alert('Checkout successful! Assets added to My Downloads and Contributor earnings updated.');
         }
 
         function renderDownloads() {
@@ -713,6 +760,15 @@
                 document.getElementById('contributorGuestView').classList.add('hidden');
                 document.getElementById('contributorDashboard').classList.remove('hidden');
                 document.getElementById('conWelcomeName').innerText = `Welcome, ${currentUser.name}`;
+                
+                if(systemAnnouncement) {
+                    document.getElementById('contributorAnnouncementBox').classList.remove('hidden');
+                    document.getElementById('announcementTextContent').innerText = systemAnnouncement;
+                }
+
+                const userUploadsCount = products.filter(p => p.contributor === currentUser.name).length + pendingProducts.filter(p => p.contributor === currentUser.name).length;
+                document.getElementById('conStatUploads').innerText = userUploadsCount;
+                document.getElementById('conStatEarnings').innerText = `${currentUser.coins || 150} Coins`;
             }
         }
 
@@ -734,6 +790,7 @@
             alert('Product submitted! Admin must review and approve it before publishing.');
             document.getElementById('contributorForm').reset();
             updateAdminDashboard();
+            updateContributorDashboard();
         }
 
         function requestWithdrawal() {
@@ -749,8 +806,8 @@
         function updateAdminDashboard() {
             document.getElementById('adminStatContributors').innerText = allUsers.length;
             document.getElementById('adminStatProducts').innerText = products.filter(p => p.status === 'approved').length;
+            document.getElementById('adminStatRevenue').innerText = `${platformRevenue} Coins`;
             
-            // Pending Account များကိုပါ ရေတွက်ရာတွင် ထည့်သွင်းခြင်း
             const pendingAccountsCount = allUsers.filter(u => u.status === 'Pending').length;
             const totalPendingCount = pendingProducts.length + pendingAccountsCount + topupRequests.length + withdrawalRequests.length;
             document.getElementById('adminStatPending').innerText = totalPendingCount;
@@ -767,14 +824,17 @@
                         <td class="p-3 text-slate-300">${u.email}</td>
                         <td class="p-3 text-slate-300">${u.phone}</td>
                         <td class="p-3 text-amber-400 font-bold">${u.role} (${u.status})</td>
-                        <td class="p-3">
-                            ${u.email !== 'veryacomputerclass@gmail.com' ? `<button onclick="deleteUser(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs font-bold">Remove User</button>` : `<span class="text-xs text-slate-500">System Admin</span>`}
+                        <td class="p-3 space-x-2">
+                            ${u.email !== 'veryacomputerclass@gmail.com' ? `
+                                <button onclick="toggleUserRole(${index})" class="bg-amber-600 hover:bg-amber-500 text-white px-2 py-1 rounded text-xs font-bold">Toggle Role</button>
+                                <button onclick="deleteUser(${index})" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">Remove</button>
+                            ` : `<span class="text-xs text-slate-500">Super Admin</span>`}
                         </td>
                     </tr>
                 `).join('');
             }
 
-            // 1. Contributor Account Applications (အဟောင်းရော အသစ်ပါ status 'Pending' ဖြစ်နေသူအားလုံးကို ဤနေရာတွင် ပြသမည်)
+            // 1. Contributor Account Applications
             const conTable = document.getElementById('adminContributorTable');
             const pendingAccs = allUsers.filter(u => u.status === 'Pending');
             
@@ -858,6 +918,15 @@
         }
 
         // Admin Action Functions
+        function sendAnnouncement() {
+            const text = document.getElementById('adminAnnouncementInput').value.trim();
+            if(!text) { alert('Please type an announcement text.'); return; }
+            systemAnnouncement = text;
+            saveToLocalStorage();
+            alert('Announcement broadcasted successfully to all contributors!');
+            document.getElementById('adminAnnouncementInput').value = '';
+        }
+
         function deleteUser(index) {
             if(confirm('Are you sure you want to remove this user account?')) {
                 allUsers.splice(index, 1);
@@ -865,6 +934,13 @@
                 alert('User account removed successfully.');
                 updateAdminDashboard();
             }
+        }
+
+        function toggleUserRole(index) {
+            allUsers[index].role = allUsers[index].role === 'Admin' ? 'Contributor' : 'Admin';
+            saveToLocalStorage();
+            alert(`User role changed to ${allUsers[index].role}.`);
+            updateAdminDashboard();
         }
 
         function approveContributor(index) {
@@ -900,8 +976,16 @@
 
         function approveTopup(index) {
             const topup = topupRequests.splice(index, 1)[0];
+            let targetUser = allUsers.find(u => u.email === topup.user);
+            if(targetUser) {
+                targetUser.coins = (targetUser.coins || 0) + Number(topup.coins);
+            }
+            if(currentUser && currentUser.email === topup.user) {
+                currentUser.coins = (currentUser.coins || 0) + Number(topup.coins);
+                updateUserUI();
+            }
             saveToLocalStorage();
-            alert(`Top-up request approved! (Code verified: ${topup.code})`);
+            alert(`Top-up request approved and ${topup.coins} coins added to user!`);
             updateAdminDashboard();
         }
 
@@ -929,7 +1013,7 @@
         // Initialize App UI
         updateUserUI();
         renderProducts();
-        if(currentUser && currentUser.email === 'veryacomputerclass@gmail.com') {
+        if(currentUser && (currentUser.email === 'veryacomputerclass@gmail.com' || currentUser.role === 'Admin')) {
             updateAdminDashboard();
         }
     </script>
