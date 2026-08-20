@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verya Stock - Ultimate Digital Asset Store v7.0</title>
+    <title>Verya Stock - Ultimate Digital Asset Store v8.0</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,19 +32,14 @@
                     <i class="fa-solid fa-layer-group text-amber-500"></i> Verya Stock
                 </a>
                 <nav class="hidden md:flex space-x-5 text-sm font-medium text-slate-300">
-                    <a href="#" onclick="switchTab('home')" class="nav-home hover:text-amber-400 transition">ပင်မစာမျက်နှာ</a>
-                    <a href="#" onclick="switchTab('downloads')" class="nav-downloads hover:text-amber-400 transition">ဒေါင်းလုဒ်များ</a>
-                    <a href="#" onclick="switchTab('contributor')" class="nav-contributor hover:text-amber-400 transition">Contributor</a>
-                    <a href="#" onclick="switchTab('contact')" class="nav-contact hover:text-amber-400 transition">ဆက်သွယ်ရန်</a>
+                    <a href="#" onclick="switchTab('home')" class="hover:text-amber-400 transition">ပင်မစာမျက်နှာ</a>
+                    <a href="#" onclick="switchTab('downloads')" class="hover:text-amber-400 transition">ဒေါင်းလုဒ်များ</a>
+                    <a href="#" onclick="switchTab('contributor')" class="hover:text-amber-400 transition">Contributor</a>
+                    <a href="#" onclick="switchTab('contact')" class="hover:text-amber-400 transition">ဆက်သွယ်ရန်</a>
                 </nav>
             </div>
             
             <div class="flex items-center space-x-3">
-                <!-- Language Toggle -->
-                <button onclick="toggleLanguage()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-lg border border-slate-700 text-xs font-bold transition">
-                    <span id="langLabel">EN</span>
-                </button>
-                <!-- Theme Toggle -->
                 <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-lg border border-slate-700 transition">
                     <i id="themeIcon" class="fa-solid fa-sun"></i>
                 </button>
@@ -74,8 +69,8 @@
         <!-- HOME TAB -->
         <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 rounded-3xl p-8 md:p-16 text-center shadow-2xl border border-slate-800">
-                <h1 id="heroTitle" class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ</h1>
-                <p id="heroSubtitle" class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v7.0 - Enterprise Edition ဖြင့် ပိုမိုလုံခြုံမြန်ဆန်စွာ အသုံးပြုနိုင်ပါပြီ။</p>
+                <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ</h1>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto text-sm md:text-base">Verya Stock v8.0 - Secure Payment & Approval Edition</p>
                 
                 <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-2 rounded-2xl shadow-xl flex items-center">
                     <i class="fa-solid fa-search text-slate-400 ml-4 text-lg"></i>
@@ -125,27 +120,34 @@
         <!-- CONTACT TAB -->
         <section id="tab-contact" class="hidden max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-4 shadow-xl">
             <h2 class="text-2xl font-bold gold-text border-b border-slate-800 pb-4">ဆက်သွယ်ရန်</h2>
-            <p class="text-slate-300 text-sm"><strong>တည်နေရာ:</strong> Pale, Sagaing, Myanmar</p>
-            <p class="text-slate-300 text-sm"><strong>ဖုန်းနံပါတ်:</strong> (+95) 941117896</p>
+            <p class="text-slate-300 text-sm"><strong>တည်ထောင်သူ:</strong> Hein Yazar Soe</p>
+            <p class="text-slate-300 text-sm"><strong>ငွေလွဲရန် ဖုန်းနံပါတ် (KBZPay / WavePay):</strong> 09941117896</p>
             <p class="text-slate-300 text-sm"><strong>အီးမေးလ်:</strong> veryacomputerclass@gmail.com</p>
         </section>
 
         <!-- ADMIN TAB -->
         <section id="tab-admin" class="hidden space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl space-y-6">
-                <h2 class="text-2xl font-bold gold-text">Admin Dashboard & Analytics</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <p class="text-xs text-slate-400">စုစုပေါင်း ရောင်းအား</p>
-                        <p class="text-xl font-bold text-amber-400" id="adminTotalSales">0 နှုံး</p>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <p class="text-xs text-slate-400">စုစုပေါင်း ဝင်ငွေ</p>
-                        <p class="text-xl font-bold text-amber-400" id="adminTotalRevenue">0 Coins</p>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <p class="text-xs text-slate-400">ပစ္စည်းအရေအတွက်</p>
-                        <p class="text-xl font-bold" id="adminTotalItems">0</p>
+                <h2 class="text-2xl font-bold gold-text">Admin Dashboard & Coin Approval</h2>
+                
+                <!-- Pending TopUp Requests -->
+                <div>
+                    <h3 class="font-bold text-sm text-amber-400 mb-3">Coin ဖြည့်ရန် တောင်းဆိုထားသူများ (Approval Requests)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+                                    <th class="p-3">အသုံးပြုသူ</th>
+                                    <th class="p-3">ငွေပေးချေမှု</th>
+                                    <th class="p-3">တောင်းဆိုသည့် Coins</th>
+                                    <th class="p-3">နောက်ဆုံး ကုဒ် ၅ လုံး</th>
+                                    <th class="p-3">လုပ်ဆောင်ချက်</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTopupTable" class="divide-y divide-slate-800">
+                                <tr><td colspan="5" class="p-3 text-center text-slate-500">တောင်းဆိုမှု မရှိသေးပါ။</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -169,18 +171,12 @@
         </div>
     </div>
 
-    <!-- CART MODAL WITH COUPON -->
+    <!-- CART MODAL -->
     <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
             <button onclick="closeCartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-xl font-bold">ခြင်းတောင်း</h3>
             <div id="cartList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
-            
-            <div class="flex gap-2 pt-2">
-                <input type="text" id="couponInput" placeholder="Promo Code (ဥပမာ- VERYA2026)" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-lg text-xs text-white">
-                <button onclick="applyCoupon()" class="bg-slate-800 text-amber-400 px-4 py-2 rounded-lg text-xs font-bold border border-slate-700">ထည့်မည်</button>
-            </div>
-
             <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-sm">
                 <span>စုစုပေါင်း: <strong id="cartTotal" class="text-amber-400 text-lg">0 Coins</strong></span>
                 <button onclick="checkoutCart()" class="gold-btn text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">ဝယ်မည်</button>
@@ -188,44 +184,47 @@
         </div>
     </div>
 
-    <!-- TOP-UP MODAL -->
+    <!-- TOP-UP MODAL WITH PAYMENT INFO & 5 DIGIT CODE -->
     <div id="topUpModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm space-y-4">
-            <h3 class="text-lg font-bold">ငွေဖြည့်ရန်</h3>
-            <input type="number" id="topupVal" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
-            <div class="flex justify-end space-x-2">
-                <button onclick="closeTopUpModal()" class="px-4 py-2 bg-slate-800 text-xs rounded-lg">ပိတ်ရန်</button>
-                <button onclick="confirmTopUp()" class="px-4 py-2 gold-btn text-slate-950 text-xs font-bold rounded-lg">အတည်ပြု</button>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-xl relative">
+            <button onclick="closeTopUpModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-lg font-bold text-amber-400">ငွေဖြည့်သွင်းရန် (KBZPay / WavePay)</h3>
+            
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+                <p><strong>ငွေလက်ခံမည့်သူ:</strong> Hein Yazar Soe</p>
+                <p><strong>ဖုန်းနံပါတ်:</strong> <span class="text-amber-400 font-bold text-sm">09941117896</span></p>
+                <p class="text-slate-400 pt-1">အထက်ပါ နံပါတ်သို့ ငွေလွဲပြီးပါက ရရှိလာသော ငွေလွဲအမှတ်စဉ်၏ <strong>နောက်ဆုံးကုဒ် ၅ လုံး</strong> ကို အောက်တွင် ဖြည့်သွင်း၍ Admin ခွင့်ပြုချက် တောင်းခံပါ။</p>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">ဖြည့်မည့်ပမာဏ (Coins)</label>
+                    <input type="number" id="topupCoins" value="100" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">ငွေလွဲကုဒ် နောက်ဆုံး ၅ လုံး (Transaction Last 5 Digits)</label>
+                    <input type="text" id="topupCode" maxlength="5" placeholder="ဥပမာ - 48962" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-sm text-white tracking-widest font-bold">
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeTopUpModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs rounded-lg font-bold">ပိတ်မည်</button>
+                <button onclick="submitTopUpRequest()" class="px-5 py-2 gold-btn text-slate-950 text-xs font-bold rounded-lg">ခွင့်ပြုချက်တောင်းမည်</button>
             </div>
         </div>
     </div>
 
     <!-- JAVASCRIPT -->
     <script>
-        let currentLang = 'my';
-        let translations = {
-            my: { heroTitle: "ရင်သပ်ရှုမောဖွယ်ရာ ရှယ်ယာပုံများနှင့် ဒစ်ဂျစ်တယ်ဖိုင်များ", heroSub: "Verya Stock v7.0 - Enterprise Edition ဖြင့် ပိုမိုလုံခြုံမြန်ဆန်စွာ အသုံးပြုနိုင်ပါပြီ။" },
-            en: { heroTitle: "Stunning Stock Photos & Digital Assets", heroSub: "Experience secure and fast digital downloads with Verya Stock v7.0 Enterprise Edition." }
-        };
-
-        let products = JSON.parse(localStorage.getItem('vs_v7_prod')) || [
+        let products = JSON.parse(localStorage.getItem('vs_v8_prod')) || [
             { id: 1, title: "Abstract Neon Background", coins: 20, image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" },
             { id: 2, title: "Modern Business Workspace", coins: 35, image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" }
         ];
 
-        let currentUser = { coins: 300 };
-        let downloads = JSON.parse(localStorage.getItem('vs_v7_down')) || [];
+        let currentUser = { name: "Hein User", coins: 300 };
+        let downloads = JSON.parse(localStorage.getItem('vs_v8_down')) || [];
         let cart = [];
-        let discountPercent = 0;
-        let totalSalesCount = 0;
-        let totalRevenueEarned = 0;
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'my' ? 'en' : 'my';
-            document.getElementById('langLabel').innerText = currentLang.toUpperCase();
-            document.getElementById('heroTitle').innerText = translations[currentLang].heroTitle;
-            document.getElementById('heroSubtitle').innerText = translations[currentLang].heroSub;
-        }
+        let topupRequests = JSON.parse(localStorage.getItem('vs_v8_topups')) || [];
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
@@ -285,7 +284,6 @@
 
         function openCartModal() {
             let total = cart.reduce((s, p) => s + p.coins, 0);
-            total = total - (total * discountPercent / 100);
             document.getElementById('cartList').innerHTML = cart.length === 0 ? `<p class="text-slate-500 text-center">ခြင်းတောင်း خਾਲီဖြစ်နေပါသည်။</p>` :
             cart.map(p => `<div class="flex justify-between bg-slate-950 p-2 rounded border border-slate-800"><span>${p.title}</span><span class="text-amber-400">${p.coins} Coins</span></div>`).join('');
             document.getElementById('cartTotal').innerText = `${total} Coins`;
@@ -293,35 +291,22 @@
         }
         function closeCartModal() { document.getElementById('cartModal').classList.add('hidden'); }
 
-        function applyCoupon() {
-            const code = document.getElementById('couponInput').value.trim();
-            if(code === 'VERYA2026') {
-                discountPercent = 20;
-                alert('20% လျှော့ဈေး ကုဒ် အောင်မြင်စွာ အသုံးပြုပြီးပါပြီ။');
-                openCartModal();
-            } else {
-                alert('ကုဒ် မှားယွင်းနေပါသည်။');
-            }
-        }
-
         function checkoutCart() {
             let total = cart.reduce((s, p) => s + p.coins, 0);
-            total = total - (total * discountPercent / 100);
             if(cart.length === 0) return;
             if(currentUser.coins >= total) {
                 currentUser.coins -= total;
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 cart.forEach(p => { if(!downloads.some(d => d.id === p.id)) downloads.push(p); });
-                totalSalesCount += cart.length;
-                totalRevenueEarned += total;
                 cart = [];
                 document.getElementById('cartCountBadge').innerText = 0;
-                localStorage.setItem('vs_v7_down', JSON.stringify(downloads));
+                localStorage.setItem('vs_v8_down', JSON.stringify(downloads));
                 closeCartModal();
                 alert('ဝယ်ယူမှု အောင်မြင်ပါသည်။');
                 switchTab('downloads');
             } else {
-                alert('Coin မလုံလောက်ပါ။');
+                alert('Coin မလုံလောက်ပါ။ ငွေဖြည့်ပါ။');
+                openTopUpModal();
             }
         }
 
@@ -331,13 +316,12 @@
                 currentUser.coins -= p.coins;
                 document.getElementById('userCoinBalance').innerText = currentUser.coins;
                 if(!downloads.some(d => d.id === id)) downloads.push(p);
-                totalSalesCount++;
-                totalRevenueEarned += p.coins;
-                localStorage.setItem('vs_v7_down', JSON.stringify(downloads));
+                localStorage.setItem('vs_v8_down', JSON.stringify(downloads));
                 alert('အောင်မြင်စွာ ဝယ်ယူပြီးပါပြီ။');
                 switchTab('downloads');
             } else {
-                alert('Coin မလုံလောက်ပါ။');
+                alert('Coin မလုံလောက်ပါ။ ငွေဖြည့်ပါ။');
+                openTopUpModal();
             }
         }
 
@@ -362,25 +346,57 @@
                 coins: parseInt(document.getElementById('conCoins').value),
                 image: document.getElementById('conImage').value
             });
-            localStorage.setItem('vs_v7_prod', JSON.stringify(products));
+            localStorage.setItem('vs_v8_prod', JSON.stringify(products));
             document.getElementById('contributorForm').reset();
             alert('ဖိုင်တင်ခြင်း အောင်မြင်ပါသည်။');
             switchTab('home');
         }
 
-        function renderAdmin() {
-            document.getElementById('adminTotalSales').innerText = `${totalSalesCount} နှုံး`;
-            document.getElementById('adminTotalRevenue').innerText = `${totalRevenueEarned} Coins`;
-            document.getElementById('adminTotalItems').innerText = products.length;
-        }
-
         function openTopUpModal() { document.getElementById('topUpModal').classList.remove('hidden'); }
         function closeTopUpModal() { document.getElementById('topUpModal').classList.add('hidden'); }
-        function confirmTopUp() {
-            currentUser.coins += parseInt(document.getElementById('topupVal').value) || 0;
-            document.getElementById('userCoinBalance').innerText = currentUser.coins;
+
+        function submitTopUpRequest() {
+            const coins = parseInt(document.getElementById('topupCoins').value) || 0;
+            const code = document.getElementById('topupCode').value.trim();
+            if(code.length !== 5) {
+                alert('ကျေးဇူးပြု၍ ငွေလွဲကုဒ် နောက်ဆုံး ၅ လုံးကို အတိအကျ ထည့်သွင်းပါ။');
+                return;
+            }
+            topupRequests.push({ id: Date.now(), user: currentUser.name, coins, code });
+            localStorage.setItem('vs_v8_topups', JSON.stringify(topupRequests));
             closeTopUpModal();
-            alert('ငွေဖြည့်သွင်းခြင်း အောင်မြင်ပါသည်။');
+            alert('Admin ထံသို့ ခွင့်ပြုချက်တောင်းဆိုမှု ပို့ပြီးပါပြီ။ Admin အတည်ပြုပြီးပါက Coin များ ဝင်ရောက်လာမည် ဖြစ်ပါသည်။');
+        }
+
+        function renderAdmin() {
+            const tbody = document.getElementById('adminTopupTable');
+            if(topupRequests.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-500">တောင်းဆိုမှု မရှိသေးပါ။</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = topupRequests.map(r => `
+                <tr class="border-b border-slate-800">
+                    <td class="p-3">${r.user}</td>
+                    <td class="p-3 text-xs text-slate-400">KBZPay / WavePay (09941117896)</td>
+                    <td class="p-3 text-amber-400 font-bold">+${r.coins} Coins</td>
+                    <td class="p-3 tracking-widest font-extrabold text-white">${r.code}</td>
+                    <td class="p-3">
+                        <button onclick="approveTopup(${r.id})" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">အတည်ပြုမည်</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveTopup(id) {
+            const req = topupRequests.find(x => x.id === id);
+            if(req) {
+                currentUser.coins += req.coins;
+                document.getElementById('userCoinBalance').innerText = currentUser.coins;
+                topupRequests = topupRequests.filter(x => x.id !== id);
+                localStorage.setItem('vs_v8_topups', JSON.stringify(topupRequests));
+                renderAdmin();
+                alert('Coin ဖြည့်သွင်းမှုကို အောင်မြင်စွာ အတည်ပြုပေးလိုက်ပါပြီ။');
+            }
         }
 
         renderProducts(products);
